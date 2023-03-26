@@ -1,0 +1,39 @@
+<nz-header></nz-header>
+
+<nz-layout>
+    <nz-sider nzCollapsible nzWidth="200px" [nzTrigger]="null">
+      <div class="logo">Tech Shop</div>
+      <ul nz-menu nzMode="inline">
+        <li nz-menu-item>
+          <span nz-icon nzType="pie-chart"></span>
+          <span>Option 1</span>
+        </li>
+        <li nz-menu-item>
+          <span nz-icon nzType="desktop"></span>
+          <span>Option 2</span>
+        </li>
+        <li nz-submenu nzTitle="User" nzIcon="user">
+          <ul>
+            <li nz-menu-item>Tom</li>
+            <li nz-menu-item>Bill</li>
+            <li nz-menu-item>Alex</li>
+          </ul>
+        </li>
+        <li nz-submenu nzTitle="Team" nzIcon="team">
+          <ul>
+            <li nz-menu-item>Team 1</li>
+            <li nz-menu-item>Team 2</li>
+          </ul>
+        </li>
+        <li nz-menu-item>
+          <span nz-icon nzType="file"></span>
+          <span>File</span>
+        </li>
+      </ul>
+    </nz-sider>
+    <nz-layout>
+      <nz-content>
+        <router-outlet></router-outlet>
+      </nz-content>
+    </nz-layout>
+  </nz-layout>
