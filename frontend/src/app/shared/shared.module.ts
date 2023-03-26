@@ -7,7 +7,8 @@ import { NgZorroAntdModule } from '../ng-zorro-antd/ng-zorro-antd.module';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+  ],
   imports: [
     CommonModule,
     FormsModule,
