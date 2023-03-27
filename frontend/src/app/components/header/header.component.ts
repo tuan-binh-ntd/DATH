@@ -6,10 +6,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./header.component.less']
 })
 export class HeaderComponent implements OnInit {
-
+  isVisible: boolean = false;
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  showModal(){
+    this.isVisible = true;
   }
 
 }
