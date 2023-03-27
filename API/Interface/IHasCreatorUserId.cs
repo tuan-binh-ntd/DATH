@@ -2,6 +2,6 @@
 {
     public interface IHasCreatorUserId : IHasCreationTime
     {
-        long CreatorUserId { get; set; }
+        long? CreatorUserId { get; set; }
     }
 }
