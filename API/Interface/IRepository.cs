@@ -1,12 +1,18 @@
-﻿namespace API.Interface
+﻿using API.Entities;
+
+namespace API.Interface
 {
-    public interface IRepository<TEntity> where TEntity : class, IEntity<long>
+    public interface IRepository<TEntity, TPrimaryKey> where TEntity : class, IEntity<TPrimaryKey>
     {
         IQueryable<TEntity> GetAll();
-        Task<TEntity?> GetAsync(long id);
-        Task<long> InsertAndGetIdAsync(TEntity entity);
+        Task<TEntity?> GetAsync(TPrimaryKey id);
+        Task<TPrimaryKey> InsertAndGetIdAsync(TEntity entity);
         Task<TEntity> InsertAsync(TEntity entity);
         Task<TEntity> UpdateAsync(TEntity entity);
-        Task DeleteAsync(long id);
+        Task DeleteAsync(TPrimaryKey id);
+    }
+
+    public interface IRepository<TEntity> : IRepository<TEntity, int> where TEntity : class, IEntity<int>
+    {
     }
 }

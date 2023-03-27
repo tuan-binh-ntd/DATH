@@ -1,10 +1,15 @@
 ﻿using API.Entities;
+using API.Extensions;
 using API.Interface;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<AppUser, AppRole, long, 
+        IdentityUserClaim<long>, AppUserRole, IdentityUserLogin<long>,
+        IdentityRoleClaim<long>, IdentityUserToken<long>>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -14,12 +19,29 @@ namespace API.Data
         public DbSet<Demo> Demo { get; set; }
         //End Entity Declaration
 
-        //Set Configuration BaseEntity
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            //Remane AspNetUsers 
+            modelBuilder.Entity<AppUser>().ToTable("AppUser");
+            //Remane AspNetRoles 
+            modelBuilder.Entity<AppRole>().ToTable("AppRole");
+            //Apply BaseEntity Configuration
             modelBuilder.ApplyBaseEntityConfiguration();
+            //Many to Many Relationship (AppUser, AppUserRole, AppRole)
+            modelBuilder.Entity<AppUser>()
+                .HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.User)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+
+            modelBuilder.Entity<AppRole>()
+                .HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.Role)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+
         }
         // Set SoftDelete
         public override int SaveChanges()
@@ -28,19 +50,16 @@ namespace API.Data
             {
                 if (entry.Entity is IHasCreatorUserId hasCreatorUserIdEntity && entry.State == EntityState.Added)
                 {
-                    hasCreatorUserIdEntity.CreatorUserId = 10;
                     hasCreatorUserIdEntity.CreationTime = DateTime.Now;
                 }
                 else if (entry.Entity is IHasLastModifierUserId hasLastModifierUserIdEntity && entry.State == EntityState.Modified)
                 {
-                    hasLastModifierUserIdEntity.LastModifierUserId = 9;
                     hasLastModifierUserIdEntity.LastModificationTime = DateTime.Now;
                 }
                 else if (entry.Entity is ISoftDelete softDeleteEntity && entry.State == EntityState.Deleted)
                 {
                     entry.State = EntityState.Modified;
-                    softDeleteEntity.DeleteUserId = 1;
-                    softDeleteEntity.DeletionTime = DateTime.UtcNow;
+                    softDeleteEntity.DeletionTime = DateTime.Now;
                     softDeleteEntity.IsDeleted = true;
                 }
             }
@@ -53,19 +72,16 @@ namespace API.Data
             {
                 if (entry.Entity is IHasCreatorUserId hasCreatorUserIdEntity && entry.State == EntityState.Added)
                 {
-                    hasCreatorUserIdEntity.CreatorUserId = 10;
                     hasCreatorUserIdEntity.CreationTime = DateTime.Now;
                 }
                 else if (entry.Entity is IHasLastModifierUserId hasLastModifierUserIdEntity && entry.State == EntityState.Modified)
                 {
-                    hasLastModifierUserIdEntity.LastModifierUserId = 9;
                     hasLastModifierUserIdEntity.LastModificationTime = DateTime.Now;
                 }
                 else if (entry.Entity is ISoftDelete softDeleteEntity && entry.State == EntityState.Deleted)
                 {
                     entry.State = EntityState.Modified;
-                    softDeleteEntity.DeleteUserId = 1;
-                    softDeleteEntity.DeletionTime = DateTime.UtcNow;
+                    softDeleteEntity.DeletionTime = DateTime.Now;
                     softDeleteEntity.IsDeleted = true;
                 }
             }

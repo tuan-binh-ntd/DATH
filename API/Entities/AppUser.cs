@@ -1,14 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using API.Interface;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using API.Interface;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Entities
 {
-    public abstract class BaseEntity<T> : IEntity<T>, IHasCreationTime, IHasCreatorUserId, IHasLastModifierUserId, IHasModificationTime, ISoftDelete
+    [Table("AppUser")]
+    public class AppUser : IdentityUser<long>, IHasCreationTime, IHasCreatorUserId, IHasLastModifierUserId, IHasModificationTime, ISoftDelete
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public T Id { get; set; }
+        public AppUser(string userName) : base(userName)
+        {
+        }
+
         public long? CreatorUserId { get; set; }
         [DataType(DataType.DateTime)]
         public DateTime CreationTime { get; set; }
@@ -19,5 +22,6 @@ namespace API.Entities
         [DataType(DataType.DateTime)]
         public DateTime? DeletionTime { get; set; }
         public bool IsDeleted { get; set; }
+        public ICollection<AppUserRole> UserRoles { get; set; } = new List<AppUserRole>();
     }
 }

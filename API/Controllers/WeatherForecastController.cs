@@ -4,7 +4,6 @@ using API.Interface;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 
 namespace API.Controllers
 {
@@ -15,19 +14,16 @@ namespace API.Controllers
         private static readonly string[] Summaries = new[]
         {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+        };
 
-        private readonly ILogger<WeatherForecastController> _logger;
-        private readonly IRepository<Demo> _demoRepository;
+        private readonly IRepository<Demo, long> _demoRepository;
         private readonly IMapper _mapper;
 
         public WeatherForecastController(
-            ILogger<WeatherForecastController> logger,
-            IRepository<Demo> demoRepository,
+            IRepository<Demo, long> demoRepository,
             IMapper mapper
             )
         {
-            _logger = logger;
             _demoRepository = demoRepository;
             _mapper = mapper;
         }
@@ -45,7 +41,7 @@ namespace API.Controllers
         }
 
         [HttpGet("GetDemo")]
-        public async Task<Demo> GetDemo(long id)
+        public async Task<Demo?> GetDemo(long id)
         {
             return await _demoRepository.GetAsync(id);
         }
@@ -71,7 +67,7 @@ namespace API.Controllers
 
         private async Task Create(DemoDto input)
         {
-            Demo data = new Demo
+            Demo data = new()
             {
                 Name = input.Name,
             };
@@ -85,7 +81,6 @@ namespace API.Controllers
             if(data != null)
             {
                 _mapper.Map(input, data);
-                //data.Name = input.Name;
                 await _demoRepository.UpdateAsync(data);
             }
         }
