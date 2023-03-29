@@ -1,1 +1,25 @@
-<p>dashboard-admin works!</p>
+<nz-table
+  #rowSelectionTable
+  nzShowPagination
+  nzShowSizeChanger
+  [nzData]="listOfData"
+>
+  <thead>
+    <tr>
+      <th ></th>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Address</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of rowSelectionTable.data">
+      <td
+       
+      ></td>
+      <td>{{ data.name }}</td>
+      <td>{{ data.age }}</td>
+      <td>{{ data.address }}</td>
+    </tr>
+  </tbody>
+</nz-table>

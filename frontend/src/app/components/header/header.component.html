@@ -1,18 +1,21 @@
 <nz-header>
-    <div class="align-child-center">
-        <a class="align-items-center">
-            <img src="../../../assets/images/logo_transparent.png" width="70px" height="70px"  />
+    <div class="align-child-space-between">
+        <a>
+            <!-- <img src="../../../assets/"></img> -->
+            <h1 class="text-white">Tech Shop</h1>
         </a>
         <div>
-            <a (click)="showModal()">Sign In</a>
+            <app-button-icon iconClass="fa-regular fa-user mr-2"></app-button-icon>
             <!-- <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" >
                 <ng-container *nzModalContent>
                   <p>Content one</p>
                   <p>Content two</p>
                   <p>Content three</p>
                 </ng-container>
-              </nz-modal> -->
+            </nz-modal> -->
+            <app-button-icon iconClass="fa-regular fa-bell"></app-button-icon>
         </div>
+       
     </div>
 
 </nz-header>

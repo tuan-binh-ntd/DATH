@@ -141,6 +141,7 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
     NzWaveModule,
     NzResizableModule,
     NzPipesModule,
+    NzToolTipModule,
   ],
 })
 export class NgZorroAntdModule {}
