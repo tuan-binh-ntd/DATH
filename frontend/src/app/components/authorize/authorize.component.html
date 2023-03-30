@@ -1,7 +1,7 @@
-<!-- <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" >
+<nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" >
     <nz-tabset >
         <nz-tab >
-            <form nz-form [formGroup]="fom" class="login-form" (ngSubmit)="submitForm()">
+            <form nz-form [formGroup]="signInForm" class="login-form" (ngSubmit)="submitForm()">
                 <nz-form-item>
                   <nz-form-control nzErrorTip="Please input your username!">
                     <nz-input-group >
@@ -19,7 +19,7 @@
                     </form>
         </nz-tab>
         <nz-tab >
-            <form nz-form [formGroup]="fom" class="login-form" (ngSubmit)="submitForm()">
+            <form nz-form [formGroup]="signUpForm" class="login-form" (ngSubmit)="submitForm()">
                 <nz-form-item>
                   <nz-form-control nzErrorTip="Please input your username!">
                     <nz-input-group >
@@ -37,22 +37,5 @@
                     </form>
         </nz-tab>
       </nz-tabset>
-    <form nz-form [formGroup]="fom" class="login-form" (ngSubmit)="submitForm()">
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Please input your username!">
-            <nz-input-group >
-              <input type="text" nz-input formControlName="userName" placeholder="Username" />
-            </nz-input-group>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Please input your Password!">
-            <nz-input-group>
-              <input type="password" nz-input formControlName="password" placeholder="Password" />
-            </nz-input-group>
-            </nz-form-control>
-            </nz-form-item>
-            </form>
-            
   </nz-modal>
- -->
+

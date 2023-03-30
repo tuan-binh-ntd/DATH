@@ -1,0 +1,9 @@
+<nz-drawer
+  [(nzVisible)]="isVisible"
+  [nzTitle]="titleDrawer"
+  nzPlacement="right"
+  (nzOnClose)="closeDrawer()">
+  <form [formGroup]="drawerForm">
+      <nz-content></nz-content>
+  </form>
+</nz-drawer>

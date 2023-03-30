@@ -1,13 +1,13 @@
 
 <nz-layout>
-    <nz-sider nzCollapsible nzWidth="256px">
+    <nz-sider  nzWidth="256px">
       <div class="logo "><h1 class="text-center text-white">Tech Shop</h1></div>
       <ul nz-menu nzMode="inline">
-        <li nz-submenu  [nzTitle]="product">
+        <li nz-submenu  [nzTitle]="product" >
           <ng-template #product>
               <i class="fa-brands fa-product-hunt  mr-2"></i>
               <span>Product Management</span>
-          </ng-template>
+            </ng-template>
           <ul>
             <li nz-menu-item>
               <span><i class="fa-solid fa-box  mr-2"></i></span>
@@ -21,18 +21,20 @@
           </ul>
         </li>
 
-        <li nz-submenu   [nzTitle]="facility">
-          <ng-template #facility>
+        <li nz-menu-item >
+          <span><i class="fa-solid fa-shop  mr-2"></i></span>
+          <span>Shop</span>
+        </li>
+
+        <li nz-submenu  [nzTitle]="warehouse">
+          <ng-template #warehouse>
               <i class="fa-solid fa-house  mr-2"></i>
-              <span>Facility Management</span>
+              <span>Warehouse Management</span>
           </ng-template>
           <ul>
+          
             <li nz-menu-item>
-              <span><i class="fa-solid fa-shop  mr-2"></i></span>
-              <span>Shop</span>
-            </li>
-            <li nz-menu-item>
-              <span><i class="fa-solid fa-warehouse fa-xl mr-2"></i></span>
+              <span><i class="fa-solid fa-warehouse  mr-2"></i></span>
               <span>Warehouse</span>
             </li>
           </ul>
@@ -49,7 +51,7 @@
               <span>Shop</span>
             </li>
             <li nz-menu-item>
-              <span><i class="fa-solid fa-warehouse fa-xl mr-2"></i></span>
+              <span><i class="fa-solid fa-warehouse  mr-2"></i></span>
               <span>Warehouse</span>
             </li>
           </ul>
@@ -71,16 +73,27 @@
             </li>
           </ul>
         </li>
+
+        <li nz-menu-item>
+          <i class="fa-solid fa-users  mr-2"></i>
+          <span>Customer Management</span>
+        </li>
         
+        <li nz-menu-item>
+          <i class="fa-solid fa-users  mr-2"></i>
+          <span>User Management</span>
+        </li>
+
         <li nz-menu-item>
           <span><i class="fa-regular fa-star-half-stroke  mr-2"></i></span>
           <span>Rating</span>
         </li>
-       
+
         <li nz-menu-item>
-          <i class="fa-solid fa-users  mr-2"></i>
-          <span>User</span>
+          <span><i class="fa-regular fa-star-half-stroke  mr-2"></i></span>
+          <span>Statistic</span>
         </li>
+       
       </ul>
     </nz-sider> 
     <nz-layout>

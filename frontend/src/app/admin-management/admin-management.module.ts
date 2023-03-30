@@ -8,11 +8,15 @@ import { ComponentsModule } from '../components/components.module';
 import { CommonModule } from '@angular/common';
 
 import { OverlayModule } from "@angular/cdk/overlay";
+import { SpecificationListComponent } from './specification-list/specification-list.component';
+import { SpecificationDrawerComponent } from './specification-list/partials/specification-drawer/specification-drawer.component';
 
 @NgModule({
   declarations: [
     AdminLayoutComponent,
-    DashboardAdminComponent
+    DashboardAdminComponent,
+    SpecificationListComponent,
+    SpecificationDrawerComponent
   ],
   imports: [
     AdminManagementRoutingModule,

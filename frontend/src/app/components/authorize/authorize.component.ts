@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-authorize',
@@ -8,10 +8,22 @@ import { FormGroup } from '@angular/forms';
 })
 export class AuthorizeComponent implements OnInit {
   @Input() isVisible: boolean = false;
-  form!: FormGroup
-  constructor() { }
+  signInForm!: FormGroup;
+  signUpForm!: FormGroup;
 
+  constructor(private fb: FormBuilder) { }
+  
   ngOnInit(): void {
+    this.initForm();
   }
+
+  initForm(){
+    this.signInForm = this.fb.group({
+      userName: [null, Validators.required],
+      password: [null, Validators.required],
+    })
+  }
+
+  submitForm(){}
 
 }

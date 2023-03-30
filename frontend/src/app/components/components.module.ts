@@ -4,6 +4,7 @@ import { SharedModule } from '../shared/shared.module';
 import { HeaderComponent } from './header/header.component';
 import { AuthorizeComponent } from './authorize/authorize.component';
 import { ButtonIconComponent } from './button-icon/button-icon.component';
+import { DrawerFormBaseComponent } from './drawer-form-base/drawer-form-base.component';
 
 
 @NgModule({
@@ -11,11 +12,13 @@ import { ButtonIconComponent } from './button-icon/button-icon.component';
     HeaderComponent,
     AuthorizeComponent,
     ButtonIconComponent,
+    DrawerFormBaseComponent,
   ],
   exports: [
     HeaderComponent,
     AuthorizeComponent,
     ButtonIconComponent,
+    DrawerFormBaseComponent,
   ],
   imports: [
     CommonModule,
