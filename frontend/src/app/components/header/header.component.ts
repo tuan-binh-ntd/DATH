@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./header.component.less']
 })
 export class HeaderComponent implements OnInit {
+  @Input() isCollapsed: boolean = false;
+  @Output() emitOnCollapse = new EventEmitter();
   isVisible: boolean = false;
   constructor() { }
 
@@ -14,6 +16,11 @@ export class HeaderComponent implements OnInit {
 
   showModal(){
     this.isVisible = true;
+  }
+
+  onCollapse(){
+    this.isCollapsed = !this.isCollapsed;
+    this.emitOnCollapse.emit(this.isCollapsed);
   }
 
 }

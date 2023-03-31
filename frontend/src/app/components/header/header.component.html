@@ -1,23 +1,41 @@
 <nz-header>
-    <div class="align-child-space-between">
-        <a>
-            <!-- <img src="../../../assets/"></img> -->
-            <h1 class="text-white">Tech Shop</h1>
-        </a>
-        <div class="d-flex">
-            <span><app-button-icon iconClass="fa-regular fa-bell"></app-button-icon></span>
+  <div class="align-child-space-between">
+  <span class="trigger" (click)="onCollapse()">
+      <i class="fa-solid fa-bars fa-lg text-white"></i>
+    </span>
+    <!-- <nz-breadcrumb [nzAutoGenerate]="true"></nz-breadcrumb> -->
+    <div class="d-flex">
+      <span
+        ><app-button-icon
+          toolTipTitle="Theme"
+          iconClass="fa-regular fa-moon fa-lg text-white"
+          placement="bottom"
+        ></app-button-icon
+      ></span>
 
-            <span class="mr-2"><app-button-icon iconClass="fa-regular fa-user"></app-button-icon></span>
-            
-            <!-- <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" >
+      <span
+        ><app-button-icon
+          toolTipTitle="Notification"
+          iconClass="fa-regular fa-bell fa-lg text-white"
+          placement="bottom"
+        ></app-button-icon
+      ></span>
+
+      <span class="mr-2"
+        ><app-button-icon
+          toolTipTitle="Authorize"
+          iconClass="fa-regular fa-user fa-lg text-white"
+          placement="bottom"
+        ></app-button-icon
+      ></span>
+
+      <!-- <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" >
                 <ng-container *nzModalContent>
                   <p>Content one</p>
                   <p>Content two</p>
                   <p>Content three</p>
                 </ng-container>
             </nz-modal> -->
-        </div>
-       
     </div>
-
+  </div>
 </nz-header>

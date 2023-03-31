@@ -8,6 +8,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class ButtonIconComponent implements OnInit {
   @Input() titleTooltip: string = "";
   @Input() iconClass: string = "";
+  @Input() toolTipTitle: string = "";
+  @Input() placement: string = "";
+  
+  
   @Output() onClick = new EventEmitter();
 
   constructor() { }

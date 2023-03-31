@@ -6,10 +6,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./admin-layout.component.less']
 })
 export class AdminLayoutComponent implements OnInit {
-
+  isCollapsed = false;
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  onCollapse(ev: any){
+    this.isCollapsed = ev;
   }
 
 }

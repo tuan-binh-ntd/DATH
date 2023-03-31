@@ -1,8 +1,17 @@
 
-<nz-layout>
-    <nz-sider  nzWidth="256px">
-      <div class="logo "><h1 class="text-center text-white">Tech Shop</h1></div>
-      <ul nz-menu nzMode="inline">
+<nz-layout >
+    <nz-sider nzWidth="256px" nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+      <div class="logo ">
+        <nz-header>
+          <h1 class="text-center text-white">Tech Shop</h1>
+        </nz-header>
+      </div>
+      <ul nz-menu nzMode="inline" >
+        <li nz-menu-item [routerLink]="'dashboard'" [nzMatchRouter]="true" >
+          <span><i class="fa-solid fa-shop  mr-2"></i></span>
+          <span>Dashboard</span>
+        </li>
+
         <li nz-submenu  [nzTitle]="product" >
           <ng-template #product>
               <i class="fa-brands fa-product-hunt  mr-2"></i>
@@ -28,7 +37,7 @@
 
         <li nz-submenu  [nzTitle]="warehouse">
           <ng-template #warehouse>
-              <i class="fa-solid fa-house  mr-2"></i>
+              <i class="fa-solid fa-warehouse mr-2"></i>
               <span>Warehouse Management</span>
           </ng-template>
           <ul>
@@ -57,13 +66,13 @@
           </ul>
         </li>
         
-        <li nz-submenu  [nzTitle]="specification">
+        <li nz-submenu  [nzTitle]="specification" >
           <ng-template #specification>
               <i class="fa-solid fa-gear  mr-2"></i>
               <span>Specification Management</span>
           </ng-template>
           <ul>
-            <li nz-menu-item>
+            <li nz-menu-item [routerLink]="'specification'" [nzMatchRouter]="true" >
               <span><i class="fa-solid fa-box-archive  mr-2"></i></span>
               <span>Specification</span>
             </li>
@@ -90,6 +99,11 @@
         </li>
 
         <li nz-menu-item>
+          <span><i class="fa-regular fa-money-check-dollar mr-2"></i></span>
+          <span>Installment</span>
+        </li>
+
+        <li nz-menu-item>
           <span><i class="fa-regular fa-star-half-stroke  mr-2"></i></span>
           <span>Statistic</span>
         </li>
@@ -97,7 +111,7 @@
       </ul>
     </nz-sider> 
     <nz-layout>
-  <app-header></app-header>
+  <app-header [isCollapsed]="isCollapsed" (emitOnCollapse)="onCollapse($event)"></app-header>
 
       <nz-content>
         <router-outlet></router-outlet>
