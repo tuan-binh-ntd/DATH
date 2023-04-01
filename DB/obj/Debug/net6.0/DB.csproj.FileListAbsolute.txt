@@ -1,0 +1,5 @@
+D:\IT\DATH\TechShop\DB\obj\Debug\net6.0\DB.csproj.AssemblyReference.cache
+D:\IT\DATH\TechShop\DB\obj\Debug\net6.0\DB.GeneratedMSBuildEditorConfig.editorconfig
+D:\IT\DATH\TechShop\DB\obj\Debug\net6.0\DB.AssemblyInfoInputs.cache
+D:\IT\DATH\TechShop\DB\obj\Debug\net6.0\DB.AssemblyInfo.cs
+D:\IT\DATH\TechShop\DB\obj\Debug\net6.0\DB.csproj.CoreCompileInputs.cache

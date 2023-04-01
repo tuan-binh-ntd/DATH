@@ -1,0 +1,5 @@
+D:\IT\DATH\TechShop\Business\obj\Debug\net6.0\Bussiness.csproj.AssemblyReference.cache
+D:\IT\DATH\TechShop\Business\obj\Debug\net6.0\Bussiness.GeneratedMSBuildEditorConfig.editorconfig
+D:\IT\DATH\TechShop\Business\obj\Debug\net6.0\Bussiness.AssemblyInfoInputs.cache
+D:\IT\DATH\TechShop\Business\obj\Debug\net6.0\Bussiness.AssemblyInfo.cs
+D:\IT\DATH\TechShop\Business\obj\Debug\net6.0\Bussiness.csproj.CoreCompileInputs.cache

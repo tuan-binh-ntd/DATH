@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Data
+namespace DB
 {
     public class DataContext : IdentityDbContext<AppUser, AppRole, long, 
         IdentityUserClaim<long>, AppUserRole, IdentityUserLogin<long>,

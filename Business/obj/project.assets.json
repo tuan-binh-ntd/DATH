@@ -1,11 +1,49 @@
 {
   "version": 3,
   "targets": {
-    "net6.0": {}
+    "net6.0": {
+      "DB/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "Entities": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/DB.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DB.dll": {}
+        }
+      },
+      "Entities/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/Entities.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Entities.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "DB/1.0.0": {
+      "type": "project",
+      "path": "../DB/DB.csproj",
+      "msbuildProject": "../DB/DB.csproj"
+    },
+    "Entities/1.0.0": {
+      "type": "project",
+      "path": "../Entities/Entities.csproj",
+      "msbuildProject": "../Entities/Entities.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net6.0": []
+    "net6.0": [
+      "DB >= 1.0.0",
+      "Entities >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\AD\\.nuget\\packages\\": {}
@@ -13,9 +51,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\IT\\DATH\\TechShop\\Business\\Business.csproj",
-      "projectName": "Business",
-      "projectPath": "D:\\IT\\DATH\\TechShop\\Business\\Business.csproj",
+      "projectUniqueName": "D:\\IT\\DATH\\TechShop\\Business\\Bussiness.csproj",
+      "projectName": "Bussiness",
+      "projectPath": "D:\\IT\\DATH\\TechShop\\Business\\Bussiness.csproj",
       "packagesPath": "C:\\Users\\AD\\.nuget\\packages\\",
       "outputPath": "D:\\IT\\DATH\\TechShop\\Business\\obj\\",
       "projectStyle": "PackageReference",
@@ -34,7 +72,14 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\IT\\DATH\\TechShop\\DB\\DB.csproj": {
+              "projectPath": "D:\\IT\\DATH\\TechShop\\DB\\DB.csproj"
+            },
+            "D:\\IT\\DATH\\TechShop\\Entities\\Entities.csproj": {
+              "projectPath": "D:\\IT\\DATH\\TechShop\\Entities\\Entities.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
