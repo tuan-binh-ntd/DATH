@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Entities;
-using Service.DemoService.Dto;
+using Service.AccountService.Dto;
 
 namespace Service.Helper
 {
@@ -8,7 +8,7 @@ namespace Service.Helper
     {
         public AutoMapperProfile()
         {
-            CreateMap<Demo, DemoDto>().ReverseMap();
+            CreateMap<AppUser, RegisterDto>().ReverseMap();
         }
     }
 }

@@ -25,7 +25,6 @@ namespace Service.Service
             {
                 new Claim(JwtRegisteredClaimNames.NameId , user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName , user.UserName!),
-
             };
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -39,7 +38,6 @@ namespace Service.Service
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(7),
                 SigningCredentials = creds
-
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();

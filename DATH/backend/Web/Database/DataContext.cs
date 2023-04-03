@@ -14,7 +14,9 @@ namespace Database
         }
 
         //Start Entity Declaration
-        public DbSet<Demo> Demo { get; set; }
+        public DbSet<Shop> Shop { get; set; }
+        public DbSet<Employee> Employee { get; set; }
+        public DbSet<Customer> Customer { get; set; }
         //End Entity Declaration
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,6 +41,25 @@ namespace Database
                 .WithOne(u => u.Role)
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired();
+
+            // One to One Relationship (AppUser, Employee)
+            modelBuilder.Entity<AppUser>()
+                .HasOne(u => u.Employee)
+                .WithOne(e => e.AppUser)
+                .HasForeignKey<Employee>(e => e.UserId);
+
+            // One to One Relationship (AppUser, Customer)
+            modelBuilder.Entity<AppUser>()
+            .HasOne(u => u.Customer)
+            .WithOne(c => c.AppUser)
+            .HasForeignKey<Customer>(c => c.UserId);
+
+            // One to Many Relationship (Shop, Employee)
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.Shop)
+                .WithMany(s => s.Employees)
+                .HasForeignKey(e => e.ShopId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
         // Set SoftDelete
         //public override int SaveChanges()
