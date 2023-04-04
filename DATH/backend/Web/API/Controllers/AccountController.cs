@@ -1,18 +1,20 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.Extensions;
 using Bussiness.Interface;
+using CoreApiResponse;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.Net;
 
 namespace API.Controllers
 {
     [Route("account")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseController
     {
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
@@ -104,6 +106,18 @@ namespace API.Controllers
         private async Task<bool> CheckUserExists(string username)
         {
             return await _userManager.Users.AnyAsync(x => x.UserName == username.ToLower());
+        }
+
+        //Demo Response Body
+        [HttpGet("test")]
+        public IActionResult GetAll()
+        {
+            var result  = new
+            {
+                Data = "sdas",
+                Id = 1
+            };
+            return CustomResult("Success", result, HttpStatusCode.OK);
         }
     }
 }
