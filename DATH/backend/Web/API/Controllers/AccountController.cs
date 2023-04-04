@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
-using Bussiness.Extensions;
 using Bussiness.Interface;
 using CoreApiResponse;
 using Entities;
@@ -41,8 +40,6 @@ namespace API.Controllers
 
             var user = _mapper.Map<AppUser>(registerDto);
             user.UserName = registerDto.Username!.ToLower();
-            user.CreatorUserId = -2; // 
-            user.CreationTime = DateTime.Now;
 
             var result = await _userManager.CreateAsync(user, registerDto.Password!);
 
@@ -66,8 +63,6 @@ namespace API.Controllers
 
             var user = _mapper.Map<AppUser>(registerDto);
             user.UserName = registerDto.Username!.ToLower();
-            user.CreatorUserId = User.GetUserId<long>();
-            user.CreationTime = DateTime.Now;
 
             var result = await _userManager.CreateAsync(user, registerDto.Password!);
 

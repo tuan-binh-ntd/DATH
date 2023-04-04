@@ -7,7 +7,6 @@ using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -27,13 +26,6 @@ builder.Services.AddCors();
 
 // Set AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
-//var mappingConfig = new MapperConfiguration(mc =>
-//{
-//    mc.AddProfile(new AutoMapperProfile());
-//});
-
-//IMapper mapper = mappingConfig.CreateMapper();
-//builder.Services.AddSingleton(mapper);
 
 // Start Declaration DI
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

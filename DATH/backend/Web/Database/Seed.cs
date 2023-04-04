@@ -2,7 +2,6 @@
 using Entities.Enum.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 namespace Database
 {
@@ -12,10 +11,6 @@ namespace Database
             RoleManager<AppRole> roleManager)
         {
             if (await userManager.Users.AnyAsync()) return;
-
-            //var userData = await System.IO.File.ReadAllTextAsync("Data/UserSeedData.json");
-            //var users = JsonSerializer.Deserialize<List<AppUser>>(userData);
-            //if (users == null) return;
 
             var roles = new List<AppRole>
             {
@@ -40,8 +35,6 @@ namespace Database
             {
                 UserName = "admin",
                 Type = UserType.Admin,
-                CreatorUserId = -1, //-1 the first record
-                CreationTime = DateTime.Now,
             };
 
             await userManager.CreateAsync(admin, "Pa$$w0rd");

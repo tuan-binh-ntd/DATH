@@ -61,6 +61,7 @@ namespace Database
                 .HasForeignKey(e => e.ShopId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
+
         // Set SoftDelete
         //public override int SaveChanges()
         //{
