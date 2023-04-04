@@ -1,12 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AdminLayoutComponent } from './admin-management/admin-layout/admin-layout.component';
+import { AdminLayoutComponent } from './routes/admin-management/admin-layout/admin-layout.component';
+import { AdminLoginComponent } from './routes/admin-management/admin-login/admin-login.component';
 
 const routes: Routes = [
+  { path: 'admin', redirectTo: 'admin/login', pathMatch: 'full' },
+
+  { path: 'admin/login', component: AdminLoginComponent },
   {
     path: 'admin-management',
     component: AdminLayoutComponent,
-    loadChildren: () => import('./admin-management/admin-management.module').then((m) => m.AdminManagementModule),
+    loadChildren: () => import('./routes/admin-management/admin-management.module').then((m) => m.AdminManagementModule),
     // canActivate: [CheckLoadingService],
   },
   {
@@ -17,7 +21,7 @@ const routes: Routes = [
   {
     path: 'exception',
     // loadChildren: './exception/exception.module#ExceptionModule',
-    loadChildren: () => import('./exceptions/exceptions.module').then((m) => m.ExceptionsModule),
+    loadChildren: () => import('./routes/exceptions/exceptions.module').then((m) => m.ExceptionsModule),
   },
 ];
 

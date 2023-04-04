@@ -1,3 +1,7 @@
+using Bussiness.Helper;
+using Bussiness.Interface;
+using Bussiness.Repository;
+using Bussiness.Service;
 using Database;
 using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -6,11 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Repository;
-using Serilog;
-using Service.Helper;
-using Service.Interface;
-using Service.Service;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 

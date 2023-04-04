@@ -1,16 +1,16 @@
 ﻿using AutoMapper;
+using Bussiness.Dto;
+using Bussiness.Interface;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Service.AccountService.Dto;
-using Service.Extensions;
-using Service.Interface;
+
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("account")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -35,7 +35,7 @@ namespace API.Controllers
         [HttpPost("customer")]
         public async Task<ActionResult<UserDto>> SignUp(RegisterDto registerDto)
         {
-            if (await UserExists(registerDto.Username!)) return BadRequest("Username is taken");
+            if (await CheckUserExists(registerDto.Username!)) return BadRequest("Username is taken");
 
             var user = _mapper.Map<AppUser>(registerDto);
             user.UserName = registerDto.Username!.ToLower();
@@ -53,14 +53,14 @@ namespace API.Controllers
             return new UserDto
             {
                 Username = user.UserName,
-                Token = await _tokenService.CreateToken(user)
+                //Token = await _tokenService.CreateToken(user)
             };
         }
 
         [HttpPost("employee"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if (await UserExists(registerDto.Username!)) return BadRequest("Username is taken");
+            if (await CheckUserExists(registerDto.Username!)) return BadRequest("Username is taken");
 
             var user = _mapper.Map<AppUser>(registerDto);
             user.UserName = registerDto.Username!.ToLower();
@@ -101,7 +101,7 @@ namespace API.Controllers
             };
         }
 
-        private async Task<bool> UserExists(string username)
+        private async Task<bool> CheckUserExists(string username)
         {
             return await _userManager.Users.AnyAsync(x => x.UserName == username.ToLower());
         }
