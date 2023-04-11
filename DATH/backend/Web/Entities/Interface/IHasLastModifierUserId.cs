@@ -1,7 +1,7 @@
 ﻿namespace Entities.Interface
 {
-    public interface IHasLastModifierUserId<TPrimaryKey> : IHasLastModificationTime
+    public interface IHasLastModifierUserId : IHasLastModificationTime
     {
-        TPrimaryKey? LastModifierUserId {get; set;}
+        long? LastModifierUserId {get; set;}
     }
 }

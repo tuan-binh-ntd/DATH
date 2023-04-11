@@ -2,12 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Database;
 using Entities.Interface;
-using Microsoft.AspNetCore.Mvc;
-using Bussiness.Extensions;
+using Microsoft.AspNetCore.Http;
 
 namespace Bussiness.Repository
 {
-    public class Repository<TEntity, TPrimaryKey> : ControllerBase, IRepository<TEntity, TPrimaryKey> where TEntity : class, IEntity<TPrimaryKey>
+    public class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey> where TEntity : class, IEntity<TPrimaryKey>
     {
         private readonly DataContext _dbContext;
 
@@ -30,10 +29,9 @@ namespace Bussiness.Repository
         public async Task<TEntity> InsertAsync(TEntity entity)
         {
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
-            if (entry.Entity is IHasCreatorUserId<TPrimaryKey> creatorUserId && entry.State == EntityState.Added)
+            if (entry.Entity is IHasCreatorUserId creatorUserId)
             {
-                creatorUserId.CreatorUserId = User.GetUserId<TPrimaryKey>();
-                creatorUserId.CreationTime = DateTime.Now;
+                //creatorUserId.CreatorUserId = User.GetUserId();
             }
             await _dbContext.Set<TEntity>().AddAsync(entry.Entity);
             await _dbContext.SaveChangesAsync();
@@ -43,18 +41,17 @@ namespace Bussiness.Repository
         public async Task<TEntity> UpdateAsync(TEntity entity)
         {
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
-            if (entry.Entity is IHasLastModifierUserId<TPrimaryKey> lastModifierUserId)
+            if (entry.Entity is IHasLastModifierUserId lastModifierUserId)
             {
-                lastModifierUserId.LastModifierUserId = User.GetUserId<TPrimaryKey>();
-                lastModifierUserId.LastModificationTime = DateTime.Now;
-                //if (entry.State == EntityState.Detached)
-                //{
-                //    _dbContext.Update(entry.Entity);
-                //}
-                //else
-                //{
-                //    entry.State = EntityState.Modified;
-                //}
+                //lastModifierUserId.LastModifierUserId = User.GetUserId();
+                if (entry.State == EntityState.Detached)
+                {
+                    _dbContext.Update(entry.Entity);
+                }
+                else
+                {
+                    entry.State = EntityState.Modified;
+                }
             }
             entry.State = EntityState.Modified;
             _dbContext.Update(entry.Entity);
@@ -71,25 +68,21 @@ namespace Bussiness.Repository
             }
 
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
-            if (entry.Entity is ISoftDelete<TPrimaryKey> deleteUserId && entry.State == EntityState.Deleted)
+            if (entry.Entity is ISoftDelete deleteUserId && entry.State == EntityState.Deleted)
             {
-                entry.State = EntityState.Modified;
-                deleteUserId.DeleteUserId = User.GetUserId<TPrimaryKey>();
-                deleteUserId.DeletionTime = DateTime.Now;
-                deleteUserId.IsDeleted = true;
+                //deleteUserId.DeleteUserId = User.GetUserId();
             }
 
-            _dbContext.Set<TEntity>().Update(entry.Entity);
+            _dbContext.Set<TEntity>().Remove(entry.Entity);
             await _dbContext.SaveChangesAsync();
         }
 
         public async Task<TPrimaryKey> InsertAndGetIdAsync(TEntity entity)
         {
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
-            if (entry.Entity is IHasCreatorUserId<TPrimaryKey> creatorUserId && entry.State == EntityState.Added)
+            if (entry.Entity is IHasCreatorUserId creatorUserId)
             {
-                creatorUserId.CreatorUserId = User.GetUserId<TPrimaryKey>();
-                creatorUserId.CreationTime = DateTime.Now;
+                //creatorUserId.CreatorUserId = User.GetUserId();
             }
             TEntity e = (await _dbContext.Set<TEntity>().AddAsync(entry.Entity)).Entity;
             await _dbContext.SaveChangesAsync();
@@ -97,13 +90,18 @@ namespace Bussiness.Repository
         }
     }
 
-    public class Repository<TEntity> : ControllerBase, IRepository<TEntity> where TEntity : class, IEntity<int>
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity<int>
     {
         private readonly DataContext _dbContext;
+        private readonly object? _session;
 
-        public Repository(DataContext dbContext)
+        public Repository(
+            DataContext dbContext,
+            IHttpContextAccessor httpContextAccessor
+            )
         {
             _dbContext = dbContext;
+            _session = httpContextAccessor.HttpContext!.Items.FirstOrDefault().Value;
         }
 
         public IQueryable<TEntity> GetAll()
@@ -113,17 +111,17 @@ namespace Bussiness.Repository
 
         public async Task<TEntity?> GetAsync(int id)
         {
-            TEntity? entity = await _dbContext.Set<TEntity>().FindAsync(id);
+            TEntity? entity = await _dbContext.Set<TEntity>().AsNoTracking().Where(e => e.Id  == id).FirstOrDefaultAsync();
             return entity;
         }
 
         public async Task<TEntity> InsertAsync(TEntity entity)
         {
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
-            if (entry.Entity is IHasCreatorUserId<int> creatorUserId && entry.State == EntityState.Added)
+            if (entry.Entity is IHasCreatorUserId creatorUserId)
             {
-                creatorUserId.CreatorUserId = User.GetUserId<int>();
-                creatorUserId.CreationTime = DateTime.Now;
+                creatorUserId.CreatorUserId = (long?)_session;
+                //creatorUserId.CreatorUserId = long.Parse(_httpContextAccessor.HttpContext!.Session.Get("SessionId")?.ToString()!);
             }
             await _dbContext.Set<TEntity>().AddAsync(entry.Entity);
             await _dbContext.SaveChangesAsync();
@@ -133,18 +131,17 @@ namespace Bussiness.Repository
         public async Task<TEntity> UpdateAsync(TEntity entity)
         {
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
-            if (entry.Entity is IHasLastModifierUserId<int> lastModifierUserId)
+            if (entry.Entity is IHasLastModifierUserId lastModifierUserId)
             {
-                lastModifierUserId.LastModifierUserId = User.GetUserId<int>();
-                lastModifierUserId.LastModificationTime = DateTime.Now;
-                //if (entry.State == EntityState.Detached)
-                //{
-                //    _dbContext.Update(entry.Entity);
-                //}
-                //else
-                //{
-                //    entry.State = EntityState.Modified;
-                //}
+                //lastModifierUserId.LastModifierUserId = User.GetUserId();
+                if (entry.State == EntityState.Detached)
+                {
+                    _dbContext.Update(entry.Entity);
+                }
+                else
+                {
+                    entry.State = EntityState.Modified;
+                }
             }
             entry.State = EntityState.Modified;
             _dbContext.Update(entry.Entity);
@@ -161,25 +158,21 @@ namespace Bussiness.Repository
             }
 
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
-            if (entry.Entity is ISoftDelete<int> deleteUserId && entry.State == EntityState.Deleted)
+            if (entry.Entity is ISoftDelete deleteUserId)
             {
-                entry.State = EntityState.Modified;
-                deleteUserId.DeleteUserId = User.GetUserId<int>();
-                deleteUserId.DeletionTime = DateTime.Now;
-                deleteUserId.IsDeleted = true;
+                //deleteUserId.DeleteUserId = User.GetUserId();
             }
 
-            _dbContext.Set<TEntity>().Update(entry.Entity);
+            _dbContext.Set<TEntity>().Remove(entry.Entity);
             await _dbContext.SaveChangesAsync();
         }
 
         public async Task<int> InsertAndGetIdAsync(TEntity entity)
         {
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
-            if (entry.Entity is IHasCreatorUserId<int> creatorUserId && entry.State == EntityState.Added)
+            if (entry.Entity is IHasCreatorUserId creatorUserId)
             {
-                creatorUserId.CreatorUserId = User.GetUserId<int>();
-                creatorUserId.CreationTime = DateTime.Now;
+                //creatorUserId.CreatorUserId = User.GetUserId();
             }
             TEntity e = (await _dbContext.Set<TEntity>().AddAsync(entry.Entity)).Entity;
             await _dbContext.SaveChangesAsync();

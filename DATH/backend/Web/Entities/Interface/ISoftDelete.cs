@@ -1,8 +1,8 @@
 ﻿namespace Entities.Interface
 {
-    public interface ISoftDelete<TPrimaryKey>
+    public interface ISoftDelete
     {
-        TPrimaryKey? DeleteUserId { get; set; }
+        long? DeleteUserId { get; set; }
         DateTime? DeletionTime { get; set; }
         bool IsDeleted { get; set; }
     }

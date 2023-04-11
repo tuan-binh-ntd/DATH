@@ -9,9 +9,6 @@ namespace Entities
         {
             modelBuilder.Entity<TEntity>(builder =>
             {
-
-                builder.Property(e => e.CreationTime).HasDefaultValueSql("GETDATE()");
-
                 builder.Property(e => e.IsDeleted).HasDefaultValue(false);
                 // Skip entities has value of IsDeleted field equal true
                 builder.HasQueryFilter(e => !e.IsDeleted);

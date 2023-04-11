@@ -6,16 +6,12 @@ namespace Bussiness.Extensions
     {
         public static string GetUserName(this ClaimsPrincipal user)
         {
-            return user.FindFirst(ClaimTypes.Name)?.Value!;
+            return user?.FindFirst(ClaimTypes.Name)?.Value!;
         }
 
-        public static TPrimaryKey GetUserId<TPrimaryKey>(this ClaimsPrincipal user)
+        public static long GetUserId(this ClaimsPrincipal user)
         {
-            return ConvertValue<TPrimaryKey>(user.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
-        }
-        public static TPrimaryKey ConvertValue<TPrimaryKey>(string value)
-        {
-            return (TPrimaryKey)Convert.ChangeType(value, typeof(TPrimaryKey));
+            return long.Parse(user?.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
         }
     }
 }

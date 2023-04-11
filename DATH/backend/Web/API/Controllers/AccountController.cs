@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
 using Bussiness.Interface;
-using CoreApiResponse;
+using Database;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -11,108 +11,158 @@ using System.Net;
 
 namespace API.Controllers
 {
-    [Route("account")]
-    [ApiController]
-    public class AccountController : BaseController
+    public class AccountController : AdminBaseController
     {
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly DataContext _dataContext;
+
+        //private readonly IRepository<Customer, long> _customerRepo;
+        //private readonly IRepository<Employee, long> _employeeRepo;
 
         public AccountController(
             IMapper mapper,
             ITokenService tokenService,
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager
+            SignInManager<AppUser> signInManager,
+            DataContext dataContext
+            //IRepository<Customer, long> customerRepo,
+            //IRepository<Employee, long> employeeRepo
             )
         {
             _mapper = mapper;
             _tokenService = tokenService;
             _userManager = userManager;
             _signInManager = signInManager;
+            _dataContext = dataContext;
+            //_customerRepo = customerRepo;
+            //_employeeRepo = employeeRepo;
         }
 
-        [HttpPost("customer")]
-        public async Task<ActionResult<UserDto>> SignUp(RegisterDto registerDto)
+        [AllowAnonymous]
+        [HttpPost("customers")]
+        public async Task<IActionResult> SignUp(RegisterDto registerDto)
         {
-            if (await CheckUserExists(registerDto.Username!)) return BadRequest("Username is taken");
+            if (await CheckUserExists(registerDto.Username!)) return CustomResult("Username is taken", HttpStatusCode.BadRequest);
 
             var user = _mapper.Map<AppUser>(registerDto);
             user.UserName = registerDto.Username!.ToLower();
 
             var result = await _userManager.CreateAsync(user, registerDto.Password!);
 
-            if (!result.Succeeded) return BadRequest(result.Errors);
+            if (!result.Succeeded) return CustomResult(result.Errors, HttpStatusCode.BadRequest);
 
             var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
 
-            if (!roleResult.Succeeded) return BadRequest(result.Errors);
+            if (!roleResult.Succeeded) return CustomResult(result.Errors, HttpStatusCode.BadRequest);
 
-            return new UserDto
-            {
-                Username = user.UserName,
-                //Token = await _tokenService.CreateToken(user)
-            };
+            // insert customer info
+
+            //Customer customer = new();
+            //customer.UserId = user.Id;
+            //_mapper.Map(registerDto ,customer);
+
+            //await _customerRepo.InsertAsync(customer);
+
+            Customer customer = new();
+            customer.UserId = user.Id;
+            customer.CreationTime = DateTime.Now;
+            _mapper.Map(registerDto, customer);
+
+            await _dataContext.Customer.AddAsync(customer);
+            await _dataContext.SaveChangesAsync();
+            UserDto userDto = new();
+            _mapper.Map(customer, userDto);
+            return CustomResult(userDto);
         }
 
-        [HttpPost("employee"), Authorize(Roles = "Admin")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        [HttpPost("employees")]
+        public async Task<IActionResult> Register(RegisterDto registerDto)
         {
-            if (await CheckUserExists(registerDto.Username!)) return BadRequest("Username is taken");
+            if (await CheckUserExists(registerDto.Username!)) return CustomResult("Username is taken", HttpStatusCode.BadRequest);
 
             var user = _mapper.Map<AppUser>(registerDto);
             user.UserName = registerDto.Username!.ToLower();
 
             var result = await _userManager.CreateAsync(user, registerDto.Password!);
 
-            if (!result.Succeeded) return BadRequest(result.Errors);
+            if (!result.Succeeded) return CustomResult(result.Errors, HttpStatusCode.BadRequest);
 
             var roleResult = await _userManager.AddToRoleAsync(user, "Employee");
 
-            if (!roleResult.Succeeded) return BadRequest(result.Errors);
+            if (!roleResult.Succeeded) return CustomResult(result.Errors, HttpStatusCode.BadRequest);
 
-            return new UserDto
-            {
-                Username = user.UserName,
-                Token = await _tokenService.CreateToken(user)
-            };
+            // insert employee info
+
+            //Employee employee = new();
+            //employee.UserId = user.Id;
+            //_mapper.Map(registerDto, employee);
+
+            //await _employeeRepo.InsertAsync(employee);
+
+
+            Employee employee = new();
+            employee.UserId = user.Id;
+            employee.CreationTime = DateTime.Now;
+            _mapper.Map(registerDto, employee);
+
+            await _dataContext.Employee.AddAsync(employee);
+            await _dataContext.SaveChangesAsync();
+            UserDto userDto = new();
+            _mapper.Map(employee, userDto);
+            return CustomResult(userDto);
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        public async Task<IActionResult> Login(LoginDto loginDto)
         {
             var user = await _userManager.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.Username!.ToLower());
 
-            if (user == null) return Unauthorized("Invalid username");
+            if (user == null) return CustomResult("Invalid username", HttpStatusCode.Unauthorized);
 
             var result = await _signInManager
                 .CheckPasswordSignInAsync(user, loginDto.Password!, false);
 
-            if (!result.Succeeded) return Unauthorized();
+            if (!result.Succeeded) return CustomResult(HttpStatusCode.Unauthorized);
 
-            return new UserDto
+            UserDto res = new UserDto
             {
                 Username = user.UserName,
                 Token = await _tokenService.CreateToken(user)
             };
+
+            //Customer? customer = await _customerRepo.GetAll().AsNoTracking().Where(c => c.UserId == user.Id).FirstOrDefaultAsync();
+
+            //if(customer == null)
+            //{
+            //    var employee = await _employeeRepo.GetAll().AsNoTracking().Where(c => c.UserId == user.Id).FirstOrDefaultAsync();
+            //    _mapper.Map(res, employee);
+
+            //    return CustomResult(res);
+            //}
+            //_mapper.Map(customer, res);
+
+            //Customer? customer = await _customerRepo.GetAll().AsNoTracking().Where(c => c.UserId == user.Id).FirstOrDefaultAsync();
+
+            Customer? customer = await _dataContext.Customer.AsNoTracking().Where(c => c.UserId == user.Id).FirstOrDefaultAsync();
+            if (customer == null)
+            {
+                Employee? employee = await _dataContext.Employee.AsNoTracking().Where(c => c.UserId == user.Id).FirstOrDefaultAsync();
+                _mapper.Map(res, employee);
+
+                return CustomResult(res);
+            }
+            _mapper.Map(customer, res);
+
+            return CustomResult(res);
         }
 
         private async Task<bool> CheckUserExists(string username)
         {
             return await _userManager.Users.AnyAsync(x => x.UserName == username.ToLower());
-        }
-
-        //Demo Response Body
-        [HttpGet("test")]
-        public IActionResult GetAll()
-        {
-            var result  = new
-            {
-                Data = "sdas",
-                Id = 1
-            };
-            return CustomResult("Success", result, HttpStatusCode.OK);
-        }
+        }      
     }
 }
