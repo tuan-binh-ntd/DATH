@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
+import { AccountService } from 'src/app/services/account.service';
 
 @Component({
   selector: 'app-login',
@@ -8,7 +11,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class LoginComponent {
   form!: FormGroup;
-  constructor(private fb: FormBuilder){}
+  passwordVisible = false;
+  constructor(private fb: FormBuilder,
+    private router: Router,
+    private cookieService: CookieService,
+    private accountService: AccountService){}
   ngOnInit(): void {
     this.initForm();
   }
@@ -17,9 +24,15 @@ export class LoginComponent {
     this.form = this.fb.group({
       userName: [null, Validators.required],
       password: [null, Validators.required],
+      remember: [null],
     })
   }
 
-  submitForm(){}
+  submitForm(){
+    this.accountService.signIn(this.form.value).subscribe(res => {
+
+      this.router.navigateByUrl('admin-management/dashboard');
+    })
+  }
 
 }
