@@ -66,10 +66,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false,
         };
     });
+
 //Authoziration
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("RequireEmployeeRole", policy => policy.RequireRole("Admin", "Employee"));
     // other authorization policies
 });
 
@@ -92,6 +94,16 @@ var _logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext()
     .CreateLogger();
 builder.Logging.AddSerilog(_logger);
+
+// Add Session
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 // Init Admin
@@ -125,6 +137,8 @@ app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrig
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapControllers();
 

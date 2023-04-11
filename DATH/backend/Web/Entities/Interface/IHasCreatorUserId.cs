@@ -1,7 +1,7 @@
 ﻿namespace Entities.Interface
 {
-    public interface IHasCreatorUserId<TPrimaryKey> : IHasCreationTime
+    public interface IHasCreatorUserId : IHasCreationTime
     {
-        TPrimaryKey? CreatorUserId { get; set; }
+        long? CreatorUserId { get; set; }
     }
 }

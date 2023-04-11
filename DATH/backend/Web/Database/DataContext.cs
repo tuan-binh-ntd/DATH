@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Entities;
+using Entities.Interface;
 
 namespace Database
 {
@@ -63,32 +64,48 @@ namespace Database
         }
 
         // Set SoftDelete
-        //public override int SaveChanges()
-        //{
-        //    foreach (var entry in ChangeTracker.Entries())
-        //    {
-        //        if (entry.Entity is ISoftDelete softDeleteEntity && entry.State == EntityState.Deleted)
-        //        {
-        //            entry.State = EntityState.Modified;
-        //            softDeleteEntity.DeletionTime = DateTime.Now;
-        //            softDeleteEntity.IsDeleted = true;
-        //        }
-        //    }
-        //    return base.SaveChanges();
-        //}
+        public override int SaveChanges()
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.Entity is IHasCreatorUserId hasCreatorUserIdEntity && entry.State == EntityState.Added)
+                {
+                    hasCreatorUserIdEntity.CreationTime = DateTime.Now;
+                }
+                else if (entry.Entity is IHasLastModifierUserId hasLastModifierUserIdEntity && entry.State == EntityState.Modified)
+                {
+                    hasLastModifierUserIdEntity.LastModificationTime = DateTime.Now;
+                }
+                else if (entry.Entity is ISoftDelete softDeleteEntity && entry.State == EntityState.Deleted)
+                {
+                    entry.State = EntityState.Modified;
+                    softDeleteEntity.DeletionTime = DateTime.Now;
+                    softDeleteEntity.IsDeleted = true;
+                }
+            }
+            return base.SaveChanges();
+        }
 
-        //public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        //{
-        //    foreach (var entry in ChangeTracker.Entries())
-        //    {
-        //        if (entry.Entity is ISoftDelete softDeleteEntity && entry.State == EntityState.Deleted)
-        //        {
-        //            entry.State = EntityState.Modified;
-        //            softDeleteEntity.DeletionTime = DateTime.Now;
-        //            softDeleteEntity.IsDeleted = true;
-        //        }
-        //    }
-        //    return await base.SaveChangesAsync(cancellationToken);
-        //}
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.Entity is IHasCreatorUserId hasCreatorUserIdEntity && entry.State == EntityState.Added)
+                {
+                    hasCreatorUserIdEntity.CreationTime = DateTime.Now;
+                }
+                else if (entry.Entity is IHasLastModifierUserId hasLastModifierUserIdEntity && entry.State == EntityState.Modified)
+                {
+                    hasLastModifierUserIdEntity.LastModificationTime = DateTime.Now;
+                }
+                else if (entry.Entity is ISoftDelete softDeleteEntity && entry.State == EntityState.Deleted)
+                {
+                    entry.State = EntityState.Modified;
+                    softDeleteEntity.DeletionTime = DateTime.Now;
+                    softDeleteEntity.IsDeleted = true;
+                }
+            }
+            return await base.SaveChangesAsync(cancellationToken);
+        }
     }
 }

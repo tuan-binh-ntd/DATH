@@ -1,11 +1,15 @@
+using Bussiness.Repository;
+using CoreApiResponse;
+using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class WeatherForecastController : BaseController
     {
         private static readonly string[] Summaries = new[]
         {
@@ -13,10 +17,14 @@ namespace API.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IRepository<Shop> _shopRepo;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(
+            ILogger<WeatherForecastController> logger
+            , IRepository<Shop> shopRepo)
         {
             _logger = logger;
+            _shopRepo = shopRepo;
         }
 
         [HttpGet(Name = "GetWeatherForecast"), Authorize(Roles = "Admin")]
@@ -29,6 +37,23 @@ namespace API.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet("test")]
+        public async Task<IActionResult> GetAll()
+        {
+            Shop data = new Shop
+            {
+                Name = "test",
+                Address = "asdas"
+            };
+            await _shopRepo.InsertAsync(data);
+            var result = new
+            {
+                Data = HttpContext.Session,
+                Id = 1
+            };
+            return CustomResult("Success", result, HttpStatusCode.OK);
         }
     }
 }
