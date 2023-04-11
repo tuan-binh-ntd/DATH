@@ -30,7 +30,7 @@ export class LoginComponent {
 
   submitForm(){
     this.accountService.signIn(this.form.value).subscribe(res => {
-
+      debugger
       this.router.navigateByUrl('admin-management/dashboard');
     })
   }
