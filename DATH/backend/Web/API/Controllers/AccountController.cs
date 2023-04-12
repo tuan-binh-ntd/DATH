@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.Extensions;
 using Bussiness.Interface;
 using Database;
 using Entities;
@@ -106,6 +107,7 @@ namespace API.Controllers
             Employee employee = new();
             employee.UserId = user.Id;
             employee.CreationTime = DateTime.Now;
+            employee.CreatorUserId = User.GetUserId();
             _mapper.Map(registerDto, employee);
 
             await _dataContext.Employee.AddAsync(employee);

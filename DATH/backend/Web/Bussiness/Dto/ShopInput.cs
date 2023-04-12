@@ -2,7 +2,7 @@
 
 namespace Bussiness.Dto
 {
-    public class ShopDto : EntityDto<int?>
+    public class ShopInput
     {
         public string? Name { get; set; }
         public string? Address { get; set; }

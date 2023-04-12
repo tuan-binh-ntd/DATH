@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class ProductsController : AdminBaseController
+    public class EmployeesController : AdminBaseController
     {
         private readonly IMapper _mapper;
 
-        public ProductsController(
+        public EmployeesController(
             IMapper mapper
             )
         {
