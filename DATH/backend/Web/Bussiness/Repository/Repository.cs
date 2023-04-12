@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Database;
 using Entities.Interface;
-using Microsoft.AspNetCore.Http;
 
 namespace Bussiness.Repository
 {
@@ -46,15 +45,11 @@ namespace Bussiness.Repository
                 //lastModifierUserId.LastModifierUserId = User.GetUserId();
                 if (entry.State == EntityState.Detached)
                 {
-                    _dbContext.Update(entry.Entity);
-                }
-                else
-                {
                     entry.State = EntityState.Modified;
                 }
             }
-            entry.State = EntityState.Modified;
-            _dbContext.Update(entry.Entity);
+            //entry.State = EntityState.Modified;
+            //_dbContext.Update(entry.Entity);
             await _dbContext.SaveChangesAsync();
             return entry.Entity;
         }
@@ -93,15 +88,12 @@ namespace Bussiness.Repository
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity<int>
     {
         private readonly DataContext _dbContext;
-        private readonly object? _session;
 
         public Repository(
-            DataContext dbContext,
-            IHttpContextAccessor httpContextAccessor
+            DataContext dbContext
             )
         {
             _dbContext = dbContext;
-            _session = httpContextAccessor.HttpContext!.Items.FirstOrDefault().Value;
         }
 
         public IQueryable<TEntity> GetAll()
@@ -120,8 +112,6 @@ namespace Bussiness.Repository
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasCreatorUserId creatorUserId)
             {
-                creatorUserId.CreatorUserId = (long?)_session;
-                //creatorUserId.CreatorUserId = long.Parse(_httpContextAccessor.HttpContext!.Session.Get("SessionId")?.ToString()!);
             }
             await _dbContext.Set<TEntity>().AddAsync(entry.Entity);
             await _dbContext.SaveChangesAsync();
@@ -136,15 +126,11 @@ namespace Bussiness.Repository
                 //lastModifierUserId.LastModifierUserId = User.GetUserId();
                 if (entry.State == EntityState.Detached)
                 {
-                    _dbContext.Update(entry.Entity);
-                }
-                else
-                {
                     entry.State = EntityState.Modified;
                 }
             }
-            entry.State = EntityState.Modified;
-            _dbContext.Update(entry.Entity);
+            //entry.State = EntityState.Modified;
+            //_dbContext.Set<TEntity>().Update(entry.Entity);
             await _dbContext.SaveChangesAsync();
             return entry.Entity;
         }

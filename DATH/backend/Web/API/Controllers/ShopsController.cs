@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.Extensions;
 using Bussiness.Repository;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -24,25 +25,46 @@ namespace API.Controllers
             _shopRepo = shopRepo;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
             IQueryable<ShopForViewDto> query = from s in _shopRepo.GetAll().AsNoTracking()
-                                               where id == null || s.Id == id
+                                               select new ShopForViewDto()
+                                               {
+                                                   Id = s.Id,
+                                                   Name = s.Name,
+                                                   Address = s.Address
+                                               };
+            List<ShopForViewDto>? data = await query.ToListAsync();
+            if (data == null) return CustomResult(null, HttpStatusCode.NotFound);
+
+            return CustomResult(data);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            IQueryable<ShopForViewDto> query = from s in _shopRepo.GetAll().AsNoTracking()
+                                               where s.Id == id
                                                select new ShopForViewDto()
                                                {
                                                    Id = id,
                                                    Name = s.Name,
                                                    Address = s.Address
                                                };
+            ShopForViewDto? data = await query.FirstOrDefaultAsync();
+            if (data == null) return CustomResult(null, HttpStatusCode.NotFound);
 
-            return CustomResult(await query.ToListAsync());
+            return CustomResult(data);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ShopDto input)
+        public async Task<IActionResult> Create(ShopInput input)
         {
-            Shop data = new();
+            Shop data = new()
+            {
+                CreatorUserId = User.GetUserId()
+            };
             _mapper.Map(input, data);
 
             await _shopRepo.InsertAsync(data);
@@ -50,14 +72,12 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(ShopDto input)
+        public async Task<IActionResult> Update(int id, ShopInput input)
         {
-            Shop? data = await _shopRepo.GetAsync((int)input.Id!);
-            if (data == null)
-            {
-                return CustomResult("Failed", HttpStatusCode.InternalServerError);
-            }
+            Shop? data = await _shopRepo.GetAsync(id);
+            if (data == null) return CustomResult(HttpStatusCode.NotFound);
             _mapper.Map(input, data);
+            data.LastModifierUserId = User.GetUserId();
 
             await _shopRepo.UpdateAsync(data);
             return CustomResult(data);
@@ -67,6 +87,7 @@ namespace API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             Shop? data = await _shopRepo.GetAsync(id);
+            data!.DeleteUserId = User.GetUserId();
             await _shopRepo.DeleteAsync(id);
             return CustomResult(data);
         }

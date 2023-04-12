@@ -18,6 +18,12 @@ namespace Database
         public DbSet<Shop> Shop { get; set; }
         public DbSet<Employee> Employee { get; set; }
         public DbSet<Customer> Customer { get; set; }
+        public DbSet<ProductCategory> ProductCategory { get; set; }
+        public DbSet<Product> Product{ get; set; }
+        public DbSet<SpecificationCategory> SpecificationCategory { get; set; }
+        public DbSet<Specification> Specification { get; set; }
+        public DbSet<Promotion> Promotion { get; set; }
+        public DbSet<Shipping> Shipping { get; set; }
         //End Entity Declaration
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -60,6 +66,21 @@ namespace Database
                 .HasOne(e => e.Shop)
                 .WithMany(s => s.Employees)
                 .HasForeignKey(e => e.ShopId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // One to Many Relationship (SpecificationCategory, Specification)
+            modelBuilder.Entity<Specification>()
+                .HasOne(e => e.SpecificationCategory)
+                .WithMany(s => s.Specifications)
+                .HasForeignKey(e => e.SpecificationCategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
+            //Set decimal scale
+            modelBuilder.Entity<Product>().Property(p => p.Price).HasPrecision(10, 5);
+            // One to Many Relationship (ProductCategory, Product)
+            modelBuilder.Entity<Product>()
+                .HasOne(e => e.ProductCategory)
+                .WithMany(s => s.Products)
+                .HasForeignKey(e => e.ProductCategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 

@@ -9,12 +9,33 @@ namespace Bussiness.Helper
         public AutoMapperProfile()
         {
             CreateMap<AppUser, RegisterDto>().ReverseMap();
-            CreateMap<ShopDto, Shop>().ReverseMap();
+
+            CreateMap<ShopInput, Shop>().ReverseMap();
+
             CreateMap<RegisterDto, Customer>().ReverseMap();
+
             CreateMap<RegisterDto, Employee>().ReverseMap();
-            CreateMap<ShopDto, Shop>().ReverseMap();
+
+            CreateMap<ShopInput, Shop>().ReverseMap();
+
             CreateMap<Customer, UserDto>().ReverseMap();
+
             CreateMap<Employee, UserDto>().ReverseMap();
+
+            CreateMap<Customer, CustomerInput>().ReverseMap();
+
+            CreateMap<SpecificationCategoryInput, SpecificationCategory>().ReverseMap();
+
+            CreateMap<List<SpecificationCategoryForViewDto>, List<SpecificationCategory>>().ReverseMap();
+
+            CreateMap<SpecificationCategoryForViewDto, SpecificationCategory>().ReverseMap();
+
+            CreateMap<SpecificationInput, Specification>().ReverseMap();
+
+            CreateMap<List<SpecificationCategoryForViewDto>, List<Specification>>().ReverseMap();
+
+            CreateMap<SpecificationForViewDto, Specification>().ReverseMap();
+
         }
     }
 }
