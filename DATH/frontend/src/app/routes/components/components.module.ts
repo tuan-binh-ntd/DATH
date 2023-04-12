@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { DrawerFormBaseComponent } from './drawer-form-base/drawer-form-base.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { LoginComponent } from './login/login.component';
+import { PageGridComponent } from './page-grid/page-grid.component';
 
 
 @NgModule({
@@ -13,13 +14,14 @@ import { LoginComponent } from './login/login.component';
     ButtonIconComponent,
     DrawerFormBaseComponent,
     LoginComponent,
+    PageGridComponent,
   ],
   exports: [
     HeaderComponent,
     ButtonIconComponent,
     DrawerFormBaseComponent,
     LoginComponent,
-
+    PageGridComponent,
   ],
   imports: [
     CommonModule,

@@ -10,7 +10,7 @@ export class AdminLayoutComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-  }
+  } 
 
   onCollapse(ev: any){
     this.isCollapsed = ev;

@@ -16,7 +16,7 @@ const routes: Routes = [
     path: 'specification',
     component: SpecificationListComponent,
     data: {
-      breadcrumb: 'Home/Specification'
+      breadcrumb: 'Home / Specification'
     }
   },
 ];

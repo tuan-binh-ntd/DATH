@@ -1,8 +1,11 @@
 <nz-header>
-  <div class="align-child-space-between">
-  <span class="trigger" (click)="onCollapse()">
-      <i class="fa-solid fa-bars fa-lg "></i>
-    </span>
+  <div class="align-child-space-between h-50px">
+    <!-- <span class="trigger" (click)="onCollapse()">
+      <i class="fa-solid fa-bars fa-lg"></i>
+    </span> -->
+    <div>
+      <span>{{employee?.firstName }} {{ employee?.lastName}}</span>
+    </div>
     <!-- <nz-breadcrumb [nzAutoGenerate]="true"></nz-breadcrumb> -->
     <div class="d-flex">
       <span

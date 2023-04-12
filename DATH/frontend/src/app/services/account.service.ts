@@ -17,8 +17,8 @@ export class AccountService {
   // currentUser = this.currentUserSource.asObservable();
   constructor(private http: HttpClient) { }
 
-  signIn(payload: Account): Observable<Account> {
-    return this.http.post<Account>(this.baseUrl + 'login', payload).pipe(
+  signIn(payload: Account): Observable<any> {
+    return this.http.post<any>(this.baseUrl + 'login', payload).pipe(
       map((response: Account) => {
         const user = response;
         if(user) {  

@@ -6,6 +6,7 @@ import { AdminLoginComponent } from './routes/admin-management/admin-login/admin
 import { LoginComponent } from './routes/components/login/login.component';
 
 const routes: Routes = [
+  // { path: '', redirectTo: 'passport/login', pathMatch: 'full' },
   {
     path: 'passport/login',
     component: AdminLoginComponent,

@@ -1,1 +1,29 @@
-<p>specification-list works!</p>
+<app-page-grid>
+    <h2>Specification Management</h2>
+    <nz-table
+  #rowSelectionTable
+  nzShowPagination
+  nzShowSizeChanger
+  [nzScroll]="{  y: '240px' }"
+  [nzData]="listOfData"
+>
+  <thead>
+    <tr>
+      <th ></th>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Address</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of rowSelectionTable.data">
+      <td
+       
+      ></td>
+      <td>{{ data.name }}</td>
+      <td>{{ data.age }}</td>
+      <td>{{ data.address }}</td>
+    </tr>
+  </tbody>
+</nz-table>
+</app-page-grid>
