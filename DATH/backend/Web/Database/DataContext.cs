@@ -82,6 +82,8 @@ namespace Database
                 .WithMany(s => s.Products)
                 .HasForeignKey(e => e.ProductCategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
+            //Set decimal scale
+            modelBuilder.Entity<Shipping>().Property(p => p.Cost).HasPrecision(10, 5);
         }
 
         // Set SoftDelete

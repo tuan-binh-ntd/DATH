@@ -1,8 +1,13 @@
-﻿namespace Entities
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+namespace Entities
 {
     public class Specification : BaseEntity<long>
     {
+        [StringLength(50), Unicode(false)]
         public string? Code { get; set; }
+        [StringLength(100)]
         public string? Value { get; set; }
         public string? Description { get; set; }
 

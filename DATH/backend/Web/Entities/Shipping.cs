@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Entities
 {
-    public class Shipping
+    public class Shipping : BaseEntity
     {
         [StringLength(100)]
-        public string? ShippingType { get; set; }
-        public decimal ShippingCost { get; set; }
+        public string? Name { get; set; }
+        public decimal Cost { get; set; }
     }
 }
