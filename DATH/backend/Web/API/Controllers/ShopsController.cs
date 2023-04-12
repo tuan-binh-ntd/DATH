@@ -36,7 +36,7 @@ namespace API.Controllers
                                                    Address = s.Address
                                                };
             List<ShopForViewDto>? data = await query.ToListAsync();
-            if (data == null) return CustomResult(null, HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(HttpStatusCode.NotFound);
 
             return CustomResult(data);
         }

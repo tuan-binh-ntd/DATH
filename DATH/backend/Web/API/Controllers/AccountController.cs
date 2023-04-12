@@ -67,9 +67,11 @@ namespace API.Controllers
 
             //await _customerRepo.InsertAsync(customer);
 
-            Customer customer = new();
-            customer.UserId = user.Id;
-            customer.CreationTime = DateTime.Now;
+            Customer customer = new()
+            {
+                UserId = user.Id,
+                CreationTime = DateTime.Now
+            };
             _mapper.Map(registerDto, customer);
 
             await _dataContext.Customer.AddAsync(customer);
@@ -104,10 +106,12 @@ namespace API.Controllers
             //await _employeeRepo.InsertAsync(employee);
 
 
-            Employee employee = new();
-            employee.UserId = user.Id;
-            employee.CreationTime = DateTime.Now;
-            employee.CreatorUserId = User.GetUserId();
+            Employee employee = new()
+            {
+                UserId = user.Id,
+                CreationTime = DateTime.Now,
+                CreatorUserId = User.GetUserId()
+            };
             _mapper.Map(registerDto, employee);
 
             await _dataContext.Employee.AddAsync(employee);
@@ -130,7 +134,7 @@ namespace API.Controllers
 
             if (!result.Succeeded) return CustomResult(HttpStatusCode.Unauthorized);
 
-            UserDto res = new UserDto
+            UserDto res = new()
             {
                 Username = user.UserName,
                 Token = await _tokenService.CreateToken(user)

@@ -26,27 +26,38 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            List<Specification>? specifications = await _specRepo.GetAll().AsNoTracking().ToListAsync();
+            IQueryable<SpecificationForViewDto> query = from s in _specRepo.GetAll().AsNoTracking()
+                                                        select new SpecificationForViewDto()
+                                                        {
+                                                            Id = s.Id,
+                                                            Code = s.Code,
+                                                            Value = s.Value,
+                                                            Description = s.Description,
+                                                            SpecificationCategoryId = s.SpecificationCategoryId,
+                                                        };
+            List<SpecificationForViewDto>? data = await query.ToListAsync();
+            if (data == null) return CustomResult(HttpStatusCode.NotFound);
 
-            if (specifications == null) return CustomResult(HttpStatusCode.NotFound);
-            List<SpecificationCategoryForViewDto> res = new();
-
-            _mapper.Map(specifications, res);
-
-            return CustomResult(res);
+            return CustomResult(data);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            Specification? specification = await _specRepo.GetAsync(id);
+            IQueryable<SpecificationForViewDto> query = from s in _specRepo.GetAll().AsNoTracking()
+                                                        where s.Id == id
+                                                        select new SpecificationForViewDto()
+                                                        {
+                                                            Id = s.Id,
+                                                            Code = s.Code,
+                                                            Value = s.Value,
+                                                            Description = s.Description,
+                                                            SpecificationCategoryId = s.SpecificationCategoryId,
+                                                        };
+            List<SpecificationForViewDto>? data = await query.ToListAsync();
+            if (data == null) return CustomResult(HttpStatusCode.NotFound);
 
-            if (specification == null) return CustomResult(HttpStatusCode.NotFound);
-            SpecificationCategoryForViewDto res = new();
-
-            _mapper.Map(specification, res);
-
-            return CustomResult(res);
+            return CustomResult(data);
         }
 
         [HttpPost]
@@ -68,7 +79,7 @@ namespace API.Controllers
             if (specification == null) return CustomResult(HttpStatusCode.NotFound);
             specification.LastModifierUserId = User.GetUserId();
             _mapper.Map(input, specification);
-           
+
             await _specRepo.UpdateAsync(specification!);
 
             return CustomResult();
