@@ -47,7 +47,7 @@ namespace API.Controllers
                                                               Id = pc.Id,
                                                               Name = pc.Name,
                                                           };
-            List<ProductCategoryForViewDto> data = await query.ToListAsync();
+            ProductCategoryForViewDto? data = await query.FirstOrDefaultAsync();
             if (data == null) return CustomResult(HttpStatusCode.NotFound);
             return CustomResult(data);
         }

@@ -53,7 +53,7 @@ namespace API.Controllers
                                                       Price = p.Price,
                                                       Description = p.Description
                                                   };
-            List<ProductForViewDto> data = await query.ToListAsync();
+            ProductForViewDto? data = await query.FirstOrDefaultAsync();
             if (data == null) return CustomResult(HttpStatusCode.NotFound);
             return CustomResult(data);
         }
