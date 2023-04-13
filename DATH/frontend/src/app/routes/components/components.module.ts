@@ -6,6 +6,7 @@ import { DrawerFormBaseComponent } from './drawer-form-base/drawer-form-base.com
 import { SharedModule } from 'src/app/shared/shared.module';
 import { LoginComponent } from './login/login.component';
 import { PageGridComponent } from './page-grid/page-grid.component';
+import { ListBaseComponent } from './list-base/list-base.component';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { PageGridComponent } from './page-grid/page-grid.component';
     DrawerFormBaseComponent,
     LoginComponent,
     PageGridComponent,
+    ListBaseComponent,
   ],
   exports: [
     HeaderComponent,

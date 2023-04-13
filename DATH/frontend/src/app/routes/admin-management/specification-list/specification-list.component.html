@@ -9,10 +9,24 @@
 >
   <thead>
     <tr>
-      <th ></th>
-      <th>Name</th>
-      <th>Age</th>
-      <th>Address</th>
+        <th
+        nzShowCheckbox
+        nzWidth="40px"
+        [(nzChecked)]="isAllDisplayDataChecked"
+        [nzIndeterminate]="isIndeterminate"
+        (nzCheckedChange)="checkAll(filenetRecord, $event)"
+        (click)="checkAll(filenetRecord, !isAllDisplayDataChecked)"
+      ></th>
+      <th
+      *ngFor="let column of listOfColumn"
+      [nzWidth]="column.width"
+      [nzSortOrder]="column.sortOrder"
+      [ngClass]="column.class"
+      [nzSortDirections]="column.sortDirections"
+      (nzSortOrderChange)="onSort($event, column)"
+    >
+      {{ column.name }}
+    </th>
     </tr>
   </thead>
   <tbody>
@@ -20,8 +34,8 @@
       <td
        
       ></td>
-      <td>{{ data.name }}</td>
-      <td>{{ data.age }}</td>
+      <td>{{ data.code }}</td>
+      <td>{{ data.value }}</td>
       <td>{{ data.address }}</td>
     </tr>
   </tbody>
