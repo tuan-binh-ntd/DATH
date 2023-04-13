@@ -26,13 +26,9 @@ namespace Bussiness.Helper
 
             CreateMap<SpecificationCategoryInput, SpecificationCategory>().ReverseMap();
 
-            CreateMap<List<SpecificationCategoryForViewDto>, List<SpecificationCategory>>().ReverseMap();
-
             CreateMap<SpecificationCategoryForViewDto, SpecificationCategory>().ReverseMap();
 
             CreateMap<SpecificationInput, Specification>().ReverseMap();
-
-            CreateMap<List<SpecificationCategoryForViewDto>, List<Specification>>().ReverseMap();
 
             CreateMap<SpecificationForViewDto, Specification>().ReverseMap();
 
