@@ -14,6 +14,9 @@ export class HeaderComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit(){
     this.employee = JSON.parse(localStorage.getItem('user')!);
   }
 

@@ -15,9 +15,6 @@ export class ListBaseComponent {
   currentRecordId: string = '';
   currentRecord: any;
   isLoadingTable: boolean = false;
-  deleteIds: string[] = [];
-  mapOfCheckedId: { [key: string]: boolean } = {};
-
   constructor(protected msg: NzMessageService){}
   ngOnInit(): void {
     this.fetchData();
@@ -27,6 +24,10 @@ export class ListBaseComponent {
 
    onSearch(){}
 
-   onSort(){}
+   onSort(direction: any, column: string){}
+
+   goToCreate(){
+    this.drawerFormBase.openDrawer(null, 'create', true);
+   }
 
 }

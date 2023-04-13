@@ -8,7 +8,7 @@ import { Specification } from '../models/specification.model';
   providedIn: 'root'
 })
 export class SpecificationService {
-  baseUrl: string = environment.baseUrl + 'specification/';
+  baseUrl: string = environment.baseUrl + 'specifications';
 
   constructor(private http: HttpClient) { }
 

@@ -1,22 +1,27 @@
 <app-page-grid>
-    <h2>Specification Management</h2>
+  <h2>Specification Management</h2>
+  <div nz-row class="mb-2">
+    <div nz-col nzSpan="6">
+      <nz-input-group [nzSuffix]="searchIcon">
+        <input type="text" nz-input placeholder="Search..." />
+      </nz-input-group>
+      </div>
+      <div nz-col nzSpan="18">
+        <button nz-button nzType="primary" class="float-right" (click)="goToCreate()">Create</button>
+      </div>
+    </div>
+    <ng-template #searchIcon>
+      <span><i class="fa-solid fa-search  mr-2 text-muted"></i></span>
+    </ng-template>
     <nz-table
   #rowSelectionTable
   nzShowPagination
   nzShowSizeChanger
-  [nzScroll]="{  y: '240px' }"
   [nzData]="listOfData"
 >
   <thead>
     <tr>
-        <th
-        nzShowCheckbox
-        nzWidth="40px"
-        [(nzChecked)]="isAllDisplayDataChecked"
-        [nzIndeterminate]="isIndeterminate"
-        (nzCheckedChange)="checkAll(filenetRecord, $event)"
-        (click)="checkAll(filenetRecord, !isAllDisplayDataChecked)"
-      ></th>
+        
       <th
       *ngFor="let column of listOfColumn"
       [nzWidth]="column.width"
@@ -41,3 +46,5 @@
   </tbody>
 </nz-table>
 </app-page-grid>
+
+<app-specification-drawer #drawerFormBase></app-specification-drawer>

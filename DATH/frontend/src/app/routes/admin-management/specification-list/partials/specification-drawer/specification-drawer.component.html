@@ -1,3 +1,10 @@
-<app-drawer-form-base>
-    
-</app-drawer-form-base>
+<nz-drawer
+  [nzVisible]="isVisible"
+  [nzTitle]="titleDrawer"
+  nzPlacement="right"
+  nzWidth="30%"
+  (nzOnClose)="closeDrawer()">
+  <ng-container *nzDrawerContent>
+    123
+  </ng-container>
+</nz-drawer>

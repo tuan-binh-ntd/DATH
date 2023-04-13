@@ -14,11 +14,10 @@ export class DefaultInterceptor implements HttpInterceptor {
   constructor(private cookieService: CookieService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    request = request.clone({
+    return next.handle(request.clone({
       setHeaders: {
         Authorization: `Bearer ` + this.cookieService.get('token')
       }
-    })
-    return next.handle(request);
+    }));
   }
 }
