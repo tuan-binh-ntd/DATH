@@ -60,8 +60,10 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(SpecificationCategoryInput input)
         {
-            SpecificationCategory specificationCategory = new();
-            specificationCategory.CreatorUserId = User.GetUserId();
+            SpecificationCategory specificationCategory = new()
+            {
+                CreatorUserId = User.GetUserId()
+            };
             _mapper.Map(input, specificationCategory);
             await _specCateRepo.InsertAsync(specificationCategory);
             return CustomResult(HttpStatusCode.Created);

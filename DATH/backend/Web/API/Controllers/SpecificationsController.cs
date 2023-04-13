@@ -63,8 +63,10 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(SpecificationInput input)
         {
-            Specification? specification = new();
-            specification.CreatorUserId = User.GetUserId();
+            Specification? specification = new()
+            {
+                CreatorUserId = User.GetUserId()
+            };
             _mapper.Map(input, specification);
 
             await _specRepo.InsertAsync(specification);

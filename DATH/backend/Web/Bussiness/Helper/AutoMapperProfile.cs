@@ -32,6 +32,8 @@ namespace Bussiness.Helper
 
             CreateMap<SpecificationForViewDto, Specification>().ReverseMap();
 
+            CreateMap<ProductCategory, ProductCategoryInput>().ReverseMap();
+
         }
     }
 }
