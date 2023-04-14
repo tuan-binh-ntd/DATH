@@ -153,6 +153,8 @@ namespace API.Controllers
 
             //Customer? customer = await _customerRepo.GetAll().AsNoTracking().Where(c => c.UserId == user.Id).FirstOrDefaultAsync();
 
+            HttpContext.Session.SetString("UserId", user.Id.ToString());
+
             Customer? customer = await _dataContext.Customer.AsNoTracking().Where(c => c.UserId == user.Id).FirstOrDefaultAsync();
             if (customer == null)
             {

@@ -74,14 +74,17 @@ namespace Database
                 .WithMany(s => s.Specifications)
                 .HasForeignKey(e => e.SpecificationCategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
+
             //Set decimal scale
             modelBuilder.Entity<Product>().Property(p => p.Price).HasPrecision(10, 5);
+
             // One to Many Relationship (ProductCategory, Product)
             modelBuilder.Entity<Product>()
                 .HasOne(e => e.ProductCategory)
                 .WithMany(s => s.Products)
                 .HasForeignKey(e => e.ProductCategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
+
             //Set decimal scale
             modelBuilder.Entity<Shipping>().Property(p => p.Cost).HasPrecision(10, 5);
         }

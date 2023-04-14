@@ -1,3 +1,4 @@
+using Bussiness.Extensions;
 using Bussiness.Helper;
 using Bussiness.Interface;
 using Bussiness.Repository;
@@ -32,6 +33,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ISession, SessionWrapper>();
 // End  Declaration DI
 
 // Set up connection SQL Server
@@ -102,7 +104,7 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
