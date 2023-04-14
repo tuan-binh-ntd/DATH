@@ -32,6 +32,10 @@ namespace Bussiness.Helper
 
             CreateMap<Product, ProductInput>().ReverseMap();
 
+            CreateMap<Shipping, ShippingInput>().ReverseMap();
+
+            CreateMap<Promotion, PromotionInput>().ReverseMap();
+
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
-using Bussiness.Extensions;
 using Bussiness.Repository;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -63,10 +62,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(SpecificationInput input)
         {
-            Specification? specification = new()
-            {
-                CreatorUserId = User.GetUserId()
-            };
+            Specification? specification = new();
             _mapper.Map(input, specification);
 
             await _specRepo.InsertAsync(specification);
@@ -79,7 +75,6 @@ namespace API.Controllers
         {
             Specification? specification = await _specRepo.GetAsync(id);
             if (specification == null) return CustomResult(HttpStatusCode.NotFound);
-            specification.LastModifierUserId = User.GetUserId();
             _mapper.Map(input, specification);
 
             await _specRepo.UpdateAsync(specification!);
@@ -90,10 +85,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            Specification? specification = await _specRepo.GetAsync(id);
-            specification!.DeleteUserId = User.GetUserId();
             await _specRepo.DeleteAsync(id);
-
             return CustomResult();
         }
     }

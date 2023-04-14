@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
-using Bussiness.Extensions;
 using Bussiness.Repository;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -61,10 +60,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProductInput input)
         {
-            Product product = new()
-            {
-                CreatorUserId = User.GetUserId()
-            };
+            Product product = new();
 
             _mapper.Map(input, product);
 
@@ -78,7 +74,6 @@ namespace API.Controllers
         {
             Product? product = await _productRepo.GetAsync(id);
             if (product == null) return CustomResult(HttpStatusCode.NotFound);
-            product!.LastModifierUserId = User.GetUserId();
 
             _mapper.Map(input, product);
 
@@ -90,10 +85,6 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            Product? product = await _productRepo.GetAsync(id);
-
-            product!.DeleteUserId = User.GetUserId();
-
             await _productRepo.DeleteAsync(id);
             return CustomResult();
         }

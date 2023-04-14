@@ -4,7 +4,6 @@ using Bussiness.Repository;
 using CoreApiResponse;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace API.Controllers
@@ -38,7 +37,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> AddAddressList(long id, CustomerInput input)
+        public async Task<IActionResult> Update(long id, CustomerInput input)
         {
             Customer? customer = await _customerRepo.GetAsync(id);
             if (input.AddressList!.Count != 0) customer!.Address = string.Join(",", input.AddressList!.ToList());
