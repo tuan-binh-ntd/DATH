@@ -82,7 +82,7 @@ namespace API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _shopRepo.DeleteAsync(id);
-            return CustomResult(data);
+            return CustomResult();
         }
     }
 }
