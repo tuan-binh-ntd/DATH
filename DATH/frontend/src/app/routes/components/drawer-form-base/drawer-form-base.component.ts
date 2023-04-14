@@ -32,6 +32,7 @@ export class DrawerFormBaseComponent implements OnInit {
   initForm() {}
 
   openDrawer(data: any, mode: string, isEdit: boolean) {
+    this.isVisible = true;
     this.data = data;
     this.mode = mode;
     this.isEdit = isEdit;

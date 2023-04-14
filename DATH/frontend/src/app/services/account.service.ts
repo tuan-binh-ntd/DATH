@@ -19,10 +19,10 @@ export class AccountService {
 
   signIn(payload: Account): Observable<any> {
     return this.http.post<any>(this.baseUrl + 'login', payload).pipe(
-      map((response: Account) => {
+      map((response: any) => {
         const user = response;
         if(user) {  
-          this.setCurrentUser(user);
+          this.setCurrentUser(user.data);
         }
         return user;
       })
@@ -30,7 +30,7 @@ export class AccountService {
   }
 
   setCurrentUser(account: Account) {
-    localStorage.setItem('account', JSON.stringify(account));
+    localStorage.setItem('user', JSON.stringify(account));
     this.currentUserSource.next(account);
   }
 

@@ -8,9 +8,10 @@ import { en_US } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './shared/shared.module';
+import { DefaultInterceptor } from './interceptors/default.interceptor';
 
 
 
@@ -25,7 +26,7 @@ import { SharedModule } from './shared/shared.module';
     SharedModule,
   ],
   providers: [
-  
+    { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

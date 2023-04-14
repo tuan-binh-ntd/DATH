@@ -1,10 +1,13 @@
 
+  <app-header [isCollapsed]="isCollapsed" (emitOnCollapse)="onCollapse($event)"></app-header>
 <nz-layout >
-    <nz-sider nzWidth="256px" nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+
+    <nz-sider nzWidth="256px" id="sider" nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
       <div class="logo ">
-        <nz-header class="h-50px">
+        <!-- <nz-header class="h-50px">
           <h1 class="text-center">Tech Shop</h1>
-        </nz-header>
+        </nz-header> -->
+
       </div>
       <ul nz-menu nzMode="inline" >
         <li nz-menu-item [routerLink]="'dashboard'" [nzMatchRouter]="true" >
@@ -111,7 +114,6 @@
       </ul>
     </nz-sider> 
     <nz-layout>
-  <app-header [isCollapsed]="isCollapsed" (emitOnCollapse)="onCollapse($event)"></app-header>
 
       <nz-content>
         <router-outlet></router-outlet>
