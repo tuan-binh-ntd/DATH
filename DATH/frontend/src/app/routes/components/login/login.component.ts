@@ -34,7 +34,7 @@ export class LoginComponent {
   submitForm(){
     this.accountService.signIn(this.form.value).subscribe(res => {
       if(checkResponseStatus(res)){
-        this.cookieService.set('token', res.data.token);
+        this.cookieService.set('token', res.data.token, 7, '/', undefined, true, 'None');
         //localStorage.setItem('user', JSON.stringify(res.data));
         this.msg.success("Login successfully")
         this.router.navigateByUrl('admin-management/dashboard');

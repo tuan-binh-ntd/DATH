@@ -12,6 +12,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './shared/shared.module';
 import { DefaultInterceptor } from './interceptors/default.interceptor';
+import { CookieService } from 'ngx-cookie-service';
 
 
 
@@ -26,7 +27,8 @@ import { DefaultInterceptor } from './interceptors/default.interceptor';
     SharedModule,
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true },
+    [CookieService],
   ],
   bootstrap: [AppComponent]
 })

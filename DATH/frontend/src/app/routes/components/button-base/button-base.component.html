@@ -1,0 +1,15 @@
+<button
+(click)="handleClick()"
+type="button"
+[ngClass]="[buttonClass]"
+nz-button
+[disabled]="disabled"
+[nzLoading]="loading"
+[nzType]="type"
+nz-tooltip
+>
+<i [ngClass]="[loading ? '' : iconClass, '', text !== '' ? 'mr-1' : '']"></i>
+<ng-container *ngIf="text">
+    {{ text }}
+  </ng-container>
+</button>
