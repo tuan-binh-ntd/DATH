@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
-using Bussiness.Extensions;
 using Bussiness.Repository;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -61,10 +60,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ShopInput input)
         {
-            Shop data = new()
-            {
-                CreatorUserId = User.GetUserId()
-            };
+            Shop data = new();
             _mapper.Map(input, data);
 
             await _shopRepo.InsertAsync(data);
@@ -77,7 +73,6 @@ namespace API.Controllers
             Shop? data = await _shopRepo.GetAsync(id);
             if (data == null) return CustomResult(HttpStatusCode.NotFound);
             _mapper.Map(input, data);
-            data.LastModifierUserId = User.GetUserId();
 
             await _shopRepo.UpdateAsync(data);
             return CustomResult(data);
@@ -86,8 +81,6 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            Shop? data = await _shopRepo.GetAsync(id);
-            data!.DeleteUserId = User.GetUserId();
             await _shopRepo.DeleteAsync(id);
             return CustomResult(data);
         }
