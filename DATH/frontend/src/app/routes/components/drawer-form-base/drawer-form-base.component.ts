@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Injector, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -10,14 +10,14 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 export class DrawerFormBaseComponent implements OnInit {
   @Output() onChangeEdit = new EventEmitter();
   @Output() onCloseDrawer = new EventEmitter();
-  isVisible: boolean = false;
-  isEdit: boolean = false;
+  @Input() isVisible: boolean = false;
+  @Input() isEdit: boolean = false;
+  @Input() mode: string = 'create';
+  @Input() isLoading: boolean = false;
+  @Input() titleDrawer: string = '';
   data: any;
-  mode: string = 'create';
   drawerForm!: FormGroup;
-  titleDrawer: string = '';
   constructor(
-    injector: Injector,
     protected fb: FormBuilder,
     protected cdr: ChangeDetectorRef,
     protected message: NzMessageService
@@ -102,7 +102,7 @@ export class DrawerFormBaseComponent implements OnInit {
     }
   }
 
-  async submitForm() {}
+ submitForm() {}
 
   markAsTouched() {
     this.drawerForm.markAsTouched();

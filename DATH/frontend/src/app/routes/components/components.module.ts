@@ -7,6 +7,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { LoginComponent } from './login/login.component';
 import { PageGridComponent } from './page-grid/page-grid.component';
 import { ListBaseComponent } from './list-base/list-base.component';
+import { ButtonBaseComponent } from './button-base/button-base.component';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { ListBaseComponent } from './list-base/list-base.component';
     LoginComponent,
     PageGridComponent,
     ListBaseComponent,
+    ButtonBaseComponent,
   ],
   exports: [
     HeaderComponent,
@@ -24,6 +26,8 @@ import { ListBaseComponent } from './list-base/list-base.component';
     DrawerFormBaseComponent,
     LoginComponent,
     PageGridComponent,
+    ButtonBaseComponent,
+    
   ],
   imports: [
     CommonModule,

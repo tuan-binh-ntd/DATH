@@ -1,10 +1,55 @@
-<nz-drawer
-  [nzVisible]="isVisible"
-  [nzTitle]="titleDrawer"
-  nzPlacement="right"
-  nzWidth="30%"
-  (nzOnClose)="closeDrawer()">
-  <ng-container *nzDrawerContent>
-    123
-  </ng-container>
-</nz-drawer>
+<app-drawer-form-base
+  [mode]="mode"
+  [isEdit]="isEdit"
+  [isVisible]="isVisible"
+  [titleDrawer]="titleDrawer"
+  (onCloseDrawer)="isVisible = false"
+>
+  <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
+        <span>Code</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Code is required">
+        <input
+          nz-input
+          name="code"
+          type="code"
+          id="code"
+          formControlName="code"
+          placeholder="Input code"
+        />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="value" nzRequired>
+        <span>Value</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Value is required">
+        <input
+          nz-input
+          name="value"
+          type="value"
+          id="value"
+          formControlName="value"
+          placeholder="Input value"
+        />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="description" nzRequired>
+        <span>Description</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24">
+        <textarea
+          nz-input
+          id="description"
+          name="description"
+          [nzAutosize]="true"
+          placeholder=""
+          formControlName="description"
+        ></textarea>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</app-drawer-form-base>

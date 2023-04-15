@@ -1,0 +1,59 @@
+<nz-drawer
+  [nzVisible]="isVisible"
+  nzPlacement="right"
+  nzWidth="30%"
+  nzCloseIcon=""
+  [nzTitle]="headerTpl"
+  [nzFooter]="footerTpl"
+  (nzOnClose)="closeDrawer()"
+>
+  <ng-container *nzDrawerContent>
+    <ng-content></ng-content>
+  </ng-container>
+</nz-drawer>
+
+<ng-template #footerTpl>
+  <app-button-base
+  class="float-left"
+  text="Close"
+  type="default"
+  iconClass="fa-solid fa-xmark"
+  (onClick)="closeDrawer()"
+></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Edit"
+    type="primary"
+    iconClass="fa-solid fa-pen-to-square"
+    *ngIf="mode === 'detail' && !isEdit"
+  ></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Create"
+    buttonClass="btn-success mr-2"
+    iconClass="fa-solid fa-plus"
+    *ngIf="mode === 'create'"
+    (onClick)="submitForm()"
+  ></app-button-base>
+  <app-button-base
+  class="float-right"
+  text="Delete"
+  buttonClass="btn-danger mr-2"
+  iconClass="fa-solid fa-trash"
+  *ngIf="mode === 'detail' && !isEdit"
+></app-button-base>
+</ng-template>
+<ng-template #headerTpl>
+  <div nz-row>
+    <div nz-col nzSpan="20">
+      <span class="text-truncate">{{ titleDrawer }}</span>
+    </div>
+    <div nz-col nzSpan="4">
+      <app-button-icon
+        iconClass="fa-solid fa-xmark"
+        (click)="closeDrawer()"
+        class="mt-0 pt-0 float-right"
+      ></app-button-icon>
+    </div>
+  </div>
+</ng-template>
