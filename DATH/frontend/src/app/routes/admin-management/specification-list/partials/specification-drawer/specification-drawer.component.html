@@ -36,6 +36,21 @@
         />
       </nz-form-control>
     </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="category" nzRequired>
+        <span>Category</span>
+      </nz-form-label>
+      <nz-select
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select a category"
+        formControlName="specificationCategoryId"
+      >
+      </nz-select>
+      <nz-option *ngFor="let category of categories" nzLabel="name" nzValue="id"></nz-option>
+    </nz-form-item>
+
     <nz-form-item>
       <nz-form-label [nzSpan]="24" nzFor="description" nzRequired>
         <span>Description</span>
