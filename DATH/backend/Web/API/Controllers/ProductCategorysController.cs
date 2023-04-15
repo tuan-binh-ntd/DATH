@@ -60,7 +60,9 @@ namespace API.Controllers
 
             await _productCateRepo.InsertAsync(productCategory);
 
-            return CustomResult(HttpStatusCode.Created);
+            ProductCategoryForViewDto? res = new();
+            _mapper.Map(productCategory, res);
+            return CustomResult(res, HttpStatusCode.Created);
         }
 
         [HttpPut("{id}")]
@@ -72,8 +74,9 @@ namespace API.Controllers
             _mapper.Map(input, productCategory);
 
             await _productCateRepo.UpdateAsync(productCategory);
-
-            return CustomResult(productCategory);
+            ProductCategoryForViewDto? res = new();
+            _mapper.Map(productCategory, res);
+            return CustomResult(res);
         }
 
         [HttpDelete("{id}")]

@@ -24,6 +24,7 @@ namespace Database
         public DbSet<Specification> Specification { get; set; }
         public DbSet<Promotion> Promotion { get; set; }
         public DbSet<Shipping> Shipping { get; set; }
+        public DbSet<Photo> Photo { get; set; }
         //End Entity Declaration
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -87,6 +88,13 @@ namespace Database
 
             //Set decimal scale
             modelBuilder.Entity<Shipping>().Property(p => p.Cost).HasPrecision(10, 5);
+
+            // One to Many Relationship (Product, Photo)
+            modelBuilder.Entity<Photo>()
+                .HasOne(e => e.Product)
+                .WithMany(s => s.Photos)
+                .HasForeignKey(e => e.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         // Set SoftDelete

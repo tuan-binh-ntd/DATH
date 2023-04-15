@@ -15,5 +15,6 @@ namespace Entities
         //Relationship
         public int? ProductCategoryId { get; set; }
         public ProductCategory? ProductCategory { get; set; }
+        public ICollection<Photo>? Photos { get; set; }
     }
 }

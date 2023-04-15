@@ -3,6 +3,7 @@ using Bussiness.Helper;
 using Bussiness.Interface;
 using Bussiness.Repository;
 using Bussiness.Service;
+using Bussiness.Services;
 using Database;
 using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -34,6 +35,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ISession, SessionWrapper>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
 // End  Declaration DI
 
 // Set up connection SQL Server
@@ -111,6 +113,9 @@ builder.Services.AddSession(options =>
 
 //Add MVC Lowercase URL
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+//Add Cloudinary
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
 var app = builder.Build();
 // Init Admin

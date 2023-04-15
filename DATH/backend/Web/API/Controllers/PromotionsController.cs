@@ -68,7 +68,10 @@ namespace API.Controllers
             _mapper.Map(input, data);
 
             await _promotionRepo.InsertAsync(data);
-            return CustomResult(data);
+
+            PromotionForViewDto? res = new();
+            _mapper.Map(data, res);
+            return CustomResult(res, HttpStatusCode.Created);
         }
 
         [HttpPut("{id}")]
@@ -79,7 +82,9 @@ namespace API.Controllers
             _mapper.Map(input, data);
 
             await _promotionRepo.UpdateAsync(data);
-            return CustomResult(data);
+            PromotionForViewDto? res = new();
+            _mapper.Map(data, res);
+            return CustomResult(res);
         }
 
         [HttpDelete("{id}")]

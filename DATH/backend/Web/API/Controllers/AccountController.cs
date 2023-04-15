@@ -2,7 +2,6 @@
 using Bussiness.Dto;
 using Bussiness.Interface;
 using Bussiness.Repository;
-using Database;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,28 +17,27 @@ namespace API.Controllers
         private readonly ITokenService _tokenService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly DataContext _dataContext;
-
         private readonly IRepository<Customer, long> _customerRepo;
         private readonly IRepository<Employee, long> _employeeRepo;
+        private readonly IPhotoService _photoService;
 
         public AccountController(
             IMapper mapper,
             ITokenService tokenService,
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            DataContext dataContext,
             IRepository<Customer, long> customerRepo,
-            IRepository<Employee, long> employeeRepo
+            IRepository<Employee, long> employeeRepo,
+            IPhotoService photoService
             )
         {
             _mapper = mapper;
             _tokenService = tokenService;
             _userManager = userManager;
             _signInManager = signInManager;
-            _dataContext = dataContext;
             _customerRepo = customerRepo;
             _employeeRepo = employeeRepo;
+            _photoService = photoService;
         }
 
         [AllowAnonymous]
@@ -147,6 +145,24 @@ namespace API.Controllers
         private async Task<bool> CheckUserExists(string username)
         {
             return await _userManager.Users.AnyAsync(x => x.UserName == username.ToLower());
-        }      
+        }
+
+        [HttpPut("{id}/photos")]
+        public async Task<IActionResult> UploadPhoto(long id, IFormFile file)
+        {
+            AppUser? user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null) return CustomResult(HttpStatusCode.NotFound);
+
+            var result = await _photoService.AddPhotoAsync(file);
+
+            if (result.Error != null) return BadRequest(result.Error.Message);
+
+            user.AvatarUrl = result.SecureUrl.AbsoluteUri;
+            user.PublicId = result.PublicId;
+
+            await _userManager.UpdateAsync(user);
+
+            return CustomResult();
+        }
     }
 }

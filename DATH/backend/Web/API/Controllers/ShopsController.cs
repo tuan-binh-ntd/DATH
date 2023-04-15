@@ -64,7 +64,9 @@ namespace API.Controllers
             _mapper.Map(input, data);
 
             await _shopRepo.InsertAsync(data);
-            return CustomResult(data);
+            ShopForViewDto? res = new();
+            _mapper.Map(data, res);
+            return CustomResult(res, HttpStatusCode.Created);
         }
 
         [HttpPut("{id}")]
@@ -75,7 +77,9 @@ namespace API.Controllers
             _mapper.Map(input, data);
 
             await _shopRepo.UpdateAsync(data);
-            return CustomResult(data);
+            ShopForViewDto? res = new();
+            _mapper.Map(data, res);
+            return CustomResult(res);
         }
 
         [HttpDelete("{id}")]

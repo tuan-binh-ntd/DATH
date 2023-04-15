@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.Extensions;
+using Bussiness.Interface;
 using Bussiness.Repository;
 using Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -12,14 +15,17 @@ namespace API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IRepository<Product, long> _productRepo;
+        private readonly IPhotoService _photoService;
 
         public ProductsController(
             IMapper mapper,
-            IRepository<Product, long> productRepo
+            IRepository<Product, long> productRepo,
+            IPhotoService photoService
             )
         {
             _mapper = mapper;
             _productRepo = productRepo;
+            _photoService = photoService;
         }
 
         [HttpGet]
@@ -39,7 +45,7 @@ namespace API.Controllers
             return CustomResult(data);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "Products")]
         public async Task<IActionResult> Get(int id)
         {
             IQueryable<ProductForViewDto> query = from p in _productRepo.GetAll().AsNoTracking()
@@ -61,12 +67,13 @@ namespace API.Controllers
         public async Task<IActionResult> Create(ProductInput input)
         {
             Product product = new();
-
             _mapper.Map(input, product);
-
             await _productRepo.InsertAsync(product);
 
-            return CustomResult(HttpStatusCode.Created);
+            ProductForViewDto? res = new();
+            _mapper.Map(product, res);
+
+            return CustomResult(res, HttpStatusCode.Created);
         }
 
         [HttpPut("{id}")]
@@ -79,6 +86,9 @@ namespace API.Controllers
 
             await _productRepo.UpdateAsync(product);
 
+            ProductForViewDto? res = new();
+            _mapper.Map(product, res);
+
             return CustomResult(product);
         }
 
@@ -87,6 +97,36 @@ namespace API.Controllers
         {
             await _productRepo.DeleteAsync(id);
             return CustomResult();
+        }
+
+        [HttpPost("{id}/photos")]
+        public async Task<IActionResult> AddPhoto(long id, IFormFile file)
+        {
+            Product? product = await _productRepo.GetAsync(id);
+            if(product == null) return CustomResult(HttpStatusCode.NotFound);
+
+            var result = await _photoService.AddPhotoAsync(file);
+
+            if (result.Error != null) return BadRequest(result.Error.Message);
+
+            var photo = new Photo
+            {
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId = result.PublicId
+            };
+
+            //if (product.Photos.Count == 0)
+            //{
+            //    photo.IsMain = true;
+            //}
+
+            product.Photos!.Add(photo);
+
+            if (await _productRepo.UpdateAsync(product) != null)
+            {
+                return CreatedAtRoute("Products", new { username = product.Name }, _mapper.Map<PhotoDto>(photo));
+            }
+            return BadRequest("Problem adding photo");
         }
     }
 }
