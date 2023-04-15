@@ -1,0 +1,46 @@
+<app-page-grid>
+    <h2>Specification Category Management</h2>
+    <div nz-row class="mb-2">
+      <div nz-col nzSpan="6">
+        <nz-input-group [nzSuffix]="searchIcon">
+          <input type="text" nz-input placeholder="Search..." />
+        </nz-input-group>
+        </div>
+        <div nz-col nzSpan="18">
+          <button nz-button nzType="primary" class="float-right" (click)="goToCreate()">Create</button>
+        </div>
+      </div>
+      <ng-template #searchIcon>
+        <span><i class="fa-solid fa-search  mr-2 text-muted"></i></span>
+      </ng-template>
+      <nz-table
+    #rowSelectionTable
+    nzShowPagination
+    nzShowSizeChanger
+    [nzData]="listOfData"
+  >
+    <thead>
+      <tr>
+          
+        <th
+        *ngFor="let column of listOfColumn"
+        [nzWidth]="column.width"
+        [nzSortOrder]="column.sortOrder"
+        [ngClass]="column.class"
+        [nzSortDirections]="column.sortDirections"
+        (nzSortOrderChange)="onSort($event, column)"
+      >
+        {{ column.name }}
+      </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of rowSelectionTable.data">
+        <td>{{ data.code }}</td>
+        <td>{{ data.value }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+  </app-page-grid>
+  
+  <app-specification-category-drawer #drawerFormBase></app-specification-category-drawer>

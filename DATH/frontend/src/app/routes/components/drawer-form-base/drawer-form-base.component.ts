@@ -8,13 +8,14 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   styleUrls: ['./drawer-form-base.component.less'],
 })
 export class DrawerFormBaseComponent implements OnInit {
-  @Output() onChangeEdit = new EventEmitter();
-  @Output() onCloseDrawer = new EventEmitter();
   @Input() isVisible: boolean = false;
   @Input() isEdit: boolean = false;
   @Input() mode: string = 'create';
   @Input() isLoading: boolean = false;
   @Input() titleDrawer: string = '';
+  @Output() onChangeEdit = new EventEmitter();
+  @Output() onCloseDrawer = new EventEmitter();
+  @Output() onSubmit = new EventEmitter();
   data: any;
   drawerForm!: FormGroup;
   constructor(
@@ -102,7 +103,9 @@ export class DrawerFormBaseComponent implements OnInit {
     }
   }
 
- submitForm() {}
+ submitForm() {
+  this.onSubmit.emit();
+ }
 
   markAsTouched() {
     this.drawerForm.markAsTouched();

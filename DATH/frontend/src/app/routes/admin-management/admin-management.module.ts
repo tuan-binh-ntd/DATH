@@ -11,6 +11,8 @@ import { SpecificationDrawerComponent } from './specification-list/partials/spec
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ComponentsModule } from '../components/components.module';
 import { AdminLoginComponent } from './admin-login/admin-login.component';
+import { SpecificationCategoryListComponent } from './specification-category-list/specification-category-list.component';
+import { SpecificationCategoryDrawerComponent } from './specification-category-list/partials/specification-category-drawer/specification-category-drawer.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { AdminLoginComponent } from './admin-login/admin-login.component';
     DashboardAdminComponent,
     SpecificationListComponent,
     SpecificationDrawerComponent,
-    AdminLoginComponent
+    AdminLoginComponent,
+    SpecificationCategoryListComponent,
+    SpecificationCategoryDrawerComponent
   ],
   imports: [
     AdminManagementRoutingModule,

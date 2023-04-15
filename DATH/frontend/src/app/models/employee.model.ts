@@ -1,6 +1,7 @@
 import { Gender } from "../enums/gender.enum";
 
 export interface Employee {
+    id: string | null,
      firstName: string | null,
      lastName: string | null,
      code: string | null,
