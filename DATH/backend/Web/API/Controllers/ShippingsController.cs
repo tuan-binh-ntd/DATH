@@ -62,7 +62,9 @@ namespace API.Controllers
             _mapper.Map(input, data);
 
             await _shippingRepo.InsertAsync(data);
-            return CustomResult(data);
+            ShippingForViewDto? res = new();
+            _mapper.Map(data, res);
+            return CustomResult(res);
         }
 
         [HttpPut("{id}")]
@@ -73,7 +75,9 @@ namespace API.Controllers
             _mapper.Map(input, data);
 
             await _shippingRepo.UpdateAsync(data);
-            return CustomResult(data);
+            ShippingForViewDto? res = new();
+            _mapper.Map(data, res);
+            return CustomResult(res);
         }
 
         [HttpDelete("{id}")]

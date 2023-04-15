@@ -64,10 +64,11 @@ namespace API.Controllers
         {
             Specification? specification = new();
             _mapper.Map(input, specification);
-
             await _specRepo.InsertAsync(specification);
 
-            return CustomResult(HttpStatusCode.Created);
+            SpecificationForViewDto? res = new();
+            _mapper.Map(specification, res);
+            return CustomResult(res, HttpStatusCode.Created);
         }
 
         [HttpPut("{id}")]
@@ -78,8 +79,9 @@ namespace API.Controllers
             _mapper.Map(input, specification);
 
             await _specRepo.UpdateAsync(specification!);
-
-            return CustomResult();
+            SpecificationForViewDto? res = new();
+            _mapper.Map(specification, res);
+            return CustomResult(res);
         }
 
         [HttpDelete("{id}")]

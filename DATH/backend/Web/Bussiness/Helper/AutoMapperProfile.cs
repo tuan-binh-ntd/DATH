@@ -36,6 +36,17 @@ namespace Bussiness.Helper
 
             CreateMap<Promotion, PromotionInput>().ReverseMap();
 
+            CreateMap<Shop, ShopForViewDto>().ReverseMap();
+
+            CreateMap<Specification, SpecificationForViewDto>().ReverseMap();
+
+            CreateMap<SpecificationCategory, SpecificationCategoryForViewDto>().ReverseMap();
+
+            CreateMap<Product, ProductForViewDto>().ReverseMap();
+
+            CreateMap<Promotion, PromotionForViewDto>().ReverseMap();
+
+            CreateMap<ProductCategory, ProductCategoryForViewDto>().ReverseMap();
         }
     }
 }

@@ -62,7 +62,9 @@ namespace API.Controllers
             SpecificationCategory specificationCategory = new();
             _mapper.Map(input, specificationCategory);
             await _specCateRepo.InsertAsync(specificationCategory);
-            return CustomResult(HttpStatusCode.Created);
+            SpecificationCategoryForViewDto? res = new();
+            _mapper.Map(specificationCategory, res);
+            return CustomResult(res, HttpStatusCode.Created);
         }
 
         [HttpPut("{id}")]
@@ -72,6 +74,8 @@ namespace API.Controllers
             if (specificationCategory == null) return CustomResult(HttpStatusCode.NotFound);
             _mapper.Map(input, specificationCategory);
             await _specCateRepo.UpdateAsync(specificationCategory!);
+            SpecificationCategoryForViewDto? res = new();
+            _mapper.Map(specificationCategory, res);
             return CustomResult();
         }
 
