@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities
 {
@@ -6,8 +8,7 @@ namespace Entities
     {
         [StringLength(500)]
         public string? Name { get; set; }
-        [StringLength(500)]
-        public string? AvatarUrl { get; set; }
+        [Column(TypeName = "decimal(19, 5)")]
         public decimal Price { get; set; }
         public string? Description { get; set; }
         public string? SpecificationId { get; set; }

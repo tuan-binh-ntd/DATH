@@ -36,7 +36,6 @@ namespace API.Controllers
                                                           {
                                                               Id = p.Id,
                                                               Name = p.Name,
-                                                              AvatarUrl = p.AvatarUrl,
                                                               Price = p.Price,
                                                               Description = p.Description
                                                           };
@@ -54,7 +53,6 @@ namespace API.Controllers
                                                   {
                                                       Id = p.Id,
                                                       Name = p.Name,
-                                                      AvatarUrl = p.AvatarUrl,
                                                       Price = p.Price,
                                                       Description = p.Description
                                                   };
@@ -109,24 +107,24 @@ namespace API.Controllers
 
             if (result.Error != null) return BadRequest(result.Error.Message);
 
-            var photo = new Photo
+            Photo? photo = new()
             {
                 Url = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId
             };
 
-            //if (product.Photos.Count == 0)
-            //{
-            //    photo.IsMain = true;
-            //}
+            product.Photos = new List<Photo> { photo };
 
-            product.Photos!.Add(photo);
+            ProductForViewDto? res = new();
+            _mapper.Map(product, res);
+
 
             if (await _productRepo.UpdateAsync(product) != null)
             {
-                return CreatedAtRoute("Products", new { username = product.Name }, _mapper.Map<PhotoDto>(photo));
+                res.Photos = new List<PhotoDto> { _mapper.Map<PhotoDto>(photo) };
+                return CustomResult(res, HttpStatusCode.Created);
             }
-            return BadRequest("Problem adding photo");
+            return CustomResult("Problem adding photo", HttpStatusCode.BadRequest);
         }
     }
 }
