@@ -77,7 +77,7 @@ namespace Database
                 .OnDelete(DeleteBehavior.Cascade);
 
             //Set decimal scale
-            modelBuilder.Entity<Product>().Property(p => p.Price).HasPrecision(10, 5);
+            modelBuilder.Entity<Product>().Property(p => p.Price).HasPrecision(19, 5);
 
             // One to Many Relationship (ProductCategory, Product)
             modelBuilder.Entity<Product>()
@@ -87,7 +87,7 @@ namespace Database
                 .OnDelete(DeleteBehavior.Cascade);
 
             //Set decimal scale
-            modelBuilder.Entity<Shipping>().Property(p => p.Cost).HasPrecision(10, 5);
+            modelBuilder.Entity<Shipping>().Property(p => p.Cost).HasPrecision(19, 5);
 
             // One to Many Relationship (Product, Photo)
             modelBuilder.Entity<Photo>()

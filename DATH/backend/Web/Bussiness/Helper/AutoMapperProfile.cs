@@ -47,6 +47,8 @@ namespace Bussiness.Helper
             CreateMap<Promotion, PromotionForViewDto>().ReverseMap();
 
             CreateMap<ProductCategory, ProductCategoryForViewDto>().ReverseMap();
+
+            CreateMap<Photo, PhotoDto>().ReverseMap();
         }
     }
 }
