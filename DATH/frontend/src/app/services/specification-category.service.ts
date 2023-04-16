@@ -28,7 +28,7 @@ export class SpecificationCategoryService {
     return this.http.post(this.baseUrl, payload);
   }
 
-  delete(id: number){
+  delete(id: number): Observable<any>{
     return this.http.delete(this.baseUrl + '/' + id);
   }
 }

@@ -8,33 +8,62 @@ import { checkResponseStatus } from 'src/app/shared/helper';
 @Component({
   selector: 'app-specification-category-drawer',
   templateUrl: './specification-category-drawer.component.html',
-  styleUrls: ['./specification-category-drawer.component.less']
+  styleUrls: ['./specification-category-drawer.component.less'],
 })
-export class SpecificationCategoryDrawerComponent extends DrawerFormBaseComponent  {
+export class SpecificationCategoryDrawerComponent extends DrawerFormBaseComponent {
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,
     protected override message: NzMessageService,
     private specificationCategoryService: SpecificationCategoryService
-  ){
+  ) {
     super(fb, cdr, message);
   }
+
   override initForm(): void {
     this.drawerForm = this.fb.group({
       id: [null],
       code: [null, Validators.required],
       value: [null, Validators.required],
-    })
+    });
   }
 
-override submitForm() {
+  override submitForm() {
     this.validateForm();
-    if(this.drawerForm.valid){
-      this.specificationCategoryService.create(this.drawerForm.getRawValue()).subscribe(res => {
-        if(checkResponseStatus(res)){
-          this.message.success('Create successfully');
-        }
-      })
+    if (this.drawerForm.valid) {
+      if (this.mode === 'create') {
+        this.specificationCategoryService
+          .create(this.drawerForm.getRawValue())
+          .subscribe((res) => {
+            if (checkResponseStatus(res)) {
+              this.message.success('Create successfully');
+              this.changeToDetail();
+              this.onCreate.emit(res.data);
+            }
+          });
+      } else {
+        this.specificationCategoryService
+          .update(this.drawerForm.value.id, this.drawerForm.getRawValue())
+          .subscribe((res) => {
+            if (checkResponseStatus(res)) {
+              this.message.success('Update successfully');
+              this.changeToDetail();
+              this.onUpdate.emit(res.data);
+            }
+          });
+      }
     }
+  }
+
+  deleteItem(){
+    this.specificationCategoryService
+          .delete(this.drawerForm.value.id)
+          .subscribe((res) => {
+            if (checkResponseStatus(res)) {
+              this.message.success('Delete successfully');
+              this.closeDrawer();
+              this.onDelete.emit(res.data);
+            }
+          });
   }
 }

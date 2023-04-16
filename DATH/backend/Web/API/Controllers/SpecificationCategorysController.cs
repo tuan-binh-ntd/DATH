@@ -72,18 +72,18 @@ namespace API.Controllers
         {
             SpecificationCategory? specificationCategory = await _specCateRepo.GetAsync(id);
             if (specificationCategory == null) return CustomResult(HttpStatusCode.NotFound);
-            _mapper.Map(input, specificationCategory);
-            await _specCateRepo.UpdateAsync(specificationCategory!);
+            specificationCategory = _mapper.Map(input, specificationCategory);
+            await _specCateRepo.UpdateAsync(specificationCategory);
             SpecificationCategoryForViewDto? res = new();
             _mapper.Map(specificationCategory, res);
-            return CustomResult();
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _specCateRepo.DeleteAsync(id);
-            return CustomResult();
+            return CustomResult(id, HttpStatusCode.OK);
         }
     }
 }

@@ -35,16 +35,18 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let data of rowSelectionTable.data">
-      <td
-       
-      ></td>
-      <td>{{ data.code }}</td>
-      <td>{{ data.value }}</td>
-      <td>{{ data.description }}</td>
-    </tr>
+    <ng-container *ngFor="let data of rowSelectionTable.data">
+      <tr  (click)="goToDetail(data)">
+        <td>{{ data.code }}</td>
+        <td>{{ data.value }}</td>
+        <td>{{ data.description }}</td>
+      </tr>
+    </ng-container>
   </tbody>
 </nz-table>
 </app-page-grid>
 
-<app-specification-drawer #drawerFormBase></app-specification-drawer>
+<app-specification-drawer #drawerFormBase
+(onCreate)="onCreateItem($event)"
+(onUpdate)="onUpdateItem($event)"
+(onDelete)="onDeleteItem($event)"></app-specification-drawer>

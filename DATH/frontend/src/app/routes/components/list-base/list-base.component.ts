@@ -30,4 +30,25 @@ export class ListBaseComponent {
     this.drawerFormBase.openDrawer(null, 'create', true);
    }
 
+   goToDetail(data: any){
+    this.drawerFormBase.openDrawer(data, 'detail', false);
+   }
+
+   onCreateItem(data: any){
+    this.listOfData = [...this.listOfData, data];
+   }
+
+   onUpdateItem(data: any){
+    const index = this.listOfData.findIndex(item => item.id === data.id);
+    this.listOfData.splice(index, 1, data);
+    this.listOfData = [...this.listOfData];
+   }
+
+   onDeleteItem(data: any){
+    const index = this.listOfData.findIndex(item => item.id === data.id);
+    this.listOfData.splice(index, 1);
+    this.listOfData = [...this.listOfData];
+
+   }
+
 }

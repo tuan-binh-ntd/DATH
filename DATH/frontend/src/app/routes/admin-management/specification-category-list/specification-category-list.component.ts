@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { SpecificationCategoryService } from 'src/app/services/specification-category.service';
 import { SpecificationService } from 'src/app/services/specification.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
 import { ListBaseComponent } from '../../components/list-base/list-base.component';
+import { SpecificationCategoryDrawerComponent } from './partials/specification-category-drawer/specification-category-drawer.component';
 
 @Component({
   selector: 'app-specification-category-list',
@@ -11,6 +12,7 @@ import { ListBaseComponent } from '../../components/list-base/list-base.componen
   styleUrls: ['./specification-category-list.component.less']
 })
 export class SpecificationCategoryListComponent extends ListBaseComponent {
+  @ViewChild('drawerFormBase') override drawerFormBase!: SpecificationCategoryDrawerComponent;
   constructor(protected override msg: NzMessageService,
     private specificationCategoryService: SpecificationCategoryService) {
       super(msg);

@@ -1,8 +1,9 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { SpecificationService } from 'src/app/services/specification.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
 import { ListBaseComponent } from '../../components/list-base/list-base.component';
+import { SpecificationDrawerComponent } from './partials/specification-drawer/specification-drawer.component';
 
 @Component({
   selector: 'app-specification-list',
@@ -10,6 +11,7 @@ import { ListBaseComponent } from '../../components/list-base/list-base.componen
   styleUrls: ['./specification-list.component.less']
 })
 export class SpecificationListComponent extends ListBaseComponent {
+  @ViewChild('drawerFormBase') override drawerFormBase!: SpecificationDrawerComponent;
   constructor(protected override msg: NzMessageService,
   private specificationService: SpecificationService) {
     super(msg);

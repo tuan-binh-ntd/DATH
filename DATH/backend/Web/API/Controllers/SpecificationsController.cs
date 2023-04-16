@@ -81,14 +81,14 @@ namespace API.Controllers
             await _specRepo.UpdateAsync(specification!);
             SpecificationForViewDto? res = new();
             _mapper.Map(specification, res);
-            return CustomResult(res);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
             await _specRepo.DeleteAsync(id);
-            return CustomResult();
+            return CustomResult(id, HttpStatusCode.OK);
         }
     }
 }

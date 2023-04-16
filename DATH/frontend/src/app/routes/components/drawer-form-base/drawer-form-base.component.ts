@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Injector, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -7,15 +7,20 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   templateUrl: './drawer-form-base.component.html',
   styleUrls: ['./drawer-form-base.component.less'],
 })
-export class DrawerFormBaseComponent implements OnInit {
+export class DrawerFormBaseComponent  {
   @Input() isVisible: boolean = false;
   @Input() isEdit: boolean = false;
   @Input() mode: string = 'create';
   @Input() isLoading: boolean = false;
   @Input() titleDrawer: string = '';
+  @Input() customFooterTpl: string | TemplateRef<{}> = "";
   @Output() onChangeEdit = new EventEmitter();
   @Output() onCloseDrawer = new EventEmitter();
   @Output() onSubmit = new EventEmitter();
+  @Output() onCreate = new EventEmitter();
+  @Output() onUpdate = new EventEmitter();
+  @Output() onDelete = new EventEmitter();
+
   data: any;
   drawerForm!: FormGroup;
   constructor(
@@ -24,13 +29,14 @@ export class DrawerFormBaseComponent implements OnInit {
     protected message: NzMessageService
   ) {}
 
-  ngOnInit(): void {
-    this.initForm();
-  }
-
+ 
   initField() {}
 
   initForm() {}
+
+  ngOnInit() {
+    this.initForm();
+  }
 
   openDrawer(data: any, mode: string, isEdit: boolean) {
     this.isVisible = true;
@@ -64,11 +70,11 @@ export class DrawerFormBaseComponent implements OnInit {
     const formValue = this.drawerForm.getRawValue();
     if (this.isEdit) {
       this.setEnableForm();
-      this.titleDrawer = `Sửa: ${formValue?.name}`;
+      this.titleDrawer = `Edit: ${formValue?.code}`;
       this.markAsTouched();
     } else {
       this.setDisableForm();
-      this.titleDrawer = `Xem: ${formValue?.name}`;
+      this.titleDrawer = `${formValue?.code}`;
       this.markAsUntouched();
     }
   }
@@ -80,10 +86,12 @@ export class DrawerFormBaseComponent implements OnInit {
   changeToDetail() {
     this.mode = 'detail';
     this.isEdit = false;
+    this.checkEditForm();
   }
   changeToUpdate() {
     this.mode = 'detail';
     this.isEdit = true;
+    this.checkEditForm();
   }
 
   setEnableForm() {
