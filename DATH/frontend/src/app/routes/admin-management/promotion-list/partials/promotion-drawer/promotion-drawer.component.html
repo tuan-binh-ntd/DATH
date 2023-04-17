@@ -8,20 +8,19 @@
   (onSubmit)="submitForm()"
 >
   <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
-
     <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="category" nzRequired>
-        <span>Category</span>
+      <nz-form-label [nzSpan]="24" nzFor="Name" nzRequired>
+        <span>Name</span>
       </nz-form-label>
-      <nz-form-control [nzSpan]="24">
-      <nz-select
-        nzShowSearch
-        nzAllowClear
-        nzPlaceHolder="Select a category"
-        formControlName="specificationCategoryId"
-      >
-      <nz-option *ngFor="let category of categories" [nzLabel]="category.code" [nzValue]="category.id"></nz-option>
-      </nz-select>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Name is required">
+        <input
+          nz-input
+          name="name"
+          type="name"
+          id="name"
+          formControlName="name"
+          placeholder="Input name"
+        />
       </nz-form-control>
     </nz-form-item>
 
@@ -40,35 +39,38 @@
         />
       </nz-form-control>
     </nz-form-item>
+
     <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="value" nzRequired>
-        <span>Value</span>
+      <nz-form-label [nzSpan]="24" nzFor="startDate" nzRequired>
+        <span>Start Date</span>
       </nz-form-label>
-      <nz-form-control [nzSpan]="24" nzErrorTip="Value is required">
-        <input
-          nz-input
-          name="value"
-          type="value"
-          id="value"
-          formControlName="value"
-          placeholder="Input value"
-        />
+      <nz-form-control [nzSpan]="24" nzErrorTip="Start Date is required">
+        <nz-date-picker formControlName="startDate"></nz-date-picker>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="description">
-        <span>Description</span>
+      <nz-form-label [nzSpan]="24" nzFor="endDate" nzRequired>
+        <span>End Date</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="End Date is required">
+        <nz-date-picker formControlName="endDate"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="discount">
+        <span>Discount</span>
       </nz-form-label>
       <nz-form-control [nzSpan]="24">
-        <textarea
-          nz-input
-          id="description"
-          name="description"
-          [nzAutosize]="true"
-          placeholder=""
-          formControlName="description"
-        ></textarea>
+        <input
+        nz-input
+        name="discount"
+        type="discount"
+        id="discount"
+        formControlName="discount"
+        placeholder="Input discount"
+        />
       </nz-form-control>
     </nz-form-item>
   </form>

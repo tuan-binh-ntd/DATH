@@ -8,69 +8,38 @@
   (onSubmit)="submitForm()"
 >
   <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
-
     <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="category" nzRequired>
-        <span>Category</span>
+      <nz-form-label [nzSpan]="24" nzFor="Name" nzRequired>
+        <span>Name</span>
       </nz-form-label>
-      <nz-form-control [nzSpan]="24">
-      <nz-select
-        nzShowSearch
-        nzAllowClear
-        nzPlaceHolder="Select a category"
-        formControlName="specificationCategoryId"
-      >
-      <nz-option *ngFor="let category of categories" [nzLabel]="category.code" [nzValue]="category.id"></nz-option>
-      </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
-        <span>Code</span>
-      </nz-form-label>
-      <nz-form-control [nzSpan]="24" nzErrorTip="Code is required">
+      <nz-form-control [nzSpan]="24" nzErrorTip="Name is required">
         <input
           nz-input
-          name="code"
-          type="code"
-          id="code"
-          formControlName="code"
-          placeholder="Input code"
-        />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="value" nzRequired>
-        <span>Value</span>
-      </nz-form-label>
-      <nz-form-control [nzSpan]="24" nzErrorTip="Value is required">
-        <input
-          nz-input
-          name="value"
-          type="value"
-          id="value"
-          formControlName="value"
-          placeholder="Input value"
+          name="name"
+          type="name"
+          id="name"
+          formControlName="name"
+          placeholder="Input name"
         />
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="description">
-        <span>Description</span>
+      <nz-form-label [nzSpan]="24" nzFor="address" nzRequired>
+        <span>Address</span>
       </nz-form-label>
-      <nz-form-control [nzSpan]="24">
-        <textarea
+      <nz-form-control [nzSpan]="24" nzErrorTip="Address is required">
+        <input
           nz-input
-          id="description"
-          name="description"
-          [nzAutosize]="true"
-          placeholder=""
-          formControlName="description"
-        ></textarea>
+          name="address"
+          type="address"
+          id="address"
+          formControlName="address"
+          placeholder="Input address"
+        />
       </nz-form-control>
     </nz-form-item>
+
   </form>
 </app-drawer-form-base>
 

@@ -13,6 +13,16 @@ import { ComponentsModule } from '../components/components.module';
 import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { SpecificationCategoryListComponent } from './specification-category-list/specification-category-list.component';
 import { SpecificationCategoryDrawerComponent } from './specification-category-list/partials/specification-category-drawer/specification-category-drawer.component';
+import { ProductListComponent } from './product-list/product-list.component';
+import { ProductCategoryListComponent } from './product-category-list/product-category-list.component';
+import { PromotionListComponent } from './promotion-list/promotion-list.component';
+import { ShopListComponent } from './shop-list/shop-list.component';
+import { ShippingListComponent } from './shipping-list/shipping-list.component';
+import { ProductCategoryDrawerComponent } from './product-category-list/partials/product-category-drawer/product-category-drawer.component';
+import { ProductDrawerComponent } from './product-list/partials/product-drawer/product-drawer.component';
+import { PromotionDrawerComponent } from './promotion-list/partials/promotion-drawer/promotion-drawer.component';
+import { ShopDrawerComponent } from './shop-list/partials/shop-drawer/shop-drawer.component';
+import { ShippingDrawerComponent } from './shipping-list/partials/shipping-drawer/shipping-drawer.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +32,17 @@ import { SpecificationCategoryDrawerComponent } from './specification-category-l
     SpecificationDrawerComponent,
     AdminLoginComponent,
     SpecificationCategoryListComponent,
-    SpecificationCategoryDrawerComponent
+    SpecificationCategoryDrawerComponent,
+    ProductListComponent,
+    ProductCategoryListComponent,
+    PromotionListComponent,
+    ShopListComponent,
+    ShippingListComponent,
+    ProductCategoryDrawerComponent,
+    ProductDrawerComponent,
+    PromotionDrawerComponent,
+    ShopDrawerComponent,
+    ShippingDrawerComponent
   ],
   imports: [
     AdminManagementRoutingModule,

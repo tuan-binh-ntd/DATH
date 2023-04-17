@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Account } from '../models/account.model';
+import { Register } from '../models/register.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class AccountService {
     return this.http.post<any>(this.baseUrl + 'login', payload).pipe(
       map((response: any) => {
         const user = response;
-        if(user) {  
+        if(user) {
           this.setCurrentUser(user.data);
         }
         return user;
@@ -34,7 +35,11 @@ export class AccountService {
     this.currentUserSource.next(account);
   }
 
-  signUp(payload: Account): Observable<Account> {
-    return this.http.post<Account>(this.baseUrl, payload);
+  signUp(payload: Register): Observable<Account> {
+    return this.http.post<Account>(this.baseUrl + 'customer', payload);
+  }
+
+  register(payload: Register): Observable<Account> {
+    return this.http.post<Account>(this.baseUrl + 'employee', payload);
   }
 }

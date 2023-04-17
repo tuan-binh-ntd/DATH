@@ -21,21 +21,30 @@
               <span>Product Management</span>
             </ng-template>
           <ul>
-            <li nz-menu-item>
+            <li nz-menu-item [routerLink]="'product'" [nzMatchRouter]="true">
               <span><i class="fa-solid fa-box  mr-2 text-muted"></i></span>
               <span>Product</span>
             </li>
-            <li nz-menu-item 
->
+            <li nz-menu-item [routerLink]="'product-category'" [nzMatchRouter]="true">
               <span><i class="fa-solid fa-toolbox  mr-2 text-muted"></i></span>
               <span>Product Category</span>
             </li>
           </ul>
         </li>
 
-        <li nz-menu-item >
+        <li nz-menu-item [routerLink]="'shop'" [nzMatchRouter]="true">
           <span><i class="fa-solid fa-shop  mr-2 text-muted"></i></span>
           <span>Shop</span>
+        </li>
+
+        <li nz-menu-item [routerLink]="'shipping'" [nzMatchRouter]="true">
+          <span><i class="fa-solid fa-shop  mr-2 text-muted"></i></span>
+          <span>Shipping</span>
+        </li>
+
+        <li nz-menu-item [routerLink]="'promotion'" [nzMatchRouter]="true">
+          <span><i class="fa-solid fa-shop  mr-2 text-muted"></i></span>
+          <span>Promotion</span>
         </li>
 
         <li nz-submenu  [nzTitle]="warehouse">
@@ -44,7 +53,7 @@
               <span>Warehouse Management</span>
           </ng-template>
           <ul>
-          
+
             <li nz-menu-item>
               <span><i class="fa-solid fa-warehouse  mr-2 text-muted"></i></span>
               <span>Warehouse</span>
@@ -58,17 +67,17 @@
               <span>Order Management</span>
           </ng-template>
           <ul>
-            <li nz-menu-item>
+            <!-- <li nz-menu-item>
               <span><i class="fa-solid fa-shop  mr-2 text-muted"></i></span>
               <span>Shop</span>
-            </li>
+            </li> -->
             <li nz-menu-item>
               <span><i class="fa-solid fa-warehouse  mr-2 text-muted"></i></span>
               <span>Warehouse</span>
             </li>
           </ul>
         </li>
-        
+
         <li nz-submenu  [nzTitle]="specification" >
           <ng-template #specification>
               <i class="fa-solid fa-gear  mr-2 text-muted"></i>
@@ -90,7 +99,7 @@
           <i class="fa-solid fa-users  mr-2 text-muted"></i>
           <span>Customer Management</span>
         </li>
-        
+
         <li nz-menu-item>
           <i class="fa-solid fa-users  mr-2 text-muted"></i>
           <span>User Management</span>
@@ -110,9 +119,9 @@
           <span><i class="fa-regular fa-star-half-stroke  mr-2 text-muted"></i></span>
           <span>Statistic</span>
         </li>
-       
+
       </ul>
-    </nz-sider> 
+    </nz-sider>
     <nz-layout>
 
       <nz-content>

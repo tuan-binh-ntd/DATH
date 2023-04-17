@@ -20,38 +20,39 @@
         nzPlaceHolder="Select a category"
         formControlName="specificationCategoryId"
       >
-      <nz-option *ngFor="let category of categories" [nzLabel]="category.code" [nzValue]="category.id"></nz-option>
+      <nz-option *ngFor="let category of productCategories" [nzLabel]="category.name" [nzValue]="category.id"></nz-option>
       </nz-select>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
-        <span>Code</span>
+      <nz-form-label [nzSpan]="24" nzFor="name" nzRequired>
+        <span>Name</span>
       </nz-form-label>
-      <nz-form-control [nzSpan]="24" nzErrorTip="Code is required">
+      <nz-form-control [nzSpan]="24" nzErrorTip="Name is required">
         <input
           nz-input
-          name="code"
-          type="code"
-          id="code"
-          formControlName="code"
-          placeholder="Input code"
+          name="Name"
+          type="name"
+          id="name"
+          formControlName="name"
+          placeholder="Input name"
         />
       </nz-form-control>
     </nz-form-item>
+
     <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="value" nzRequired>
-        <span>Value</span>
+      <nz-form-label [nzSpan]="24" nzFor="price" nzRequired>
+        <span>Price</span>
       </nz-form-label>
-      <nz-form-control [nzSpan]="24" nzErrorTip="Value is required">
+      <nz-form-control [nzSpan]="24" nzErrorTip="Price is required">
         <input
           nz-input
-          name="value"
-          type="value"
-          id="value"
-          formControlName="value"
-          placeholder="Input value"
+          name="price"
+          type="price"
+          id="price"
+          formControlName="price"
+          placeholder="Input price"
         />
       </nz-form-control>
     </nz-form-item>
