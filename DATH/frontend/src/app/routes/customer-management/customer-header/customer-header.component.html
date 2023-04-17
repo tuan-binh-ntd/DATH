@@ -52,23 +52,39 @@
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <div class="d-flex align-center">
           <ul nz-menu>
-            <li nz-menu-item>
-              <!-- <nz-avatar [nzSize]="30" class="mb-2"></nz-avatar> -->
+            <!-- <li nz-menu-item>
+              <nz-avatar [nzSize]="30" class="mb-2"></nz-avatar>
 
-              <!-- <span>{{ customer.firstName }} {{ customer.lastName }}</span> -->
-            </li>
-            <nz-divider class="m-0"></nz-divider>
-            <li nz-menu-item>Log out</li>
+              <span>{{ customer.firstName }} {{ customer.lastName }}</span>
+            </li> -->
+            <!-- <nz-divider class="m-0"></nz-divider> -->
+            <!-- <li nz-menu-item>Log out</li> -->
+            <li nz-menu-item (click)="signIn()">Sign In</li>
+            <li nz-menu-item (click)="signUp()">Sign Up</li>
           </ul>
         </div>
       </nz-dropdown-menu>
     </div>
-    <!-- <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" >
+    <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()">
                   <ng-container *nzModalContent>
-                    <p>Content one</p>
-                    <p>Content two</p>
-                    <p>Content three</p>
+                    <form nz-form [formGroup]="form">
+                      <nz-form-item>
+                        <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
+                          <span>Code</span>
+                        </nz-form-label>
+                        <nz-form-control [nzSpan]="24" nzErrorTip="Code is required">
+                          <input
+                            nz-input
+                            name="code"
+                            type="code"
+                            id="code"
+                            formControlName="code"
+                            placeholder="Input code"
+                          />
+                        </nz-form-control>
+                      </nz-form-item>
+                    </form>
                   </ng-container>
-              </nz-modal> -->
+              </nz-modal>
   </div>
 </nz-header>
