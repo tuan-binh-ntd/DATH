@@ -86,6 +86,8 @@ export class DrawerFormBaseComponent  {
   changeToDetail() {
     this.mode = 'detail';
     this.isEdit = false;
+    this.resetForm();
+    this.patchDataToForm(this.data);
     this.checkEditForm();
   }
   changeToUpdate() {

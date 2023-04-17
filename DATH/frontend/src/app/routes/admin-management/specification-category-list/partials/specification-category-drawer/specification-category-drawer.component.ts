@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { finalize } from 'rxjs';
 import { DrawerFormBaseComponent } from 'src/app/routes/components/drawer-form-base/drawer-form-base.component';
 import { SpecificationCategoryService } from 'src/app/services/specification-category.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
@@ -34,6 +35,7 @@ export class SpecificationCategoryDrawerComponent extends DrawerFormBaseComponen
       if (this.mode === 'create') {
         this.specificationCategoryService
           .create(this.drawerForm.getRawValue())
+          .pipe(finalize(() => (this.isLoading = false)))
           .subscribe((res) => {
             if (checkResponseStatus(res)) {
               this.message.success('Create successfully');
@@ -44,6 +46,7 @@ export class SpecificationCategoryDrawerComponent extends DrawerFormBaseComponen
       } else {
         this.specificationCategoryService
           .update(this.drawerForm.value.id, this.drawerForm.getRawValue())
+          .pipe(finalize(() => (this.isLoading = false)))
           .subscribe((res) => {
             if (checkResponseStatus(res)) {
               this.message.success('Update successfully');
@@ -55,15 +58,16 @@ export class SpecificationCategoryDrawerComponent extends DrawerFormBaseComponen
     }
   }
 
-  deleteItem(){
+  deleteItem() {
     this.specificationCategoryService
-          .delete(this.drawerForm.value.id)
-          .subscribe((res) => {
-            if (checkResponseStatus(res)) {
-              this.message.success('Delete successfully');
-              this.closeDrawer();
-              this.onDelete.emit(res.data);
-            }
-          });
+      .delete(this.drawerForm.value.id)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe((res) => {
+        if (checkResponseStatus(res)) {
+          this.message.success('Delete successfully');
+          this.closeDrawer();
+          this.onDelete.emit(res.data);
+        }
+      });
   }
 }

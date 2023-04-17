@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { finalize } from 'rxjs';
 import { SpecificationCategoryService } from 'src/app/services/specification-category.service';
 import { SpecificationService } from 'src/app/services/specification.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
@@ -37,7 +38,9 @@ export class SpecificationCategoryListComponent extends ListBaseComponent {
      ];
   
      override fetchData(): void {
-       this.specificationCategoryService.getAll().subscribe(res => {
+      this.isLoadingTable = true;
+       this.specificationCategoryService.getAll().pipe(
+        finalize(() => this.isLoadingTable = false)).subscribe(res => {
         if(checkResponseStatus(res)){
           this.listOfData = [...res.data];
         }
