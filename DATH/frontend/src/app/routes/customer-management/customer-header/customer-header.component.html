@@ -1,0 +1,74 @@
+<nz-header class="header">
+  <div class="align-child-space-evenly h-50px">
+    <!-- <span class="trigger" (click)="onCollapse()">
+        <i class="fa-solid fa-bars fa-lg"></i>
+      </span> -->
+    <div>
+      <h1 class="text-center">Tech Shop</h1>
+    </div>
+    <div class="d-flex">
+      <ul nz-menu nzMode="horizontal">
+        <li nz-menu-item><a href="">IPhone</a></li>
+        <li nz-menu-item><a href="">IPad</a></li>
+        <li nz-menu-item><a href="">Mac</a></li>
+        <li nz-menu-item><a href="">Watch</a></li>
+        <li nz-menu-item><a href="">Sound</a></li>
+        <li nz-menu-item><a href="">Accessories</a></li>
+        <li nz-menu-item><a href="">Service</a></li>
+        <li nz-menu-item><a href="">Promotion</a></li>
+      </ul>
+
+    </div>
+
+    <div class="d-flex">
+        <span
+        ><app-button-icon
+          toolTipTitle="Theme"
+          iconClass="fa-solid fa-moon fa-lg "
+          placement="bottom"
+        ></app-button-icon
+      ></span>
+
+      <span
+        ><app-button-icon
+          toolTipTitle="Cart"
+          iconClass="fa-solid fa-cart-shopping"
+          placement="bottom"
+        ></app-button-icon
+      ></span>
+
+      <span class="mr-2"
+        ><app-button-icon
+          toolTipTitle=""
+          iconClass="fa-solid fa-user fa-lg "
+          placement="bottom"
+          nz-dropdown
+          [nzDropdownMenu]="menu"
+          nzPlacement="bottomRight"
+          nzTrigger="click"
+        ></app-button-icon
+      ></span>
+
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <div class="d-flex align-center">
+          <ul nz-menu>
+            <li nz-menu-item>
+              <!-- <nz-avatar [nzSize]="30" class="mb-2"></nz-avatar> -->
+
+              <!-- <span>{{ customer.firstName }} {{ customer.lastName }}</span> -->
+            </li>
+            <nz-divider class="m-0"></nz-divider>
+            <li nz-menu-item>Log out</li>
+          </ul>
+        </div>
+      </nz-dropdown-menu>
+    </div>
+    <!-- <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" >
+                  <ng-container *nzModalContent>
+                    <p>Content one</p>
+                    <p>Content two</p>
+                    <p>Content three</p>
+                  </ng-container>
+              </nz-modal> -->
+  </div>
+</nz-header>
