@@ -4,6 +4,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { AdminLayoutComponent } from './routes/admin-management/admin-layout/admin-layout.component';
 import { AdminLoginComponent } from './routes/admin-management/admin-login/admin-login.component';
 import { LoginComponent } from './routes/components/login/login.component';
+import { CustomerLayoutComponent } from './routes/customer-management/customer-layout/customer-layout.component';
 
 const routes: Routes = [
   // { path: '', redirectTo: 'passport/login', pathMatch: 'full' },
@@ -16,11 +17,12 @@ const routes: Routes = [
     path: 'admin-management',
     component: AdminLayoutComponent,
     loadChildren: () => import('./routes/admin-management/admin-management.module').then((m) => m.AdminManagementModule),
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
-    path: 'user-management',
-    loadChildren: () => import('./user-management/user-management.module').then((m) => m.UserManagementModule),
+    path: '',
+    component: CustomerLayoutComponent,
+    loadChildren: () => import('./routes/customer-management/customer-management.module').then((m) => m.CustomerManagementModule),
     // canActivate: [CheckLoadingService],
   },
   {
