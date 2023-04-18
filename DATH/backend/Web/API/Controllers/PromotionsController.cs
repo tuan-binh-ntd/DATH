@@ -36,9 +36,9 @@ namespace API.Controllers
                                                        Discount = p.Discount,
                                                    };
             List<PromotionForViewDto>? data = await query.ToListAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(HttpStatusCode.NoContent);
 
-            return CustomResult(data);
+            return CustomResult(data, HttpStatusCode.OK);
         }
 
         [HttpGet("{id}")]
@@ -56,9 +56,9 @@ namespace API.Controllers
                                                        Discount = p.Discount,
                                                    };
             PromotionForViewDto? data = await query.FirstOrDefaultAsync();
-            if (data == null) return CustomResult(null, HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(null, HttpStatusCode.NoContent);
 
-            return CustomResult(data);
+            return CustomResult(data, HttpStatusCode.OK);
         }
 
         [HttpPost]
@@ -71,27 +71,27 @@ namespace API.Controllers
 
             PromotionForViewDto? res = new();
             _mapper.Map(data, res);
-            return CustomResult(res, HttpStatusCode.Created);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ShopInput input)
         {
             Promotion? data = await _promotionRepo.GetAsync(id);
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(HttpStatusCode.NoContent);
             _mapper.Map(input, data);
 
             await _promotionRepo.UpdateAsync(data);
             PromotionForViewDto? res = new();
             _mapper.Map(data, res);
-            return CustomResult(res);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _promotionRepo.DeleteAsync(id);
-            return CustomResult();
+            return CustomResult(id, HttpStatusCode.OK);
         }
     }
 }

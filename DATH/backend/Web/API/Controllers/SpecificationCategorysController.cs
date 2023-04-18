@@ -33,9 +33,9 @@ namespace API.Controllers
                                                                     Value = s.Value
                                                                 };
             List<SpecificationCategoryForViewDto>? data = await query.ToListAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(HttpStatusCode.NoContent);
 
-            return CustomResult(data);
+            return CustomResult(data, HttpStatusCode.OK);
         }
 
         [HttpGet("{id}")]
@@ -51,9 +51,9 @@ namespace API.Controllers
                                                                 };
 
             List<SpecificationCategoryForViewDto>? data = await query.ToListAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(HttpStatusCode.NoContent);
 
-            return CustomResult(data);
+            return CustomResult(data, HttpStatusCode.OK);
         }
 
         [HttpPost]
@@ -64,14 +64,14 @@ namespace API.Controllers
             await _specCateRepo.InsertAsync(specificationCategory);
             SpecificationCategoryForViewDto? res = new();
             _mapper.Map(specificationCategory, res);
-            return CustomResult(res, HttpStatusCode.Created);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, SpecificationCategory input)
         {
             SpecificationCategory? specificationCategory = await _specCateRepo.GetAsync(id);
-            if (specificationCategory == null) return CustomResult(HttpStatusCode.NotFound);
+            if (specificationCategory == null) return CustomResult(HttpStatusCode.NoContent);
             specificationCategory = _mapper.Map(input, specificationCategory);
             await _specCateRepo.UpdateAsync(specificationCategory);
             SpecificationCategoryForViewDto? res = new();

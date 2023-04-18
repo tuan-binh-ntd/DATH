@@ -35,9 +35,9 @@ namespace API.Controllers
                                                             SpecificationCategoryId = s.SpecificationCategoryId,
                                                         };
             List<SpecificationForViewDto>? data = await query.ToListAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(HttpStatusCode.NoContent);
 
-            return CustomResult(data);
+            return CustomResult(data, HttpStatusCode.OK);
         }
 
         [HttpGet("{id}")]
@@ -54,9 +54,9 @@ namespace API.Controllers
                                                             SpecificationCategoryId = s.SpecificationCategoryId,
                                                         };
             List<SpecificationForViewDto>? data = await query.ToListAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(HttpStatusCode.NoContent);
 
-            return CustomResult(data);
+            return CustomResult(data, HttpStatusCode.OK);
         }
 
         [HttpPost]
@@ -68,14 +68,14 @@ namespace API.Controllers
 
             SpecificationForViewDto? res = new();
             _mapper.Map(specification, res);
-            return CustomResult(res, HttpStatusCode.Created);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(long id, SpecificationInput input)
         {
             Specification? specification = await _specRepo.GetAsync(id);
-            if (specification == null) return CustomResult(HttpStatusCode.NotFound);
+            if (specification == null) return CustomResult(HttpStatusCode.NoContent);
             _mapper.Map(input, specification);
 
             await _specRepo.UpdateAsync(specification!);

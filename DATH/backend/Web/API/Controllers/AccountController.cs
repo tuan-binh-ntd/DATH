@@ -67,9 +67,12 @@ namespace API.Controllers
 
             await _customerRepo.InsertAsync(customer);
 
-            UserDto userDto = new();
+            UserDto userDto = new()
+            {
+                Token = await _tokenService.CreateToken(user)
+            };
             _mapper.Map(customer, userDto);
-            return CustomResult(userDto);
+            return CustomResult(userDto, HttpStatusCode.OK);
         }
 
         [HttpPost("employees")]
@@ -100,9 +103,12 @@ namespace API.Controllers
 
             _mapper.Map(registerDto, employee);
 
-            UserDto userDto = new();
+            UserDto userDto = new()
+            {
+                Token = await _tokenService.CreateToken(user)
+            };
             _mapper.Map(employee, userDto);
-            return CustomResult(userDto);
+            return CustomResult(userDto, HttpStatusCode.OK);
         }
 
         [AllowAnonymous]
@@ -139,7 +145,7 @@ namespace API.Controllers
 
             _mapper.Map(customer, res);
 
-            return CustomResult(res);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         private async Task<bool> CheckUserExists(string username)
@@ -162,7 +168,7 @@ namespace API.Controllers
 
             await _userManager.UpdateAsync(user);
 
-            return CustomResult();
+            return CustomResult(HttpStatusCode.OK);
         }
     }
 }

@@ -35,9 +35,9 @@ namespace API.Controllers
                                                    Address = s.Address
                                                };
             List<ShopForViewDto>? data = await query.ToListAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(HttpStatusCode.NoContent);
 
-            return CustomResult(data);
+            return CustomResult(data, HttpStatusCode.OK);
         }
 
         [HttpGet("{id}")]
@@ -52,9 +52,9 @@ namespace API.Controllers
                                                    Address = s.Address
                                                };
             ShopForViewDto? data = await query.FirstOrDefaultAsync();
-            if (data == null) return CustomResult(null, HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(null, HttpStatusCode.NoContent);
 
-            return CustomResult(data);
+            return CustomResult(data, HttpStatusCode.OK);
         }
 
         [HttpPost]
@@ -66,27 +66,27 @@ namespace API.Controllers
             await _shopRepo.InsertAsync(data);
             ShopForViewDto? res = new();
             _mapper.Map(data, res);
-            return CustomResult(res, HttpStatusCode.Created);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ShopInput input)
         {
             Shop? data = await _shopRepo.GetAsync(id);
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(HttpStatusCode.NoContent);
             _mapper.Map(input, data);
 
             await _shopRepo.UpdateAsync(data);
             ShopForViewDto? res = new();
             _mapper.Map(data, res);
-            return CustomResult(res);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _shopRepo.DeleteAsync(id);
-            return CustomResult();
+            return CustomResult(id, HttpStatusCode.OK);
         }
     }
 }
