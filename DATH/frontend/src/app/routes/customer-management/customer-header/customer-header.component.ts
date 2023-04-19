@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { Observable, Observer, finalize, switchMap, timer } from 'rxjs';
+import { Observable, Observer, finalize, map, switchMap, timer } from 'rxjs';
 import { Account } from 'src/app/models/account.model';
 import { Customer } from 'src/app/models/customer.model';
 import { AccountService } from 'src/app/services/account.service';
-import { checkResponseStatus } from 'src/app/shared/helper';
+import { EMAIL_REGEX, IDNUMBER_REGEX, PHONE_REGEX, checkResponseStatus } from 'src/app/shared/helper';
 
 @Component({
   selector: 'app-customer-header',
@@ -16,9 +16,6 @@ export class CustomerHeaderComponent {
   constructor(private msg: NzMessageService,
     private fb: FormBuilder,
     private accountService: AccountService){}
-  emailRegex: string = '^[a-z0-9A-Z/.._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$';
-  phoneRegex: string = '[0-9]+$';
-  idCardRegex: string = '^[0-9]+$';
 
   isVisibleSignIn: boolean = false;
   isVisibleSignUp: boolean = false;
@@ -66,17 +63,15 @@ export class CustomerHeaderComponent {
 
   initForm(){
     this.signUpForm = this.fb.group({
-      username: [null, Validators.required],
+      username: [null, Validators.required, this.validateUsernameFromApiDebounce()],
       firstName: [null, Validators.required],
       lastName: [null, Validators.required],
       gender: [null, Validators.required],
       address: [null, [Validators.required]],
-      idNumber: [null, [Validators.required, Validators.pattern(this.idCardRegex)]],
-      phone: [null, [Validators.required, Validators.pattern(this.phoneRegex)]],
+      idNumber: [null, [Validators.required, Validators.pattern(IDNUMBER_REGEX)]],
+      phone: [null, [Validators.required, Validators.pattern(PHONE_REGEX)]],
       birthday: [null, Validators.required],
-      email: [null, [Validators.required, Validators.pattern(this.emailRegex),
-        //this.validateEmailFromApiDebounce()
-      ]],
+      email: [null, [Validators.required, Validators.pattern(EMAIL_REGEX)]],
       password: [null, Validators.required],
       checkPassword: [null, Validators.required]
     });
@@ -131,35 +126,33 @@ export class CustomerHeaderComponent {
     this.isVisibleSignIn ? this.isVisibleSignIn = false : this.isVisibleSignUp = false;
   }
 
-  validateEmailFromApiDebounce = () => {
-    // return (control: AbstractControl): Observable<ValidationErrors | null> => {
-    //   return timer(300).pipe(
-    //     switchMap(() =>
-    //       this.accountService.checkEmail(control.value).pipe(
-    //         map((isValid) => {
-    //           if (isValid) {
-    //             return null;
-    //           }
-    //           return {
-    //             usernameDuplicated: true,
-    //           };
-    //         })
-    //       )
-    //     )
-    //   );
-    // };
+  validateUsernameFromApiDebounce = () => {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return timer(300).pipe(
+        switchMap(() => this.accountService.checkUsername(control.value).pipe(
+          map((res) => {
+            if (res.data.invalid) {
+              return null;
+            }
+            return {
+              usernameDuplicated: true,
+            };
+          })
+        ))
+      )
+    };
   };
 
-  // confirmationValidator = (control: any): { [s: string]: boolean } => {
-  //   if (!control.value) {
-  //     return { required: true };
-  //   } else if (control.value !== this.form.controls.password.value) {
-  //     return { confirm: true, error: true };
-  //   }
-  //   return {};
-  // };
+  confirmationValidator = (control: any): { [s: string]: boolean } => {
+    if (!control.value) {
+      return { required: true };
+    } else if (control.value !== this.signUpForm.controls['password'].value) {
+      return { confirm: true, error: true };
+    }
+    return {};
+  };
 
-  // updateConfirmValidator(): void {
-  //   Promise.resolve().then(() => this.form.controls.['checkPassword'].updateValueAndValidity());
-  // }
+  updateConfirmValidator(): void {
+    Promise.resolve().then(() => this.signUpForm.controls['checkPassword'].updateValueAndValidity());
+  }
 }

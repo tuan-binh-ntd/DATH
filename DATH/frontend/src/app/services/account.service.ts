@@ -46,11 +46,15 @@ export class AccountService {
     this.currentUserSource.next(account);
   }
 
-  signUp(payload: Register): Observable<any> {
+  signUp(payload: Register): Observable<Account> {
     return this.http.post<Account>(this.baseUrl + 'customers', payload);
   }
 
   register(payload: Register): Observable<any> {
     return this.http.post<Account>(this.baseUrl + 'employees', payload);
+  }
+
+  checkUsername(username: string): Observable<any> {
+    return this.http.get<Account>(this.baseUrl + username);
   }
 }

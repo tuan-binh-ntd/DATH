@@ -20,6 +20,7 @@ namespace API.Controllers
         private readonly IRepository<Customer, long> _customerRepo;
         private readonly IRepository<Employee, long> _employeeRepo;
         private readonly IPhotoService _photoService;
+        private readonly ISession _session;
 
         public AccountController(
             IMapper mapper,
@@ -28,7 +29,8 @@ namespace API.Controllers
             SignInManager<AppUser> signInManager,
             IRepository<Customer, long> customerRepo,
             IRepository<Employee, long> employeeRepo,
-            IPhotoService photoService
+            IPhotoService photoService,
+            ISession session
             )
         {
             _mapper = mapper;
@@ -38,6 +40,7 @@ namespace API.Controllers
             _customerRepo = customerRepo;
             _employeeRepo = employeeRepo;
             _photoService = photoService;
+            _session = session;
         }
 
         [AllowAnonymous]
@@ -124,6 +127,8 @@ namespace API.Controllers
 
             if (!result.Succeeded) return CustomResult(HttpStatusCode.Unauthorized);
 
+            _session.SetString("UserId", user.Id.ToString());
+
             UserDto res = new()
             {
                 Username = user.UserName,
@@ -141,7 +146,6 @@ namespace API.Controllers
             }
             _mapper.Map(customer, res);
 
-            HttpContext.Session.SetString("UserId", user.Id.ToString());
 
             _mapper.Map(customer, res);
 
@@ -169,6 +173,13 @@ namespace API.Controllers
             await _userManager.UpdateAsync(user);
 
             return CustomResult(HttpStatusCode.OK);
+        }
+
+        [HttpGet("{username}"), AllowAnonymous]
+        public async Task<IActionResult> CheckUsername(string username)
+        {
+            if (await CheckUserExists(username)) return CustomResult(new { Invalid = false }, HttpStatusCode.OK);
+            return CustomResult(new { Invalid = true }, HttpStatusCode.OK);
         }
     }
 }

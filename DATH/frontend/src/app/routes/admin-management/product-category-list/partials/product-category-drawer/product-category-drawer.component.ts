@@ -38,7 +38,7 @@ export class ProductCategoryDrawerComponent extends DrawerFormBaseComponent {
           .subscribe((res) => {
             if (checkResponseStatus(res)) {
               this.message.success('Create successfully');
-              this.changeToDetail();
+              this.drawerForm.reset();
               this.onCreate.emit(res.data);
             }
           });

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.Helper;
 using Bussiness.Repository;
+using Bussiness.Services;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +25,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
             IQueryable<PromotionForViewDto> query = from p in _promotionRepo.GetAll().AsNoTracking()
                                                    select new PromotionForViewDto()
@@ -35,7 +37,9 @@ namespace API.Controllers
                                                        EndDate = p.EndDate,
                                                        Discount = p.Discount,
                                                    };
-            List<PromotionForViewDto>? data = await query.ToListAsync();
+
+            PaginationResult<PromotionForViewDto> data = await query.Pagination(input);
+
             if (data == null) return CustomResult(HttpStatusCode.NoContent);
 
             return CustomResult(data, HttpStatusCode.OK);

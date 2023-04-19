@@ -14,7 +14,13 @@ export function formatDateISO(date: Date | null | undefined) {
   }
 
 
-  export function formatDateISOShort(date: Date | null | undefined) {
+export function formatDateISOShort(date: Date | null | undefined) {
     if (date) return formatISO(new Date(date), { representation: 'date' });
     else return null;
-  }
+}
+
+export const EMAIL_REGEX: string = '^[a-z0-9A-Z/.._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$';
+
+export const  PHONE_REGEX: string = '[0-9]+$';
+
+export const  IDNUMBER_REGEX: string = '^[0-9]+$';

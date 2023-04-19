@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
-using Bussiness.Extensions;
+using Bussiness.Helper;
 using Bussiness.Interface;
 using Bussiness.Repository;
+using Bussiness.Services;
 using Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -29,7 +29,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
             IQueryable<ProductForViewDto> query = from p in _productRepo.GetAll().AsNoTracking()
                                                           select new ProductForViewDto()
@@ -39,7 +39,9 @@ namespace API.Controllers
                                                               Price = p.Price,
                                                               Description = p.Description
                                                           };
-            List<ProductForViewDto> data = await query.ToListAsync();
+
+            PaginationResult<ProductForViewDto> data = await query.Pagination(input);
+
             if (data == null) return CustomResult(HttpStatusCode.NoContent);
             return CustomResult(data, HttpStatusCode.OK);
         }

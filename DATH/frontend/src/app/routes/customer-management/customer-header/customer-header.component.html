@@ -159,7 +159,18 @@
             <nz-form-label [nzSpan]="24" nzFor="username" nzRequired>
               <span>Username</span>
             </nz-form-label>
-            <nz-form-control [nzSpan]="24" nzErrorTip="Username is required">
+            <nz-form-control [nzSpan]="24" [nzErrorTip]="errorCodeUsername">
+              <ng-template #errorCodeUsername let-control>
+                <div
+                  *ngIf="
+                    signUpForm.controls['username'].invalid &&
+                    (signUpForm.controls['username'].dirty || signUpForm.controls['username'].touched)
+                  "
+                >
+                  <span *ngIf="signUpForm.get('username')?.hasError('required')">Username required</span>
+                  <span *ngIf="signUpForm.get('username')?.hasError('usernameDuplicated')">Username existed</span>
+                </div>
+              </ng-template>
               <input nz-input name="username" type="text" id="username" formControlName="username" placeholder="Input username" />
             </nz-form-control>
           </nz-form-item>
@@ -231,7 +242,7 @@
               <nz-form-item>
                 <nz-form-label [nzSpan]="24" nzFor="password" nzRequired>Password</nz-form-label>
                 <nz-form-control [nzSpan]="24" nzErrorTip="Please input your password!">
-                  <input nz-input type="password" formControlName="password" placeholder="Password" />
+                  <input nz-input type="password" formControlName="password" placeholder="Password" (ngModelChange)="updateConfirmValidator()" />
                 </nz-form-control>
               </nz-form-item>
             </div>

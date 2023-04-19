@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.Helper;
 using Bussiness.Repository;
+using Bussiness.Services;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +25,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
             IQueryable<ProductCategoryForViewDto> query = from pc in _productCateRepo.GetAll().AsNoTracking()
                                                           select new ProductCategoryForViewDto()
@@ -31,8 +33,10 @@ namespace API.Controllers
                                                               Id = pc.Id,
                                                               Name = pc.Name,
                                                           };
-            List<ProductCategoryForViewDto> data = await query.ToListAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NoContent);
+
+            PaginationResult<ProductCategoryForViewDto> data = await query.Pagination(input);
+
+            if (data == null) return CustomResult(HttpStatusCode.OK);
             return CustomResult(data, HttpStatusCode.OK);
         }
 

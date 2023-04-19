@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.Helper;
 using Bussiness.Repository;
+using Bussiness.Services;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +27,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
             IQueryable<ShopForViewDto> query = from s in _shopRepo.GetAll().AsNoTracking()
                                                select new ShopForViewDto()
@@ -34,7 +36,9 @@ namespace API.Controllers
                                                    Name = s.Name,
                                                    Address = s.Address
                                                };
-            List<ShopForViewDto>? data = await query.ToListAsync();
+
+            PaginationResult<ShopForViewDto> data = await query.Pagination(input);
+
             if (data == null) return CustomResult(HttpStatusCode.NoContent);
 
             return CustomResult(data, HttpStatusCode.OK);

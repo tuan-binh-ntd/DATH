@@ -34,7 +34,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<ISession, SessionWrapper>();
+builder.Services.AddSingleton<ISession, SessionWrapper>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 // End  Declaration DI
 
