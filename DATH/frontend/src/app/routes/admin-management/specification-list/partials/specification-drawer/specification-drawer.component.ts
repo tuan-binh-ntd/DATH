@@ -32,7 +32,7 @@ export class SpecificationDrawerComponent extends DrawerFormBaseComponent implem
   fetchCategories(){
     this.specificationCategoryService.getAll().subscribe(res => {
       if(checkResponseStatus(res)){
-        this.categories =res.data;
+        this.categories = res.data;
       }
     })
   }

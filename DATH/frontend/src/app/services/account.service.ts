@@ -10,7 +10,7 @@ import { Login } from '../models/login.model';
   providedIn: 'root'
 })
 export class AccountService {
-  baseUrl: string = environment.baseUrl + 'account/';
+  baseUrl: string = environment.baseUrl + 'accounts/';
   currentUserSource = new BehaviorSubject<Account>({
     username: null,
     firstName: null,

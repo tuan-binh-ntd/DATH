@@ -11,7 +11,7 @@ using System.Net;
 
 namespace API.Controllers
 {
-    public class AccountController : AdminBaseController
+    public class AccountsController : AdminBaseController
     {
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
@@ -22,7 +22,7 @@ namespace API.Controllers
         private readonly IPhotoService _photoService;
         private readonly ISession _session;
 
-        public AccountController(
+        public AccountsController(
             IMapper mapper,
             ITokenService tokenService,
             UserManager<AppUser> userManager,

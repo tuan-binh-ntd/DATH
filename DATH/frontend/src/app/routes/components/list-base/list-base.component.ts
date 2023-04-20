@@ -9,7 +9,7 @@ import { DrawerFormBaseComponent } from '../drawer-form-base/drawer-form-base.co
 })
 export class ListBaseComponent {
   @ViewChild('drawerFormBase') drawerFormBase!: DrawerFormBaseComponent;
-  listOfData:any[] = [];
+  listOfData: readonly any[] = [];
   listOfColumn: any[] = [];
   totalRecords: number = 0;
   currentRecordId: string = '';
@@ -40,13 +40,13 @@ export class ListBaseComponent {
 
    onUpdateItem(data: any){
     const index = this.listOfData.findIndex(item => item.id === data.id);
-    this.listOfData.splice(index, 1, data);
+    this.listOfData = [...this.listOfData.slice(0, index), ...data, this.listOfData.slice(index + 1)];
     this.listOfData = [...this.listOfData];
    }
 
    onDeleteItem(data: any){
     const index = this.listOfData.findIndex(item => item.id === data.id);
-    this.listOfData.splice(index, 1);
+    this.listOfData = [...this.listOfData.slice(0, index), ...data, this.listOfData.slice(index + 1)];
     this.listOfData = [...this.listOfData];
 
    }

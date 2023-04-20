@@ -12,7 +12,7 @@ namespace Bussiness.Helper
 
         public static IQueryable<TSource> PageBy<TSource>(this IQueryable<TSource> query, PaginationInput input)
         {
-            return query!.Skip(input.PageSize * (input.PageNum - 1)).Take(input.PageSize);
+            return query!.Skip((int)input.PageSize! * ((int)input.PageNum! - 1)).Take((int)input.PageSize);
         }
 
         public static async Task<PaginationResult<TSource>> Pagination<TSource>(this IQueryable<TSource> query, PaginationInput input)
@@ -24,7 +24,7 @@ namespace Bussiness.Helper
             PaginationResult<TSource> data = new()
             {
                 TotalCount = totalCocunt,
-                TotalPage = Helper.Ceiling(input.PageSize, totalCocunt),
+                TotalPage = Helper.Ceiling((int)input.PageSize!, totalCocunt),
                 Content = await query.ToListAsync()
             };
 

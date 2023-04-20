@@ -40,10 +40,8 @@ namespace API.Controllers
                                                               Description = p.Description
                                                           };
 
-            PaginationResult<ProductForViewDto> data = await query.Pagination(input);
-
-            if (data == null) return CustomResult(HttpStatusCode.NoContent);
-            return CustomResult(data, HttpStatusCode.OK);
+            if (input.PageNum != null && input.PageSize != null) return CustomResult(await query.Pagination(input), HttpStatusCode.OK);
+            else return CustomResult(await query.ToListAsync(), HttpStatusCode.OK);
         }
 
         [HttpGet("{id}", Name = "Products")]
