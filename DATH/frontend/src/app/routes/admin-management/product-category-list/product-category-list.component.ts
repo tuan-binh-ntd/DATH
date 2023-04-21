@@ -15,24 +15,15 @@ import { PaginationInput } from 'src/app/models/pagination-input';
 export class ProductCategoryListComponent extends ListBaseComponent {
   @ViewChild('drawerFormBase') override drawerFormBase!: ProductCategoryDrawerComponent;
   @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.calculateHeightBodyTable();
-  }
+
   paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
-  scrollY!: string;
 
   constructor(protected override msg: NzMessageService,
     private productCategoryService: ProductCategoryService,) {
     super(msg);
   }
 
-  ngAfterViewInit() {
-    this.calculateHeightBodyTable();
-  }
-
-  calculateHeightBodyTable() {
-    this.scrollY = `calc(100vh - 333px)`;
-  }
+ 
 
   override listOfColumn: any[] = [
     {

@@ -14,12 +14,8 @@ import { PaginationInput } from 'src/app/models/pagination-input';
 })
 export class SpecificationListComponent extends ListBaseComponent {
   @ViewChild('drawerFormBase') override drawerFormBase!: SpecificationDrawerComponent;
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.calculateHeightBodyTable();
-  }
+ 
   paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
-  scrollY!: string;
   constructor(protected override msg: NzMessageService,
     private specificationService: SpecificationService) {
     super(msg);
@@ -51,11 +47,7 @@ export class SpecificationListComponent extends ListBaseComponent {
     },
   ];
 
-  ngAfterViewInit() {
-    this.calculateHeightBodyTable();
-  }
-
-  calculateHeightBodyTable() {
+  override calculateHeightBodyTable() {
     this.scrollY = `calc(100vh - 333px)`;
   }
 

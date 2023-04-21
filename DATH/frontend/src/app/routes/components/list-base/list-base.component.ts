@@ -32,7 +32,7 @@ export class ListBaseComponent {
     // this.titleHeight = document.getElementsByClassName('ant-table-title')[0].clientHeight;
     // this.footerHeight = document.getElementsByClassName('ant-table-footer')[0].clientHeight;
     // this.headerHeight = document.getElementsByClassName('ant-table-thead')[0].clientHeight;
-    this.scrollY = `calc(100vh - 300px)`;
+    this.scrollY = `calc(100vh - 333px)`;
   }
 
 

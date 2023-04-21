@@ -15,11 +15,8 @@ import { PaginationInput } from 'src/app/models/pagination-input';
 export class ShopListComponent extends ListBaseComponent {
   @ViewChild('drawerFormBase') override drawerFormBase!: ShopDrawerComponent;
   @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.calculateHeightBodyTable();
-  }
+  
   paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
-  scrollY!: string;
   constructor(protected override msg: NzMessageService,
     private shopService: ShopService) {
     super(msg);
@@ -43,13 +40,6 @@ export class ShopListComponent extends ListBaseComponent {
     }
   ];
 
-  ngAfterViewInit() {
-    this.calculateHeightBodyTable();
-  }
-
-  calculateHeightBodyTable() {
-    this.scrollY = `calc(100vh - 333px)`;
-  }
 
   override fetchData(): void {
     this.shopService.getAll(this.paginationParam.pageNum, this.paginationParam.pageSize).pipe(

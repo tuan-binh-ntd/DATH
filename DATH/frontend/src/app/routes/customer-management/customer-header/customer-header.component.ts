@@ -31,7 +31,7 @@ export class CustomerHeaderComponent {
         this.msg.success('Successfully!');
         this.handleCancel();
       } else {
-        this.msg.error("Haven't data!");
+        this.msg.error("There is an error from server");
       }
     },
     error:(error) => this.msg.error(error.error.message),
@@ -42,11 +42,11 @@ export class CustomerHeaderComponent {
     next: (res) => {
       if (checkResponseStatus(res)) {
         this.signUpForm.reset();
-        this.msg.success('Successfully!');
+        this.msg.success('Successfully');
         this.handleCancel();
       }
       else {
-        this.msg.error("Haven't data!");
+        this.msg.error("There is an error from server");
       }
     },
     error:(error) => this.msg.error(error.error.message),
@@ -64,48 +64,43 @@ export class CustomerHeaderComponent {
   initForm(){
     this.signUpForm = this.fb.group({
       username: [null, Validators.required, this.validateUsernameFromApiDebounce()],
-      firstName: [null, Validators.required],
-      lastName: [null, Validators.required],
-      gender: [null, Validators.required],
-      address: [null, [Validators.required]],
-      idNumber: [null, [Validators.required, Validators.pattern(IDNUMBER_REGEX)]],
-      phone: [null, [Validators.required, Validators.pattern(PHONE_REGEX)]],
-      birthday: [null, Validators.required],
-      email: [null, [Validators.required, Validators.pattern(EMAIL_REGEX)]],
+      // firstName: [null, Validators.required],
+      // lastName: [null, Validators.required],
+      // gender: [null, Validators.required],
+      // address: [null, [Validators.required]],
+      // idNumber: [null, [Validators.required, Validators.pattern(IDNUMBER_REGEX)]],
+      // phone: [null, [Validators.required, Validators.pattern(PHONE_REGEX)]],
+      // birthday: [null, Validators.required],
+      // email: [null, [Validators.required, Validators.pattern(EMAIL_REGEX)]],
       password: [null, Validators.required],
-      checkPassword: [null, Validators.required]
+      checkPassword: [null, Validators.required, this.validateConfirmPassword()]
     });
 
     this.signInForm = this.fb.group({
       username: [null, Validators.required],
       password: [null, Validators.required],
+      remember: [null],
     })
   }
 
-  validateSignUpForm(): void{
-    for (const i in this.signUpForm.controls) {
-      this.signUpForm.controls[i].markAsDirty();
-      this.signUpForm.controls[i].updateValueAndValidity();
+  validateForm(form: FormGroup): void{
+    for (const i in form.controls) {
+      form.controls[i].markAsDirty();
+      form.controls[i].updateValueAndValidity();
     }
   }
 
-  validateSignInForm(): void{
-    for (const i in this.signUpForm.controls) {
-      this.signUpForm.controls[i].markAsDirty();
-      this.signUpForm.controls[i].updateValueAndValidity();
-    }
-  }
-
+ 
   submitSignUpForm(): void {
-    this.validateSignUpForm();
-    this.signUpForm.value.gender == "1" ? this.signUpForm.value.gender = 1 : this.signUpForm.value.gender = 0;
+    this.validateForm(this.signUpForm);
+    // this.signUpForm.value.gender == "1" ? this.signUpForm.value.gender = 1 : this.signUpForm.value.gender = 0;
     this.accountService.signUp({...this.signUpForm.value, isActive: true})
       //.pipe(finalize(() => (this.isLoading = false)))
       .subscribe(this.signUpObserver)
   }
 
   submitSignInForm(): void {
-    this.validateSignInForm();
+    this.validateForm(this.signInForm);
     this.accountService.signIn({...this.signInForm.value})
       //.pipe(finalize(() => (this.isLoading = false)))
       .subscribe(
@@ -143,6 +138,19 @@ export class CustomerHeaderComponent {
     };
   };
 
+
+  validateConfirmPassword = () => {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      return timer(300).pipe(
+          map((res) => {
+            let pass = this.signUpForm.get('password')?.value;
+            let confirmPass = this.signUpForm.get('checkPassword')?.value;
+            if(pass !== confirmPass) return {notMatch: true};
+            else return {notMatch: false};
+          })
+      )
+    };
+  }
   confirmationValidator = (control: any): { [s: string]: boolean } => {
     if (!control.value) {
       return { required: true };
