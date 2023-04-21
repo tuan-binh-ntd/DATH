@@ -15,6 +15,7 @@ import { checkResponseStatus } from 'src/app/shared/helper';
 })
 export class SpecificationDrawerComponent extends DrawerFormBaseComponent implements OnInit {
   categories: SpecificationCategory[] = [];
+  categoryType: string = '';
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,
@@ -32,22 +33,15 @@ export class SpecificationDrawerComponent extends DrawerFormBaseComponent implem
   fetchCategories(){
     this.specificationCategoryService.getAll().subscribe(res => {
       if(checkResponseStatus(res)){
-        this.categories =res.data;
+        this.categories = res.data;
       }
     })
   }
 
-  override checkEditForm() {
-    const formValue = this.drawerForm.getRawValue();
-    if (this.isEdit) {
-      this.setEnableForm();
-      this.titleDrawer = `Edit: ${formValue?.code}`;
-      this.markAsTouched();
-    } else {
-      this.setDisableForm();
-      this.titleDrawer = `${formValue?.code}`;
-      this.markAsUntouched();
-    }
+  override patchDataToForm(data: any): void {
+    super.patchDataToForm(data);
+    const category = this.categories.find(item => item.id === data.specificationCategoryId);
+    if(category) this.categoryType = category?.code!;
   }
 
   override initForm(): void {
@@ -60,6 +54,13 @@ export class SpecificationDrawerComponent extends DrawerFormBaseComponent implem
     })
   }
 
+  onChangeCategory(ev: any){
+    if(ev){
+      const category = this.categories.find(item => item.id === ev);
+      this.categoryType = category?.code!;
+    }
+  }
+
 override submitForm() {
     this.validateForm();
     if(this.drawerForm.valid){
@@ -70,6 +71,7 @@ override submitForm() {
         ).subscribe(res => {
           if(checkResponseStatus(res)){
             this.message.success('Create successfully');
+            this.data = res.data;
             this.changeToDetail();
             this.onCreate.emit(res.data);
           }
@@ -81,6 +83,7 @@ override submitForm() {
           finalize(() => this.isLoading = false)).subscribe(res => {
           if(checkResponseStatus(res)){
             this.message.success('Update successfully');
+            this.data = res.data;
               this.changeToDetail();
               this.onUpdate.emit(res.data);
           }

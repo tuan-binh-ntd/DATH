@@ -29,6 +29,7 @@ export class SpecificationCategoryDrawerComponent extends DrawerFormBaseComponen
     });
   }
 
+
   override submitForm() {
     this.validateForm();
     if (this.drawerForm.valid) {
@@ -39,6 +40,7 @@ export class SpecificationCategoryDrawerComponent extends DrawerFormBaseComponen
           .subscribe((res) => {
             if (checkResponseStatus(res)) {
               this.message.success('Create successfully');
+              this.data = res.data;
               this.changeToDetail();
               this.onCreate.emit(res.data);
             }

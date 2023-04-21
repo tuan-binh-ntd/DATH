@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, HostListener, ViewChild } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { DrawerFormBaseComponent } from '../drawer-form-base/drawer-form-base.component';
 
@@ -15,7 +15,28 @@ export class ListBaseComponent {
   currentRecordId: string = '';
   currentRecord: any;
   isLoadingTable: boolean = false;
+  scrollY: string = '';
   constructor(protected msg: NzMessageService){}
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.calculateHeightBodyTable();
+  }
+
+  ngAfterViewInit() {
+    this.calculateHeightBodyTable();
+  }
+
+
+  calculateHeightBodyTable() {
+    // this.titleHeight = document.getElementsByClassName('ant-table-title')[0].clientHeight;
+    // this.footerHeight = document.getElementsByClassName('ant-table-footer')[0].clientHeight;
+    // this.headerHeight = document.getElementsByClassName('ant-table-thead')[0].clientHeight;
+    this.scrollY = `calc(100vh - 300px)`;
+  }
+
+
+  
   ngOnInit(): void {
     this.fetchData();
   }

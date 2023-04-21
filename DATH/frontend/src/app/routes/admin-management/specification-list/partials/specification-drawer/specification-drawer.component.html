@@ -8,20 +8,24 @@
   (onSubmit)="submitForm()"
 >
   <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
-
     <nz-form-item>
       <nz-form-label [nzSpan]="24" nzFor="category" nzRequired>
         <span>Category</span>
       </nz-form-label>
       <nz-form-control [nzSpan]="24">
-      <nz-select
-        nzShowSearch
-        nzAllowClear
-        nzPlaceHolder="Select a category"
-        formControlName="specificationCategoryId"
-      >
-      <nz-option *ngFor="let category of categories" [nzLabel]="category.code" [nzValue]="category.id"></nz-option>
-      </nz-select>
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select a category"
+          formControlName="specificationCategoryId"
+          (ngModelChange)="onChangeCategory($event)"
+        >
+          <nz-option
+            *ngFor="let category of categories"
+            [nzLabel]="category.value"
+            [nzValue]="category.id"
+          ></nz-option>
+        </nz-select>
       </nz-form-control>
     </nz-form-item>
 
@@ -45,7 +49,14 @@
         <span>Value</span>
       </nz-form-label>
       <nz-form-control [nzSpan]="24" nzErrorTip="Value is required">
-        <input
+        <ng-container *ngIf="categoryType === 'color'; else default" >
+          <input
+          type="color"
+          formControlName="value"
+        />
+        </ng-container>
+        <ng-template #default>
+          <input
           nz-input
           name="value"
           type="value"
@@ -53,6 +64,8 @@
           formControlName="value"
           placeholder="Input value"
         />
+        </ng-template>
+       
       </nz-form-control>
     </nz-form-item>
 
@@ -83,13 +96,13 @@
     (onClick)="closeDrawer()"
   ></app-button-base>
   <app-button-base
-  class="float-right"
-  text="Save"
-  buttonClass="btn-success mr-2"
-  iconClass="fa-solid fa-floppy-disk"
-  *ngIf="isEdit"
-  (onClick)="submitForm()"
-></app-button-base>
+    class="float-right"
+    text="Save"
+    buttonClass="btn-success mr-2"
+    iconClass="fa-solid fa-floppy-disk"
+    *ngIf="isEdit"
+    (onClick)="submitForm()"
+  ></app-button-base>
   <app-button-base
     class="float-right"
     text="Back"

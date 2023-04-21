@@ -7,13 +7,15 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { CustomerLayoutComponent } from './customer-layout/customer-layout.component';
 import { CustomerHeaderComponent } from './customer-header/customer-header.component';
 import { CustomerHomeComponent } from './customer-home/customer-home.component';
+import { ViewProductListComponent } from './view-product-list/view-product-list.component';
 
 
 @NgModule({
   declarations: [
     CustomerLayoutComponent,
     CustomerHeaderComponent,
-    CustomerHomeComponent
+    CustomerHomeComponent,
+    ViewProductListComponent
   ],
   imports: [
     CommonModule,

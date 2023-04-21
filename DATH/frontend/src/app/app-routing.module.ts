@@ -17,7 +17,7 @@ const routes: Routes = [
     path: 'admin-management',
     component: AdminLayoutComponent,
     loadChildren: () => import('./routes/admin-management/admin-management.module').then((m) => m.AdminManagementModule),
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
   },
   {
     path: '',

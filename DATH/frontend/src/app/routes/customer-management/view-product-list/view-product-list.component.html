@@ -1,0 +1,21 @@
+<app-page-grid >
+      <div nz-row>
+        <div nz-col nzSpan="6">
+          <h2 class="text-center">{{ type }}</h2>
+        </div>
+        <div nz-col nzSpan="18">
+
+        </div>
+      </div>
+      <div nz-row nzGutter="16">
+        <div nz-col nzSpan="6">
+                <nz-input-group [nzSuffix]="searchIcon">
+                  <input type="text" nz-input placeholder="Search..." />
+                </nz-input-group>
+                <ng-template #searchIcon>
+                    <span><i class="fa-solid fa-search  mr-2 text-muted"></i></span>
+                  </ng-template>
+        </div>
+        <div nz-col nzSpan="18"></div>
+      </div>
+</app-page-grid>

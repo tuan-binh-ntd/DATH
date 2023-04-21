@@ -1,13 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CustomerHomeComponent } from './customer-home/customer-home.component';
 import { CustomerLayoutComponent } from './customer-layout/customer-layout.component';
+import { ViewProductListComponent } from './view-product-list/view-product-list.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
  
   {
-    path: '',
-    component: CustomerLayoutComponent,
+    path: 'home',
+    component: CustomerHomeComponent,
+  },
+  {
+    path: 'product/:type',
+    component: ViewProductListComponent,
   },
 ];
 
