@@ -1,27 +1,38 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Observable, Observer, finalize, map, switchMap, timer } from 'rxjs';
 import { Account } from 'src/app/models/account.model';
 import { Customer } from 'src/app/models/customer.model';
 import { AccountService } from 'src/app/services/account.service';
-import { EMAIL_REGEX, IDNUMBER_REGEX, PHONE_REGEX, checkResponseStatus } from 'src/app/shared/helper';
+import {
+  EMAIL_REGEX,
+  IDNUMBER_REGEX,
+  PHONE_REGEX,
+  checkResponseStatus,
+} from 'src/app/shared/helper';
 
 @Component({
   selector: 'app-customer-header',
   templateUrl: './customer-header.component.html',
-  styleUrls: ['./customer-header.component.less']
+  styleUrls: ['./customer-header.component.less'],
 })
 export class CustomerHeaderComponent {
-  constructor(private msg: NzMessageService,
+  constructor(
+    private msg: NzMessageService,
     private fb: FormBuilder,
-    private accountService: AccountService){}
-
-  isVisibleSignIn: boolean = false;
-  isVisibleSignUp: boolean = false;
+    private accountService: AccountService
+  ) {}
+  isVisible: boolean = false;
   signUpForm!: FormGroup;
   signInForm!: FormGroup;
-
+    tabIndex: number = 0;
   customer!: Customer;
 
   signInObserver: Observer<Account> = {
@@ -31,10 +42,10 @@ export class CustomerHeaderComponent {
         this.msg.success('Successfully!');
         this.handleCancel();
       } else {
-        this.msg.error("There is an error from server");
+        this.msg.error('There is an error from server');
       }
     },
-    error:(error) => this.msg.error(error.error.message),
+    error: (error) => this.msg.error(error.error.message),
     complete: () => true,
   };
 
@@ -44,16 +55,15 @@ export class CustomerHeaderComponent {
         this.signUpForm.reset();
         this.msg.success('Successfully');
         this.handleCancel();
-      }
-      else {
-        this.msg.error("There is an error from server");
+      } else {
+        this.msg.error('There is an error from server');
       }
     },
-    error:(error) => this.msg.error(error.error.message),
+    error: (error) => this.msg.error(error.error.message),
     complete: () => true,
   };
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     this.customer = JSON.parse(localStorage.getItem('user')!);
   }
 
@@ -61,9 +71,13 @@ export class CustomerHeaderComponent {
     this.initForm();
   }
 
-  initForm(){
+  initForm() {
     this.signUpForm = this.fb.group({
-      username: [null, Validators.required, this.validateUsernameFromApiDebounce()],
+      username: [
+        null,
+        Validators.required,
+        this.validateUsernameFromApiDebounce(),
+      ],
       // firstName: [null, Validators.required],
       // lastName: [null, Validators.required],
       // gender: [null, Validators.required],
@@ -73,84 +87,92 @@ export class CustomerHeaderComponent {
       // birthday: [null, Validators.required],
       // email: [null, [Validators.required, Validators.pattern(EMAIL_REGEX)]],
       password: [null, Validators.required],
-      checkPassword: [null, Validators.required, this.validateConfirmPassword()]
+      checkPassword: [
+        null,
+        Validators.required,
+        this.validateConfirmPassword(),
+      ],
     });
 
     this.signInForm = this.fb.group({
       username: [null, Validators.required],
       password: [null, Validators.required],
       remember: [null],
-    })
+    });
   }
 
-  validateForm(form: FormGroup): void{
+  validateForm(form: FormGroup): void {
     for (const i in form.controls) {
       form.controls[i].markAsDirty();
       form.controls[i].updateValueAndValidity();
     }
   }
 
- 
   submitSignUpForm(): void {
     this.validateForm(this.signUpForm);
     // this.signUpForm.value.gender == "1" ? this.signUpForm.value.gender = 1 : this.signUpForm.value.gender = 0;
-    this.accountService.signUp({...this.signUpForm.value, isActive: true})
+    this.accountService
+      .signUp({ ...this.signUpForm.value, isActive: true })
       //.pipe(finalize(() => (this.isLoading = false)))
-      .subscribe(this.signUpObserver)
+      .subscribe(this.signUpObserver);
   }
 
   submitSignInForm(): void {
     this.validateForm(this.signInForm);
-    this.accountService.signIn({...this.signInForm.value})
+    this.accountService
+      .signIn({ ...this.signInForm.value })
       //.pipe(finalize(() => (this.isLoading = false)))
-      .subscribe(
-        this.signInObserver
-      )
+      .subscribe(this.signInObserver);
   }
 
   signIn() {
-    this.isVisibleSignIn = true;
+    this.isVisible = true;
+    this.tabIndex = 0;
   }
 
   signUp() {
-    this.isVisibleSignUp = true;
+    this.isVisible = true;
+    this.tabIndex = 1;
+
   }
 
-
   handleCancel(): void {
-    this.isVisibleSignIn ? this.isVisibleSignIn = false : this.isVisibleSignUp = false;
+    this.isVisible = false;
+    this.tabIndex = 0;
+
   }
 
   validateUsernameFromApiDebounce = () => {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return timer(300).pipe(
-        switchMap(() => this.accountService.checkUsername(control.value).pipe(
-          map((res) => {
-            if (res.data.invalid) {
-              return null;
-            }
-            return {
-              usernameDuplicated: true,
-            };
-          })
-        ))
-      )
+        switchMap(() =>
+          this.accountService.checkUsername(control.value).pipe(
+            map((res) => {
+              if (res.data.invalid) {
+                return null;
+              }
+              return {
+                usernameDuplicated: true,
+              };
+            })
+          )
+        )
+      );
     };
   };
-
 
   validateConfirmPassword = () => {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return timer(300).pipe(
-          map((res) => {
-            let pass = this.signUpForm.get('password')?.value;
-            let confirmPass = this.signUpForm.get('checkPassword')?.value;
-            if(pass !== confirmPass) return {notMatch: true};
-            else return {notMatch: false};
-          })
-      )
+        map((res) => {
+          let pass = this.signUpForm.get('password')?.value;
+          let confirmPass = this.signUpForm.get('checkPassword')?.value;
+          if (pass !== confirmPass) return { notMatch: true };
+          else return null;
+        })
+      );
     };
-  }
+  };
   confirmationValidator = (control: any): { [s: string]: boolean } => {
     if (!control.value) {
       return { required: true };
@@ -161,6 +183,8 @@ export class CustomerHeaderComponent {
   };
 
   updateConfirmValidator(): void {
-    Promise.resolve().then(() => this.signUpForm.controls['checkPassword'].updateValueAndValidity());
+    Promise.resolve().then(() =>
+      this.signUpForm.controls['checkPassword'].updateValueAndValidity()
+    );
   }
 }

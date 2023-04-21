@@ -124,8 +124,8 @@ namespace API.Controllers
 
             var result = await _signInManager
                 .CheckPasswordSignInAsync(user, loginDto.Password!, false);
-
-            if (!result.Succeeded) return CustomResult(HttpStatusCode.Unauthorized);
+            var message = "Incorrect name or password";
+            if (!result.Succeeded) return CustomResult(message, HttpStatusCode.Unauthorized);
 
             _session.SetString("UserId", user.Id.ToString());
 
