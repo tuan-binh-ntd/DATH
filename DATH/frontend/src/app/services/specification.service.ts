@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Specification } from '../models/specification.model';
+import { ResponseResult } from '../models/response';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,9 @@ export class SpecificationService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<any>{
-    return this.http.get(this.baseUrl);
+  getAll(pageNum?: number, pageSize?: number): Observable<ResponseResult<Specification>> {
+    if(pageNum === undefined && pageSize === undefined) return this.http.get<ResponseResult<Specification>>(this.baseUrl);
+    return this.http.get<ResponseResult<Specification>>(this.baseUrl + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
   }
 
   get(id: number){

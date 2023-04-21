@@ -11,7 +11,7 @@ using System.Net;
 
 namespace API.Controllers
 {
-    public class AccountController : AdminBaseController
+    public class AccountsController : AdminBaseController
     {
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
@@ -20,15 +20,17 @@ namespace API.Controllers
         private readonly IRepository<Customer, long> _customerRepo;
         private readonly IRepository<Employee, long> _employeeRepo;
         private readonly IPhotoService _photoService;
+        private readonly ISession _session;
 
-        public AccountController(
+        public AccountsController(
             IMapper mapper,
             ITokenService tokenService,
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             IRepository<Customer, long> customerRepo,
             IRepository<Employee, long> employeeRepo,
-            IPhotoService photoService
+            IPhotoService photoService,
+            ISession session
             )
         {
             _mapper = mapper;
@@ -38,6 +40,7 @@ namespace API.Controllers
             _customerRepo = customerRepo;
             _employeeRepo = employeeRepo;
             _photoService = photoService;
+            _session = session;
         }
 
         [AllowAnonymous]
@@ -67,9 +70,12 @@ namespace API.Controllers
 
             await _customerRepo.InsertAsync(customer);
 
-            UserDto userDto = new();
+            UserDto userDto = new()
+            {
+                Token = await _tokenService.CreateToken(user)
+            };
             _mapper.Map(customer, userDto);
-            return CustomResult(userDto);
+            return CustomResult(userDto, HttpStatusCode.OK);
         }
 
         [HttpPost("employees")]
@@ -100,9 +106,12 @@ namespace API.Controllers
 
             _mapper.Map(registerDto, employee);
 
-            UserDto userDto = new();
+            UserDto userDto = new()
+            {
+                Token = await _tokenService.CreateToken(user)
+            };
             _mapper.Map(employee, userDto);
-            return CustomResult(userDto);
+            return CustomResult(userDto, HttpStatusCode.OK);
         }
 
         [AllowAnonymous]
@@ -117,6 +126,8 @@ namespace API.Controllers
                 .CheckPasswordSignInAsync(user, loginDto.Password!, false);
 
             if (!result.Succeeded) return CustomResult(HttpStatusCode.Unauthorized);
+
+            _session.SetString("UserId", user.Id.ToString());
 
             UserDto res = new()
             {
@@ -135,11 +146,10 @@ namespace API.Controllers
             }
             _mapper.Map(customer, res);
 
-            HttpContext.Session.SetString("UserId", user.Id.ToString());
 
             _mapper.Map(customer, res);
 
-            return CustomResult(res);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         private async Task<bool> CheckUserExists(string username)
@@ -162,7 +172,14 @@ namespace API.Controllers
 
             await _userManager.UpdateAsync(user);
 
-            return CustomResult();
+            return CustomResult(HttpStatusCode.OK);
+        }
+
+        [HttpGet("{username}"), AllowAnonymous]
+        public async Task<IActionResult> CheckUsername(string username)
+        {
+            if (await CheckUserExists(username)) return CustomResult(new { Invalid = false }, HttpStatusCode.OK);
+            return CustomResult(new { Invalid = true }, HttpStatusCode.OK);
         }
     }
 }

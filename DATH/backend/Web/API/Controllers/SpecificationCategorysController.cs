@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.Helper;
 using Bussiness.Repository;
+using Bussiness.Services;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +25,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
             IQueryable<SpecificationCategoryForViewDto> query = from s in _specCateRepo.GetAll().AsNoTracking()
                                                                 select new SpecificationCategoryForViewDto()
@@ -32,10 +34,9 @@ namespace API.Controllers
                                                                     Code = s.Code,
                                                                     Value = s.Value
                                                                 };
-            List<SpecificationCategoryForViewDto>? data = await query.ToListAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
 
-            return CustomResult(data);
+            if (input.PageNum != null && input.PageSize != null) return CustomResult(await query.Pagination(input), HttpStatusCode.OK);
+            else return CustomResult(await query.ToListAsync(), HttpStatusCode.OK);
         }
 
         [HttpGet("{id}")]
@@ -51,9 +52,9 @@ namespace API.Controllers
                                                                 };
 
             List<SpecificationCategoryForViewDto>? data = await query.ToListAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(HttpStatusCode.NoContent);
 
-            return CustomResult(data);
+            return CustomResult(data, HttpStatusCode.OK);
         }
 
         [HttpPost]
@@ -64,14 +65,14 @@ namespace API.Controllers
             await _specCateRepo.InsertAsync(specificationCategory);
             SpecificationCategoryForViewDto? res = new();
             _mapper.Map(specificationCategory, res);
-            return CustomResult(res, HttpStatusCode.Created);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, SpecificationCategory input)
         {
             SpecificationCategory? specificationCategory = await _specCateRepo.GetAsync(id);
-            if (specificationCategory == null) return CustomResult(HttpStatusCode.NotFound);
+            if (specificationCategory == null) return CustomResult(HttpStatusCode.NoContent);
             specificationCategory = _mapper.Map(input, specificationCategory);
             await _specCateRepo.UpdateAsync(specificationCategory);
             SpecificationCategoryForViewDto? res = new();

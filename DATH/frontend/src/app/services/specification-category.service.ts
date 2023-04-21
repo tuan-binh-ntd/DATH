@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { SpecificationCategory } from '../models/specificationCategory.model';
+import { PaginationResult } from '../models/pagination-result';
+import { ResponseResult } from '../models/response';
 
 @Injectable({
   providedIn: 'root'
@@ -12,23 +14,24 @@ export class SpecificationCategoryService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<any>{
-    return this.http.get(this.baseUrl);
+  getAll(pageNum?: number, pageSize?: number): Observable<ResponseResult<SpecificationCategory>> {
+    if (pageNum === undefined && pageSize === undefined) return this.http.get<ResponseResult<SpecificationCategory>>(this.baseUrl);
+    return this.http.get<ResponseResult<SpecificationCategory>>(this.baseUrl + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
   }
 
-  get(id: number){
+  get(id: number) {
     return this.http.get(this.baseUrl + '/' + id);
   }
 
-  update(id: number, payload: SpecificationCategory): Observable<any>{
+  update(id: number, payload: SpecificationCategory): Observable<any> {
     return this.http.put(this.baseUrl + '/' + id, payload);
   }
 
-  create(payload: SpecificationCategory): Observable<any>{
+  create(payload: SpecificationCategory): Observable<any> {
     return this.http.post(this.baseUrl, payload);
   }
 
-  delete(id: number): Observable<any>{
+  delete(id: number): Observable<any> {
     return this.http.delete(this.baseUrl + '/' + id);
   }
 }

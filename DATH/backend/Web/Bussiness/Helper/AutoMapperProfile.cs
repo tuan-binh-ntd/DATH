@@ -49,6 +49,8 @@ namespace Bussiness.Helper
             CreateMap<ProductCategory, ProductCategoryForViewDto>().ReverseMap();
 
             CreateMap<Photo, PhotoDto>().ReverseMap();
+
+            CreateMap<Employee, EmployeeInput>().ReverseMap();
         }
     }
 }

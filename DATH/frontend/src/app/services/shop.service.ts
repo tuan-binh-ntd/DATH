@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Shop } from '../models/shop.model';
+import { PaginationResult } from '../models/pagination-result';
+import { ResponseResult } from '../models/response';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +14,9 @@ export class ShopService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<any>{
-    return this.http.get(this.baseUrl);
+  getAll(pageNum?: number, pageSize?: number): Observable<ResponseResult<Shop>> {
+    if(pageNum === undefined && pageSize === undefined) return this.http.get<ResponseResult<Shop>>(this.baseUrl);
+    return this.http.get<ResponseResult<Shop>>(this.baseUrl + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
   }
 
   get(id: number){

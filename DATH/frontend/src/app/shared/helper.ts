@@ -1,7 +1,7 @@
 
 import formatISO from 'date-fns/formatISO';
 export function checkResponseStatus(response: any): boolean{
-    if(response && response.statusCode >= 200 && response.statusCode < 300  && response.data){
+    if(response && response.statusCode === 200 && response.data) {
         return true;
     }
     else return false;
@@ -12,10 +12,15 @@ export function formatDateISO(date: Date | null | undefined) {
     if (dateISOShort) return new Date(dateISOShort).toISOString();
     else return null;
   }
-  
 
-  export function formatDateISOShort(date: Date | null | undefined) {
+
+export function formatDateISOShort(date: Date | null | undefined) {
     if (date) return formatISO(new Date(date), { representation: 'date' });
     else return null;
-  }
-  
+}
+
+export const EMAIL_REGEX: string = '^[a-z0-9A-Z/.._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$';
+
+export const  PHONE_REGEX: string = '[0-9]+$';
+
+export const  IDNUMBER_REGEX: string = '^[0-9]+$';

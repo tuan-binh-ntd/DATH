@@ -17,11 +17,10 @@
         <li nz-menu-item [routerLink]="'product/service'">Service</li>
         <li nz-menu-item [routerLink]="'product/promotion'">Promotion</li>
       </ul>
-
     </div>
 
     <div class="d-flex">
-        <span
+      <span
         ><app-button-icon
           toolTipTitle="Theme"
           iconClass="fa-solid fa-moon fa-lg "
@@ -65,26 +64,221 @@
         </div>
       </nz-dropdown-menu>
     </div>
-    <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()">
-                  <ng-container *nzModalContent>
-                    <form nz-form [formGroup]="form">
-                      <nz-form-item>
-                        <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
-                          <span>Code</span>
-                        </nz-form-label>
-                        <nz-form-control [nzSpan]="24" nzErrorTip="Code is required">
-                          <input
-                            nz-input
-                            name="code"
-                            type="code"
-                            id="code"
-                            formControlName="code"
-                            placeholder="Input code"
-                          />
-                        </nz-form-control>
-                      </nz-form-item>
-                    </form>
-                  </ng-container>
-              </nz-modal>
+    <!-- Sign In Modal -->
+    <nz-modal
+      [(nzVisible)]="isVisibleSignIn"
+      nzTitle="Sign In"
+      (nzOnCancel)="handleCancel()"
+    >
+      <ng-container *nzModalContent>
+        <form nz-form [formGroup]="signInForm">
+
+          <nz-form-item>
+            <nz-form-label [nzSpan]="24" nzFor="username" nzRequired>
+              <span>Username</span>
+            </nz-form-label>
+            <nz-form-control [nzSpan]="24" nzErrorTip="Username is required">
+              <input
+                nz-input
+                name="username"
+                type="text"
+                id="username"
+                formControlName="username"
+                placeholder="Input username"
+              />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label [nzSpan]="24" nzFor="password" nzRequired>
+              <span>Password</span>
+            </nz-form-label>
+            <nz-form-control [nzSpan]="24" nzErrorTip="Password is required">
+              <input
+                nz-input
+                name="password"
+                type="password"
+                id="password"
+                formControlName="password"
+                placeholder="Input password"
+              />
+            </nz-form-control>
+          </nz-form-item>
+
+        </form>
+      </ng-container>
+
+      <div *nzModalFooter="">
+        <div nz-row>
+          <div class="float-right ml-2">
+            <button
+              nz-button
+              nzType="primary"
+              (click)="submitSignInForm()">
+              Sign In
+            </button>
+          </div>
+        </div>
+      </div>
+    </nz-modal>
+
+    <!-- Sign Up Modal -->
+    <nz-modal
+      [(nzVisible)]="isVisibleSignUp"
+      nzTitle="Sign Up"
+      (nzOnCancel)="handleCancel()"
+      [nzWidth]="700"
+    >
+      <ng-container *nzModalContent>
+        <form nz-form [formGroup]="signUpForm">
+          <div nz-row>
+            <div nz-col nzSpan="12" class="pr-1">
+              <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzFor="firstName" nzRequired>
+                  First Name
+                </nz-form-label>
+                <nz-form-control [nzSpan]="24" nzErrorTip="Please input your first name!">
+                  <input nz-input name="firstName" type="text" id="firstName" formControlName="firstName" placeholder="First name" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <div nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzFor="lastName" nzRequired>
+                  Last Name
+                </nz-form-label>
+                <nz-form-control [nzSpan]="24" nzErrorTip="Please input your last name!">
+                  <input nz-input name="lastName" type="text" id="lastName" formControlName="lastName" placeholder="Last name" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+          <nz-form-item>
+            <nz-form-label [nzSpan]="24" nzFor="username" nzRequired>
+              <span>Username</span>
+            </nz-form-label>
+            <nz-form-control [nzSpan]="24" [nzErrorTip]="errorCodeUsername">
+              <ng-template #errorCodeUsername let-control>
+                <div
+                  *ngIf="
+                    signUpForm.controls['username'].invalid &&
+                    (signUpForm.controls['username'].dirty || signUpForm.controls['username'].touched)
+                  "
+                >
+                  <span *ngIf="signUpForm.get('username')?.hasError('required')">Username required</span>
+                  <span *ngIf="signUpForm.get('username')?.hasError('usernameDuplicated')">Username existed</span>
+                </div>
+              </ng-template>
+              <input nz-input name="username" type="text" id="username" formControlName="username" placeholder="Input username" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <div nz-row>
+            <div nz-col nzSpan="12" class="pr-1">
+              <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzRequired nzFor="address">
+                  <span>Address</span>
+                </nz-form-label>
+                <nz-form-control [nzSpan]="24" nzErrorTip="Please input your address!">
+                  <input nz-input id="address" formControlName="address" placeholder="Address" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzRequired nzFor="idNumber">
+                  <span>Id Number</span>
+                </nz-form-label>
+                <nz-form-control [nzSpan]="24" nzErrorTip="Please input your id number!">
+                  <input nz-input id="idNumber" formControlName="idNumber" placeholder="Id Number" maxlength="12" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+
+          <div nz-row>
+            <div nz-col nzSpan="12" class="pr-1">
+              <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzRequired>E-mail</nz-form-label>
+                <nz-form-control nzErrorTip="Email has been used or invalid">
+                  <input type="text" nz-input formControlName="email" placeholder="Email" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzFor="phone" nzRequired>Phone</nz-form-label>
+                <nz-form-control nzErrorTip="Please input your phone number!">
+                  <input formControlName="phone" id="'phone'" nz-input placeholder="Phone" maxlength="11" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+          <div nz-row>
+            <div nz-col nzSpan="12" class="pr-1">
+              <nz-form-item>
+                <nz-form-label nzAlign="start" [nzSpan]="24" nzFor="birthday" nzRequired>Birthday</nz-form-label>
+                <nz-form-control nzErrorTip="Please input your birthday!">
+                  <nz-date-picker class="w-100" formControlName="birthday"></nz-date-picker>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label nzAlign="start" [nzSpan]="24" nzFor="gender" nzRequired>Gender</nz-form-label>
+                <nz-radio-group formControlName="gender" nzButtonStyle="solid" class="mb-3">
+                  <label nz-radio-button [nzValue]="1 | number">Male</label>
+                  <label nz-radio-button [nzValue]="0 | number">Female</label>
+                </nz-radio-group>
+              </nz-form-item>
+            </div>
+          </div>
+          <div nz-row>
+            <div nz-col nzSpan="12" class="pr-1">
+              <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzFor="password" nzRequired>Password</nz-form-label>
+                <nz-form-control [nzSpan]="24" nzErrorTip="Please input your password!">
+                  <input nz-input type="password" formControlName="password" placeholder="Password" (ngModelChange)="updateConfirmValidator()" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzFor="checkPassword" nzRequired>Confirm Password</nz-form-label>
+                <nz-form-control [nzSpan]="24" [nzErrorTip]="errorTpl">
+                  <input nz-input type="password" formControlName="checkPassword" id="checkPassword" placeholder="Confirm Password" />
+                  <ng-template #errorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">Please confirm your password!</ng-container>
+                    <ng-container *ngIf="control.hasError('confirm')">
+                      Two passwords that you enter is inconsistent!
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+
+        </form>
+      </ng-container>
+
+      <div *nzModalFooter="">
+        <div nz-row>
+          <div class="float-right ml-2">
+            <button
+              nz-button
+              nzType="primary"
+              (click)="submitSignUpForm()">
+              Sign Up
+            </button>
+          </div>
+        </div>
+      </div>
+    </nz-modal>
+
   </div>
 </nz-header>

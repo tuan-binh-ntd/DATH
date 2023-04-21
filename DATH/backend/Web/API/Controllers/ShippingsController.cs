@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.Helper;
 using Bussiness.Repository;
+using Bussiness.Services;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +25,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
             IQueryable<ShippingForViewDto> query = from s in _shippingRepo.GetAll().AsNoTracking()
                                                select new ShippingForViewDto()
@@ -32,10 +34,9 @@ namespace API.Controllers
                                                    Name = s.Name,
                                                    Cost = s.Cost,
                                                };
-            List<ShippingForViewDto>? data = await query.ToListAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
 
-            return CustomResult(data);
+            if (input.PageNum != null && input.PageSize != null) return CustomResult(await query.Pagination(input), HttpStatusCode.OK);
+            else return CustomResult(await query.ToListAsync(), HttpStatusCode.OK);
         }
 
         [HttpGet("{id}")]
@@ -50,9 +51,9 @@ namespace API.Controllers
                                                    Cost = s.Cost
                                                };
             ShippingForViewDto? data = await query.FirstOrDefaultAsync();
-            if (data == null) return CustomResult(null, HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(null, HttpStatusCode.NoContent);
 
-            return CustomResult(data);
+            return CustomResult(data, HttpStatusCode.OK);
         }
 
         [HttpPost]
@@ -64,27 +65,27 @@ namespace API.Controllers
             await _shippingRepo.InsertAsync(data);
             ShippingForViewDto? res = new();
             _mapper.Map(data, res);
-            return CustomResult(res);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ShippingInput input)
         {
             Shipping? data = await _shippingRepo.GetAsync(id);
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
+            if (data == null) return CustomResult(HttpStatusCode.NoContent);
             _mapper.Map(input, data);
 
             await _shippingRepo.UpdateAsync(data);
             ShippingForViewDto? res = new();
             _mapper.Map(data, res);
-            return CustomResult(res);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _shippingRepo.DeleteAsync(id);
-            return CustomResult();
+            return CustomResult(id, HttpStatusCode.OK);
         }
     }
 }

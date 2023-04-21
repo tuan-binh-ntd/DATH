@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.Helper;
 using Bussiness.Repository;
+using Bussiness.Services;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +25,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
             IQueryable<ProductCategoryForViewDto> query = from pc in _productCateRepo.GetAll().AsNoTracking()
                                                           select new ProductCategoryForViewDto()
@@ -31,9 +33,9 @@ namespace API.Controllers
                                                               Id = pc.Id,
                                                               Name = pc.Name,
                                                           };
-            List<ProductCategoryForViewDto> data = await query.ToListAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
-            return CustomResult(data);
+
+            if (input.PageNum != null && input.PageSize != null) return CustomResult(await query.Pagination(input), HttpStatusCode.OK);
+            else return CustomResult(await query.ToListAsync(), HttpStatusCode.OK);
         }
 
         [HttpGet("{id}")]
@@ -47,8 +49,8 @@ namespace API.Controllers
                                                               Name = pc.Name,
                                                           };
             ProductCategoryForViewDto? data = await query.FirstOrDefaultAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
-            return CustomResult(data);
+            if (data == null) return CustomResult(HttpStatusCode.NoContent);
+            return CustomResult(data, HttpStatusCode.OK);
         }
 
         [HttpPost]
@@ -62,28 +64,28 @@ namespace API.Controllers
 
             ProductCategoryForViewDto? res = new();
             _mapper.Map(productCategory, res);
-            return CustomResult(res, HttpStatusCode.Created);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ProductCategoryInput input)
         {
             ProductCategory? productCategory = await _productCateRepo.GetAsync(id);
-            if(productCategory == null) return CustomResult(HttpStatusCode.NotFound);
+            if(productCategory == null) return CustomResult(HttpStatusCode.NoContent);
 
             _mapper.Map(input, productCategory);
 
             await _productCateRepo.UpdateAsync(productCategory);
             ProductCategoryForViewDto? res = new();
             _mapper.Map(productCategory, res);
-            return CustomResult(res);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _productCateRepo.DeleteAsync(id);
-            return CustomResult();
+            return CustomResult(id, HttpStatusCode.OK);
         }
     }
 }

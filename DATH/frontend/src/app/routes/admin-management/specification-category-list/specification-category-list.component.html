@@ -22,10 +22,10 @@
   </ng-template>
   <nz-table
     #rowSelectionTable
-    nzShowPagination
-    nzShowSizeChanger
     [nzData]="listOfData"
-  [nzScroll]="{y: scrollY}"
+    [nzShowPagination]="false"
+    [nzFrontPagination]="false"
+    [nzScroll]="{ y: scrollY }"
   >
     <thead>
       <tr>
@@ -43,13 +43,24 @@
     </thead>
     <tbody>
       <ng-container *ngFor="let data of rowSelectionTable.data">
-        <tr  (click)="goToDetail(data)">
+        <tr (click)="goToDetail(data)">
           <td>{{ data.code }}</td>
           <td>{{ data.value }}</td>
         </tr>
       </ng-container>
     </tbody>
   </nz-table>
+  <br />
+  <nz-pagination
+    class="float-right"
+    nzShowSizeChanger
+    [nzPageIndex]="paginationParam.pageNum"
+    [nzTotal]="paginationParam.totalCount"
+    [nzPageSize]="paginationParam.pageSize"
+    nzFrontPagination="false"
+    (nzPageSizeChange)="pageSizeChanged($event)"
+    (nzPageIndexChange)="pageNumChanged($event)"
+  ></nz-pagination>
 </app-page-grid>
 
 <app-specification-category-drawer

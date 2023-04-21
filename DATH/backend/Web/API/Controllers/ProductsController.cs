@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
-using Bussiness.Extensions;
+using Bussiness.Helper;
 using Bussiness.Interface;
 using Bussiness.Repository;
+using Bussiness.Services;
 using Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -29,7 +29,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
             IQueryable<ProductForViewDto> query = from p in _productRepo.GetAll().AsNoTracking()
                                                           select new ProductForViewDto()
@@ -39,9 +39,9 @@ namespace API.Controllers
                                                               Price = p.Price,
                                                               Description = p.Description
                                                           };
-            List<ProductForViewDto> data = await query.ToListAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
-            return CustomResult(data);
+
+            if (input.PageNum != null && input.PageSize != null) return CustomResult(await query.Pagination(input), HttpStatusCode.OK);
+            else return CustomResult(await query.ToListAsync(), HttpStatusCode.OK);
         }
 
         [HttpGet("{id}", Name = "Products")]
@@ -57,8 +57,8 @@ namespace API.Controllers
                                                       Description = p.Description
                                                   };
             ProductForViewDto? data = await query.FirstOrDefaultAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NotFound);
-            return CustomResult(data);
+            if (data == null) return CustomResult(HttpStatusCode.NoContent);
+            return CustomResult(data, HttpStatusCode.OK);
         }
 
         [HttpPost]
@@ -71,14 +71,14 @@ namespace API.Controllers
             ProductForViewDto? res = new();
             _mapper.Map(product, res);
 
-            return CustomResult(res, HttpStatusCode.Created);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ProductInput input)
         {
             Product? product = await _productRepo.GetAsync(id);
-            if (product == null) return CustomResult(HttpStatusCode.NotFound);
+            if (product == null) return CustomResult(HttpStatusCode.NoContent);
 
             _mapper.Map(input, product);
 
@@ -87,25 +87,25 @@ namespace API.Controllers
             ProductForViewDto? res = new();
             _mapper.Map(product, res);
 
-            return CustomResult(product);
+            return CustomResult(product, HttpStatusCode.OK);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _productRepo.DeleteAsync(id);
-            return CustomResult();
+            return CustomResult(id, HttpStatusCode.OK);
         }
 
         [HttpPost("{id}/photos")]
         public async Task<IActionResult> AddPhoto(long id, IFormFile file)
         {
             Product? product = await _productRepo.GetAsync(id);
-            if(product == null) return CustomResult(HttpStatusCode.NotFound);
+            if(product == null) return CustomResult(HttpStatusCode.NoContent);
 
             var result = await _photoService.AddPhotoAsync(file);
 
-            if (result.Error != null) return BadRequest(result.Error.Message);
+            if (result.Error != null) return CustomResult(result.Error.Message, HttpStatusCode.BadRequest);
 
             Photo? photo = new()
             {
@@ -122,7 +122,7 @@ namespace API.Controllers
             if (await _productRepo.UpdateAsync(product) != null)
             {
                 res.Photos = new List<PhotoDto> { _mapper.Map<PhotoDto>(photo) };
-                return CustomResult(res, HttpStatusCode.Created);
+                return CustomResult(res, HttpStatusCode.OK);
             }
             return CustomResult("Problem adding photo", HttpStatusCode.BadRequest);
         }
