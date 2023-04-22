@@ -16,7 +16,6 @@ export class LoginComponent {
   passwordVisible = false;
   constructor(private fb: FormBuilder,
     private router: Router,
-    private cookieService: CookieService,
     private accountService: AccountService,
     private msg: NzMessageService){}
   ngOnInit(): void {
@@ -34,7 +33,6 @@ export class LoginComponent {
   submitForm(){
     this.accountService.signIn(this.form.value).subscribe(res => {
       if(checkResponseStatus(res)){
-        this.cookieService.set('token', res.data.token, 7, '/', undefined, true, 'None');
         //localStorage.setItem('user', JSON.stringify(res.data));
         this.msg.success("Login successfully")
         this.router.navigateByUrl('admin-management/dashboard');

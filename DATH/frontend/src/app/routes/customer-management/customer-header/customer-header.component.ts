@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -6,7 +6,9 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { CookieService } from 'ngx-cookie-service';
 import { Observable, Observer, finalize, map, switchMap, timer } from 'rxjs';
 import { Account } from 'src/app/models/account.model';
 import { Customer } from 'src/app/models/customer.model';
@@ -16,6 +18,7 @@ import {
   IDNUMBER_REGEX,
   PHONE_REGEX,
   checkResponseStatus,
+  PASSWORD_REGEX,
 } from 'src/app/shared/helper';
 
 @Component({
@@ -23,23 +26,37 @@ import {
   templateUrl: './customer-header.component.html',
   styleUrls: ['./customer-header.component.less'],
 })
-export class CustomerHeaderComponent {
+export class CustomerHeaderComponent implements OnInit {
   constructor(
     private msg: NzMessageService,
     private fb: FormBuilder,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private cookerService: CookieService,
+    private router: Router,
   ) {}
   isVisible: boolean = false;
   signUpForm!: FormGroup;
   signInForm!: FormGroup;
-    tabIndex: number = 0;
-  customer!: Customer;
+  tabIndex: number = 0;
+  customer!: Customer | any;
+  isLoggedIn!: Account;
 
-  signInObserver: Observer<Account> = {
+  ngOnInit(): void {
+    this.initForm();
+    this.customer = JSON.parse(localStorage.getItem('user')!);
+    this.accountService.currentUserSource.next(this.customer as Account);
+    this.accountService.currentUserSource.subscribe((res) => {
+      this.isLoggedIn = res;
+    });
+  }
+
+  signInObserver: Observer<any> = {
     next: (res) => {
       if (checkResponseStatus(res)) {
         this.signUpForm.reset();
         this.msg.success('Successfully!');
+        if (this.signInForm.get('remember')?.value)
+          this.cookerService.set('user', res.data);
         this.handleCancel();
       } else {
         this.msg.error('There is an error from server');
@@ -49,11 +66,12 @@ export class CustomerHeaderComponent {
     complete: () => true,
   };
 
-  signUpObserver: Observer<Account> = {
+  signUpObserver: Observer<any> = {
     next: (res) => {
       if (checkResponseStatus(res)) {
         this.signUpForm.reset();
         this.msg.success('Successfully');
+        this.customer = JSON.parse(localStorage.getItem('user')!);
         this.handleCancel();
       } else {
         this.msg.error('There is an error from server');
@@ -63,13 +81,6 @@ export class CustomerHeaderComponent {
     complete: () => true,
   };
 
-  ngAfterViewInit() {
-    this.customer = JSON.parse(localStorage.getItem('user')!);
-  }
-
-  ngOnInit(): void {
-    this.initForm();
-  }
 
   initForm() {
     this.signUpForm = this.fb.group({
@@ -78,15 +89,18 @@ export class CustomerHeaderComponent {
         Validators.required,
         this.validateUsernameFromApiDebounce(),
       ],
-      // firstName: [null, Validators.required],
-      // lastName: [null, Validators.required],
+      firstName: [null, Validators.required],
+      lastName: [null, Validators.required],
       // gender: [null, Validators.required],
       // address: [null, [Validators.required]],
       // idNumber: [null, [Validators.required, Validators.pattern(IDNUMBER_REGEX)]],
       // phone: [null, [Validators.required, Validators.pattern(PHONE_REGEX)]],
       // birthday: [null, Validators.required],
       // email: [null, [Validators.required, Validators.pattern(EMAIL_REGEX)]],
-      password: [null, Validators.required],
+      password: [
+        null,
+        [Validators.required, Validators.pattern(PASSWORD_REGEX)],
+      ],
       checkPassword: [
         null,
         Validators.required,
@@ -113,7 +127,7 @@ export class CustomerHeaderComponent {
     // this.signUpForm.value.gender == "1" ? this.signUpForm.value.gender = 1 : this.signUpForm.value.gender = 0;
     this.accountService
       .signUp({ ...this.signUpForm.value, isActive: true })
-      //.pipe(finalize(() => (this.isLoading = false)))
+      // .pipe(ẻ(() => (this.isLoading = false)))
       .subscribe(this.signUpObserver);
   }
 
@@ -133,13 +147,29 @@ export class CustomerHeaderComponent {
   signUp() {
     this.isVisible = true;
     this.tabIndex = 1;
+  }
 
+  logOut(){
+    this.accountService.currentUserSource.next({
+      username: null,
+      firstName: null,
+      lastName: null,
+      gender: null,
+      address: null,
+      idNumber: null,
+      phone: null,
+      birthday: null,
+      email: null,
+      isActive: null,
+      token: null,
+      avatarUrl: null,
+    })
+    localStorage.removeItem('user');
   }
 
   handleCancel(): void {
     this.isVisible = false;
     this.tabIndex = 0;
-
   }
 
   validateUsernameFromApiDebounce = () => {
@@ -182,9 +212,7 @@ export class CustomerHeaderComponent {
     return {};
   };
 
-  updateConfirmValidator(): void {
-    Promise.resolve().then(() =>
-      this.signUpForm.controls['checkPassword'].updateValueAndValidity()
-    );
+  changeInfo(){
+    this.router.navigateByUrl('/change-info');
   }
 }

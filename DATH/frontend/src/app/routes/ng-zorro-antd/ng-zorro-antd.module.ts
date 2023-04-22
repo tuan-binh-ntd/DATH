@@ -28,7 +28,6 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzI18nModule } from 'ng-zorro-antd/i18n';
-import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzImageModule } from 'ng-zorro-antd/image';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
@@ -69,8 +68,14 @@ import { NzTreeViewModule } from 'ng-zorro-antd/tree-view';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
-
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { IconDefinition } from '@ant-design/icons-angular';
+import { UserOutline } from '@ant-design/icons-angular/icons';
+const icons: IconDefinition[] = [ UserOutline];
 @NgModule({
+  imports: [
+    NzIconModule.forRoot(icons),
+  ],
   exports: [
     NzSpaceModule,
     NzAffixModule,
@@ -142,6 +147,7 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
     NzResizableModule,
     NzPipesModule,
     NzToolTipModule,
+    NzIconModule
   ],
 })
 export class NgZorroAntdModule {}

@@ -5,9 +5,10 @@ import { environment } from 'src/environments/environment';
 import { Account } from '../models/account.model';
 import { Register } from '../models/register.model';
 import { Login } from '../models/login.model';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccountService {
   baseUrl: string = environment.baseUrl + 'accounts/';
@@ -27,14 +28,23 @@ export class AccountService {
   });
 
   // currentUser = this.currentUserSource.asObservable();
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private cookieService: CookieService) {}
 
   signIn(payload: Login): Observable<any> {
     return this.http.post<any>(this.baseUrl + 'login', payload).pipe(
       map((response: any) => {
         const user = response;
-        if(user) {
+        if (user) {
           this.setCurrentUser(user.data);
+          this.cookieService.set(
+            'token',
+            user.data.token,
+            7,
+            '/',
+            undefined,
+            true,
+            'None'
+          );
         }
         return user;
       })
@@ -47,7 +57,15 @@ export class AccountService {
   }
 
   signUp(payload: Register): Observable<Account> {
-    return this.http.post<Account>(this.baseUrl + 'customers', payload);
+    return this.http.post<Account>(this.baseUrl + 'customers', payload).pipe(
+      map((response: any) => {
+        const user = response;
+        if (user) {
+          this.setCurrentUser(user.data);
+        }
+        return user;
+      })
+    );
   }
 
   register(payload: Register): Observable<any> {

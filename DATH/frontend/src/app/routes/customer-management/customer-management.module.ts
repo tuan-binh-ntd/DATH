@@ -8,6 +8,7 @@ import { CustomerLayoutComponent } from './customer-layout/customer-layout.compo
 import { CustomerHeaderComponent } from './customer-header/customer-header.component';
 import { CustomerHomeComponent } from './customer-home/customer-home.component';
 import { ViewProductListComponent } from './view-product-list/view-product-list.component';
+import { CustomerChangeInfoComponent } from './customer-change-info/customer-change-info.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { ViewProductListComponent } from './view-product-list/view-product-list.
     CustomerLayoutComponent,
     CustomerHeaderComponent,
     CustomerHomeComponent,
-    ViewProductListComponent
+    ViewProductListComponent,
+    CustomerChangeInfoComponent
   ],
   imports: [
     CommonModule,

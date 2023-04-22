@@ -50,17 +50,23 @@
 
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <div class="d-flex align-center">
-          <ul nz-menu>
-            <!-- <li nz-menu-item>
-              <nz-avatar [nzSize]="30" class="mb-2"></nz-avatar>
+          <ul nz-menu *ngIf="isLoggedIn?.token; else notLoggedIn">
+            <li nz-menu-item (click)="changeInfo()">
+              <div class="align-child-center align-center ">
+                <nz-avatar nzIcon="user" [nzSrc]="customer?.avatarUrl" [nzSize]="40" class="mr-2"></nz-avatar>
+                <span>{{ customer?.firstName }} {{ customer?.lastName }} </span>
+              </div>
 
-              <span>{{ customer.firstName }} {{ customer.lastName }}</span>
-            </li> -->
-            <!-- <nz-divider class="m-0"></nz-divider> -->
-            <!-- <li nz-menu-item>Log out</li> -->
-            <li nz-menu-item (click)="signIn()"><i class="fa-solid fa-right-to-bracket mr-2"></i>Sign In</li>
-            <li nz-menu-item (click)="signUp()"><i class="fa-solid fa-user-plus mr-2"></i>Sign Up</li>
+            </li>
+            <nz-divider class="m-0"></nz-divider>
+            <li nz-menu-item (click)="logOut()"><i class="fa-solid fa-right-from-bracket mr-2"></i>Log out</li>
           </ul>
+          <ng-template #notLoggedIn>
+            <ul nz-menu>
+              <li nz-menu-item (click)="signIn()"><i class="fa-solid fa-right-to-bracket mr-2"></i>Sign In</li>
+              <li nz-menu-item (click)="signUp()"><i class="fa-solid fa-user-plus mr-2"></i>Sign Up</li>
+            </ul>
+          </ng-template>
         </div>
       </nz-dropdown-menu>
     </div>
@@ -73,7 +79,7 @@
       [nzFooter]="null"
     >
       <ng-container *nzModalContent>
-        <nz-tabset [nzSelectedIndex]="tabIndex">
+        <nz-tabset [nzSelectedIndex]="tabIndex" class="d-none">
           <nz-tab>
             <ng-container [ngTemplateOutlet]="signInTpl"></ng-container>
           </nz-tab>
@@ -121,6 +127,7 @@
               formControlName="password"
               placeholder="Input password"
             />
+          
           </nz-form-control>
         </nz-form-item>
         <div nz-row>
@@ -161,13 +168,13 @@
   <div nz-row nzGutter="16">
     <div nz-col nzSpan="12">
       <form nz-form [formGroup]="signUpForm">
-        <!-- <div nz-row nzGutter="16">
+        <div nz-row nzGutter="16">
           <div nz-col nzSpan="12" class="pr-1">
             <nz-form-item>
               <nz-form-label [nzSpan]="24" nzFor="firstName" nzRequired>
                 First Name
               </nz-form-label>
-              <nz-form-control [nzSpan]="24" nzErrorTip="Please input your first name!">
+              <nz-form-control [nzSpan]="24" nzErrorTip="First name is required">
                 <input nz-input name="firstName" type="text" id="firstName" formControlName="firstName" placeholder="First name" />
               </nz-form-control>
             </nz-form-item>
@@ -178,12 +185,12 @@
               <nz-form-label [nzSpan]="24" nzFor="lastName" nzRequired>
                 Last Name
               </nz-form-label>
-              <nz-form-control [nzSpan]="24" nzErrorTip="Please input your last name!">
+              <nz-form-control [nzSpan]="24" nzErrorTip="Last name is required">
                 <input nz-input name="lastName" type="text" id="lastName" formControlName="lastName" placeholder="Last name" />
               </nz-form-control>
             </nz-form-item>
           </div>
-        </div> -->
+        </div>
 
         <div nz-row nzGutter="16">
           <div nz-col nzSpan="24">
@@ -299,10 +306,20 @@
         <div nz-row nzGutter="16">
           <div nz-col nzSpan="24" class="pr-1">
             <nz-form-item>
-              <nz-form-label [nzSpan]="24" nzFor="password" nzRequired>Password</nz-form-label>
-              <nz-form-control [nzSpan]="24" nzErrorTip="Please input your password!">
-                <input nz-input type="password" formControlName="password" placeholder="Password" (ngModelChange)="updateConfirmValidator()" />
-              </nz-form-control>
+              <nz-form-label [nzSpan]="24" nzFor="password" nzRequired>Password </nz-form-label>
+              <nz-form-control [nzSpan]="24" [nzErrorTip]="passwordErr">
+                <input nz-input type="password" formControlName="password" placeholder="Password" />
+                <ng-template #passwordErr let-control>
+                  <div
+                    *ngIf="
+                      signUpForm.controls['password'].invalid &&
+                      (signUpForm.controls['password'].dirty || signUpForm.controls['password'].touched)
+                    "
+                  >
+                    <span *ngIf="signUpForm.get('password')?.hasError('required')">Password is required</span>
+                    <span *ngIf="signUpForm.get('password')?.hasError('pattern')">Must contain one uppercase (A-Z) and one digit</span>
+                  </div>
+                </ng-template></nz-form-control>
             </nz-form-item>
           </div>
           </div>

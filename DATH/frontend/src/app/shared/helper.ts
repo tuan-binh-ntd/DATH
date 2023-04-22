@@ -24,3 +24,8 @@ export const EMAIL_REGEX: string = '^[a-z0-9A-Z/.._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$
 export const  PHONE_REGEX: string = '[0-9]+$';
 
 export const  IDNUMBER_REGEX: string = '^[0-9]+$';
+
+export const  PASSWORD_REGEX: string = '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$';
+
+
+
