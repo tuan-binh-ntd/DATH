@@ -6,6 +6,7 @@ import { Account } from '../models/account.model';
 import { Register } from '../models/register.model';
 import { Login } from '../models/login.model';
 import { CookieService } from 'ngx-cookie-service';
+import { ChangePassword } from '../models/change-password.model';
 
 @Injectable({
   providedIn: 'root',
@@ -74,5 +75,9 @@ export class AccountService {
 
   checkUsername(username: string): Observable<any> {
     return this.http.get<Account>(this.baseUrl + username);
+  }
+
+  changePassword(username: string, payload: ChangePassword): Observable<any> {
+    return this.http.put(this.baseUrl + username, payload);
   }
 }

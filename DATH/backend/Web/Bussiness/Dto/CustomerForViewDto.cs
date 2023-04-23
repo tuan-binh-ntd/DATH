@@ -13,6 +13,6 @@ namespace Bussiness.Dto
         public DateTime Birthday { get; set; }
         public string? Email { get; set; }
         public bool IsActive { get; set; }
-        public ICollection<string>? AddressList { get; set; }
+        public string? Address { get; set; }
     }
 }

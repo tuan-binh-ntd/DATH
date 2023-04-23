@@ -9,14 +9,11 @@ import {
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { CookieService } from 'ngx-cookie-service';
-import { Observable, Observer, finalize, map, switchMap, timer } from 'rxjs';
+import { Observable, Observer, map, switchMap, timer } from 'rxjs';
 import { Account } from 'src/app/models/account.model';
 import { Customer } from 'src/app/models/customer.model';
 import { AccountService } from 'src/app/services/account.service';
 import {
-  EMAIL_REGEX,
-  IDNUMBER_REGEX,
-  PHONE_REGEX,
   checkResponseStatus,
   PASSWORD_REGEX,
 } from 'src/app/shared/helper';

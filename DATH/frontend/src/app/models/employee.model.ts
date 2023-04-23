@@ -2,7 +2,8 @@ import { EmployeeType } from "../enums/employee-type.enum";
 import { Gender } from "../enums/gender.enum";
 
 export interface Employee {
-  id: string | null,
+  id: number | null,
+  username: string | null,
   shopName: string | null,
   name: string | null,
   code: string | null,

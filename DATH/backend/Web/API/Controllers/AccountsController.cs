@@ -2,6 +2,7 @@
 using Bussiness.Dto;
 using Bussiness.Interface;
 using Bussiness.Repository;
+using CoreApiResponse;
 using Entities;
 using Entities.Enum.User;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,10 @@ using System.Net;
 
 namespace API.Controllers
 {
-    public class AccountsController : AdminBaseController
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize(Policy = "RequireAllRole")]
+    public class AccountsController : BaseController
     {
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
@@ -183,6 +187,19 @@ namespace API.Controllers
         {
             if (await CheckUserExists(username)) return CustomResult(new { Invalid = false }, HttpStatusCode.OK);
             return CustomResult(new { Invalid = true }, HttpStatusCode.OK);
+        }
+
+        [HttpPut("{username}")]
+        public async Task<IActionResult> ChangePassword(string username, PasswordInput input)
+        {
+            AppUser user = await _userManager.Users.FirstAsync(x => x.UserName == username.ToLower());
+            if (user == null) return CustomResult(HttpStatusCode.NoContent);
+
+            var result = await _userManager.ChangePasswordAsync(user, input.CurrentPassword!, input.NewPassword!);
+
+            if (!result.Succeeded) return CustomResult("Password incrrect", result.Errors, HttpStatusCode.BadRequest);
+
+            return CustomResult(new { user.UserName }, HttpStatusCode.OK);
         }
     }
 }

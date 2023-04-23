@@ -29,10 +29,7 @@ namespace API.Controllers
         {
             Customer? customer = await _customerRepo.GetAsync(id);
             if (customer == null) return CustomResult(HttpStatusCode.NoContent);
-            CustomerForViewDto res = new()
-            {
-                AddressList = new List<string>(customer!.Address!.Split(","))
-            };
+            CustomerForViewDto res = new();
             return CustomResult(res, HttpStatusCode.OK);
         }
 
@@ -41,13 +38,22 @@ namespace API.Controllers
         {
             Customer? customer = await _customerRepo.GetAsync(id);
             if (customer == null) return CustomResult(HttpStatusCode.NoContent);
-            if (input.AddressList!.Count != 0) customer!.Address = string.Join(",", input.AddressList!.ToList());
             _mapper.Map(input, customer);
             await _customerRepo.UpdateAsync(customer!);
-            CustomerForViewDto? res = new()
-            {
-                AddressList = input.AddressList!
-            };
+            CustomerForViewDto? res = new();
+            _mapper.Map(customer, res);
+            return CustomResult(res, HttpStatusCode.OK);
+        }
+
+        [HttpPost("{id}/addresses")]
+        public async Task<IActionResult> Update(long id, AddressInput input)
+        {
+            Customer? customer = await _customerRepo.GetAsync(id);
+            if (customer == null) return CustomResult(HttpStatusCode.NoContent);
+
+            if (input.Addresses!.Count != 0) customer!.Address = string.Join(",", input.Addresses!.ToList());
+            await _customerRepo.UpdateAsync(customer!);
+            CustomerForViewDto? res = new();
             _mapper.Map(customer, res);
             return CustomResult(res, HttpStatusCode.OK);
         }

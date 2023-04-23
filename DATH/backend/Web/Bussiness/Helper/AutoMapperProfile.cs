@@ -51,6 +51,8 @@ namespace Bussiness.Helper
             CreateMap<Photo, PhotoDto>().ReverseMap();
 
             CreateMap<Employee, EmployeeInput>().ReverseMap();
+
+            CreateMap<Customer, CustomerForViewDto>().ReverseMap();
         }
     }
 }

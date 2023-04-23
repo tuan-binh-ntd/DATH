@@ -115,6 +115,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
     options.AddPolicy("RequireEmployeeRole", policy => policy.RequireRole("Admin", "Employee"));
+    options.AddPolicy("RequireAllRole", policy => policy.RequireRole("Admin", "Customer", "Employee"));
     // other authorization policies
 });
 
