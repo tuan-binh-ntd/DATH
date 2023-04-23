@@ -1,8 +1,9 @@
-﻿using Entities.Enum.User;
+﻿using Entities;
+using Entities.Enum.User;
 
 namespace Bussiness.Dto
 {
-    public class UserDto
+    public class UserDto : EntityDto<long>
     {
         public string? Username { get; set; }
         public string? FirstName { get; set; }
