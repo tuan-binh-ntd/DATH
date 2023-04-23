@@ -69,7 +69,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, SpecificationCategory input)
+        public async Task<IActionResult> Update(int id, SpecificationCategoryInput input)
         {
             SpecificationCategory? specificationCategory = await _specCateRepo.GetAsync(id);
             if (specificationCategory == null) return CustomResult(HttpStatusCode.NoContent);

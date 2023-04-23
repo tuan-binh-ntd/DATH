@@ -13,11 +13,11 @@ namespace Bussiness.Repository
 
         public Repository(
             DataContext dbContext,
-            ISession session
+            IHttpContextAccessor httpContextAccessor
             )
         {
             _dbContext = dbContext;
-            _session = session;
+            _session = httpContextAccessor.HttpContext!.Session;
         }
 
         public IQueryable<TEntity> GetAll()
@@ -67,7 +67,7 @@ namespace Bussiness.Repository
             }
 
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
-            if (entry.Entity is ISoftDelete deleteUserId && entry.State == EntityState.Deleted)
+            if (entry.Entity is ISoftDelete deleteUserId)
             {
                 deleteUserId.DeleteUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
             }
@@ -96,11 +96,11 @@ namespace Bussiness.Repository
 
         public Repository(
             DataContext dbContext,
-            ISession session
+            IHttpContextAccessor httpContextAccessor
             )
         {
             _dbContext = dbContext;
-            _session = session;
+            _session = httpContextAccessor.HttpContext!.Session;
         }
 
         public IQueryable<TEntity> GetAll()

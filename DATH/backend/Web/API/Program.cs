@@ -14,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using API.SignalRHub;
 
 // Set path of project for APP_BASE_DIRECTORY
 Environment.SetEnvironmentVariable("APP_BASE_DIRECTORY", Directory.GetCurrentDirectory());
@@ -71,6 +72,42 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = false,
             ValidateAudience = false,
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                // If the request is for our hub...
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    (path.StartsWithSegments("/hubs/chat")))
+                {
+                    // Read the token out of the query string
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                // If the request is for our hub...
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    (path.StartsWithSegments("/hubs/notify")))
+                {
+                    // Read the token out of the query string
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 
 //Authoziration
@@ -117,6 +154,12 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 //Add Cloudinary
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
+//Add SignalR
+builder.Services.AddSignalR();
+
+//Add HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 // Init Admin
 using var scope = app.Services.CreateScope();
@@ -141,8 +184,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
+
+app.UseDefaultFiles();
+
+app.UseStaticFiles();
 
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:4200"));
 
@@ -153,5 +205,9 @@ app.UseAuthorization();
 app.UseSession();
 
 app.MapControllers();
+
+app.MapHub<ChatHub>("hubs/chat");
+
+app.MapHub<NotifyHub>("hubs/notify");
 
 await app.RunAsync();

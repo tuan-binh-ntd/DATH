@@ -3,6 +3,7 @@ using Bussiness.Dto;
 using Bussiness.Interface;
 using Bussiness.Repository;
 using Entities;
+using Entities.Enum.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,7 @@ namespace API.Controllers
             if (await CheckUserExists(registerDto.Username!)) return CustomResult("Username is taken", HttpStatusCode.BadRequest);
 
             var user = _mapper.Map<AppUser>(registerDto);
+            user.Type = UserType.Customer;
             user.UserName = registerDto.Username!.ToLower();
 
             var result = await _userManager.CreateAsync(user, registerDto.Password!);
@@ -84,6 +86,7 @@ namespace API.Controllers
             if (await CheckUserExists(registerDto.Username!)) return CustomResult("Username is taken", HttpStatusCode.BadRequest);
 
             var user = _mapper.Map<AppUser>(registerDto);
+            user.Type = UserType.Employee;
             user.UserName = registerDto.Username!.ToLower();
 
             var result = await _userManager.CreateAsync(user, registerDto.Password!);
@@ -98,7 +101,7 @@ namespace API.Controllers
 
             Employee employee = new()
             {
-                UserId = user.Id
+                UserId = user.Id,
             };
             _mapper.Map(registerDto, employee);
 
@@ -124,8 +127,8 @@ namespace API.Controllers
 
             var result = await _signInManager
                 .CheckPasswordSignInAsync(user, loginDto.Password!, false);
-            var message = "Incorrect name or password";
-            if (!result.Succeeded) return CustomResult(message, HttpStatusCode.Unauthorized);
+
+            if (!result.Succeeded) return CustomResult("Incorrect name or password", HttpStatusCode.Unauthorized);
 
             _session.SetString("UserId", user.Id.ToString());
 
