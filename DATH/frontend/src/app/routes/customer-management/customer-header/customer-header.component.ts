@@ -29,7 +29,7 @@ export class CustomerHeaderComponent implements OnInit {
     private fb: FormBuilder,
     private accountService: AccountService,
     private cookerService: CookieService,
-    private router: Router,
+    private router: Router
   ) {}
   isVisible: boolean = false;
   signUpForm!: FormGroup;
@@ -44,6 +44,7 @@ export class CustomerHeaderComponent implements OnInit {
     this.accountService.currentUserSource.next(this.customer as Account);
     this.accountService.currentUserSource.subscribe((res) => {
       this.isLoggedIn = res;
+      this.customer = JSON.parse(localStorage.getItem('user')!);
     });
   }
 
@@ -77,7 +78,6 @@ export class CustomerHeaderComponent implements OnInit {
     error: (error) => this.msg.error(error.error.message),
     complete: () => true,
   };
-
 
   initForm() {
     this.signUpForm = this.fb.group({
@@ -146,7 +146,7 @@ export class CustomerHeaderComponent implements OnInit {
     this.tabIndex = 1;
   }
 
-  logOut(){
+  logOut() {
     this.accountService.currentUserSource.next({
       username: null,
       firstName: null,
@@ -160,7 +160,7 @@ export class CustomerHeaderComponent implements OnInit {
       isActive: null,
       token: null,
       avatarUrl: null,
-    })
+    });
     localStorage.removeItem('user');
   }
 
@@ -209,7 +209,7 @@ export class CustomerHeaderComponent implements OnInit {
     return {};
   };
 
-  changeInfo(){
+  changeInfo() {
     this.router.navigateByUrl('/change-info');
   }
 }

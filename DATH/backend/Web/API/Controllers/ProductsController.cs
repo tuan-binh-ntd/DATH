@@ -5,6 +5,7 @@ using Bussiness.Interface;
 using Bussiness.Repository;
 using Bussiness.Services;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -27,7 +28,7 @@ namespace API.Controllers
             _productRepo = productRepo;
             _photoService = photoService;
         }
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
