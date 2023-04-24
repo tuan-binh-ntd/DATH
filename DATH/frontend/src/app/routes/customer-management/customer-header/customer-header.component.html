@@ -4,7 +4,7 @@
         <i class="fa-solid fa-bars fa-lg"></i>
       </span> -->
       <div>
-        <a href=""><img src="../../../../assets/images/logo-color.svg" alt="logo" width="250px" height="100%" class="obj-cover"></a>  
+        <a href=""><img src="../../../../assets/images/logo-color.svg" alt="logo" width="250px" height="90%" class="obj-cover"></a>  
       </div>
     <div class="d-flex">  
       <ul nz-menu nzMode="horizontal">
@@ -50,7 +50,7 @@
 
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <div class="d-flex align-center">
-          <ul nz-menu *ngIf="isLoggedIn?.token; else notLoggedIn">
+          <ul nz-menu *ngIf="isLoggedIn; else notLoggedIn">
             <li nz-menu-item (click)="changeInfo()">
               <div class="align-child-center align-center ">
                 <nz-avatar nzIcon="user" [nzSrc]="customer?.avatarUrl" [nzSize]="40" class="mr-2"></nz-avatar>
@@ -59,7 +59,9 @@
 
             </li>
             <nz-divider class="m-0"></nz-divider>
-            <li nz-menu-item (click)="logOut()"><i class="fa-solid fa-right-from-bracket mr-2"></i>Log out</li>
+            <li nz-menu-item (click)="logOut()"><a href="" class="text-black">
+              <i class="fa-solid fa-right-from-bracket mr-2"></i>Log out
+            </a></li>
           </ul>
           <ng-template #notLoggedIn>
             <ul nz-menu>
@@ -72,14 +74,18 @@
     </div>
     <!-- Sign In Modal -->
     <nz-modal
+    class="tabset"
       [(nzVisible)]="isVisible"
       [nzTitle]="tabIndex === 0 ?  'Welcome Back' : 'Sign Up'"
       (nzOnCancel)="handleCancel()"
       [nzWidth]="700"
       [nzFooter]="null"
+    
     >
-      <ng-container *nzModalContent>
-        <nz-tabset [nzSelectedIndex]="tabIndex" class="d-none">
+      <ng-container *nzModalContent >
+        <nz-tabset [nzSelectedIndex]="tabIndex"
+        [nzTabBarStyle]="{'display': 'none'}"
+        >
           <nz-tab>
             <ng-container [ngTemplateOutlet]="signInTpl"></ng-container>
           </nz-tab>

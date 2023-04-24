@@ -67,7 +67,7 @@ export class ListBaseComponent {
 
    onDeleteItem(data: any){
     const index = this.listOfData.findIndex(item => item.id === data.id);
-    this.listOfData = [...this.listOfData.slice(0, index), ...data, this.listOfData.slice(index + 1)];
+    this.listOfData = [...this.listOfData.slice(0, index), data, this.listOfData.slice(index + 1)];
     this.listOfData = [...this.listOfData];
 
    }

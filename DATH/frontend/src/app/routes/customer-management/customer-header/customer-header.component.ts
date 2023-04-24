@@ -13,10 +13,7 @@ import { Observable, Observer, map, switchMap, timer } from 'rxjs';
 import { Account } from 'src/app/models/account.model';
 import { Customer } from 'src/app/models/customer.model';
 import { AccountService } from 'src/app/services/account.service';
-import {
-  checkResponseStatus,
-  PASSWORD_REGEX,
-} from 'src/app/shared/helper';
+import { checkResponseStatus, PASSWORD_REGEX } from 'src/app/shared/helper';
 
 @Component({
   selector: 'app-customer-header',
@@ -36,14 +33,22 @@ export class CustomerHeaderComponent implements OnInit {
   signInForm!: FormGroup;
   tabIndex: number = 0;
   customer!: Customer | any;
-  isLoggedIn!: Account;
+  isLoggedIn!: boolean | null;
 
   ngOnInit(): void {
     this.initForm();
+    this.getCurrentUser();
+    this.setCurrentUser();
+  }
+
+  setCurrentUser() {
     this.customer = JSON.parse(localStorage.getItem('user')!);
-    this.accountService.currentUserSource.next(this.customer as Account);
+    this.accountService.setCurrentUser(this.customer);
+  }
+
+  getCurrentUser() {
     this.accountService.currentUserSource.subscribe((res) => {
-      this.isLoggedIn = res;
+      this.isLoggedIn = !!res;
       this.customer = JSON.parse(localStorage.getItem('user')!);
     });
   }
@@ -69,7 +74,6 @@ export class CustomerHeaderComponent implements OnInit {
       if (checkResponseStatus(res)) {
         this.signUpForm.reset();
         this.msg.success('Successfully');
-        this.customer = JSON.parse(localStorage.getItem('user')!);
         this.handleCancel();
       } else {
         this.msg.error('There is an error from server');
@@ -147,21 +151,8 @@ export class CustomerHeaderComponent implements OnInit {
   }
 
   logOut() {
-    this.accountService.currentUserSource.next({
-      username: null,
-      firstName: null,
-      lastName: null,
-      gender: null,
-      address: null,
-      idNumber: null,
-      phone: null,
-      birthday: null,
-      email: null,
-      isActive: null,
-      token: null,
-      avatarUrl: null,
-    });
-    localStorage.removeItem('user');
+    this.accountService.logOut();
+    this.isLoggedIn = false;
   }
 
   handleCancel(): void {

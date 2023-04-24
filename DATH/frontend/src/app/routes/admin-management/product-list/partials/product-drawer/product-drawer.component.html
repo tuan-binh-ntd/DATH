@@ -42,6 +42,17 @@
     </nz-form-item>
 
     <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="spec" nzRequired>
+        <span>Name</span>
+      </nz-form-label>
+      <!-- <nz-form-control>
+        <nz-select [(ngModel)]="multipleValue" [nzSize]="size" nzMode="multiple" nzPlaceHolder="Please select">
+          <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
+        </nz-select>
+      </nz-form-control> -->
+    </nz-form-item>
+
+    <nz-form-item>
       <nz-form-label [nzSpan]="24" nzFor="price" nzRequired>
         <span>Price</span>
       </nz-form-label>

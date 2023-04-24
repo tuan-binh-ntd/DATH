@@ -1,9 +1,9 @@
 <div nz-row nzGutter="64" class="p-4">
   <div nz-col nzSpan="24">
-    <nz-card>
+    <nz-card nzTitle="Change information">
       <nz-tabset nzTabPosition="left" [(nzSelectedIndex)]="selectedIndex">
         <!-- Start Change Info View -->
-        <nz-tab nzTitle="Information">
+        <nz-tab nzTitle="Basic information">
           <form nz-form [formGroup]="infoForm">
             <div nz-row nzGutter="24">
               <div nz-col nzSpan="12" class="pr-1">
@@ -162,7 +162,7 @@
         </nz-tab>
         <!-- End Change Info View -->
         <!-- Start Add Address View -->
-        <nz-tab nzTitle="Address">
+        <nz-tab nzTitle="Your addresses">
           <form nz-form [formGroup]="addressForm">
             <div formArrayName="addresses">
               <ng-container *ngFor="let address of addresses.controls; index as i"
@@ -326,8 +326,8 @@
         </nz-tab>
         <!-- End Change Password View -->
         <!-- Start Add Photo View -->
-        <nz-tab nzTitle="Avatar">
-  
+        <nz-tab nzTitle="Change cover photo">
+          
         </nz-tab>
         <!-- End Add Photo View -->
       </nz-tabset>
