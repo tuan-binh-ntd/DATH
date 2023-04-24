@@ -4,6 +4,7 @@ using Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Database.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230424085907_Add-Warehouse-Installment-Payment-Tbl-And-Drop-AvatarUrl-Col")]
+    partial class AddWarehouseInstallmentPaymentTblAndDropAvatarUrlCol
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -786,14 +789,13 @@ namespace Database.Migrations
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ShopId")
+                    b.Property<int>("ShopId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ShopId")
-                        .IsUnique()
-                        .HasFilter("[ShopId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Warehouse");
                 });
@@ -971,7 +973,9 @@ namespace Database.Migrations
                 {
                     b.HasOne("Entities.Shop", "Shop")
                         .WithOne("Warehouse")
-                        .HasForeignKey("Entities.Warehouse", "ShopId");
+                        .HasForeignKey("Entities.Warehouse", "ShopId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Shop");
                 });

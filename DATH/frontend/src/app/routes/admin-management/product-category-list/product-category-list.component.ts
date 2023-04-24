@@ -23,8 +23,6 @@ export class ProductCategoryListComponent extends ListBaseComponent {
     super(msg);
   }
 
- 
-
   override listOfColumn: any[] = [
     {
       name: 'Name',

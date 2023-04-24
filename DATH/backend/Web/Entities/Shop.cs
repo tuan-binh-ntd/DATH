@@ -9,5 +9,6 @@ namespace Entities
         [StringLength(1000)]
         public string? Address { get; set; }
         public ICollection<Employee>? Employees { get; set; }
+        public Warehouse? Warehouse { get; set; }
     }
 }
