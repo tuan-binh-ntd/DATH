@@ -25,25 +25,25 @@ namespace Bussiness.Repository
             return _dbContext.Set<TEntity>();
         }
 
-        public async Task<TEntity?> GetAsync(TPrimaryKey id)
+        public async Task<TEntity?> GetAsync(TPrimaryKey id, CancellationToken cancellationToken = default)
         {
-            TEntity? entity = await _dbContext.Set<TEntity>().FindAsync(id);
+            TEntity? entity = await _dbContext.Set<TEntity>().FindAsync(new object?[] { id }, cancellationToken: cancellationToken);
             return entity;
         }
 
-        public async Task<TEntity> InsertAsync(TEntity entity)
+        public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasCreatorUserId creatorUserId)
             {
                 creatorUserId.CreatorUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
             }
-            await _dbContext.Set<TEntity>().AddAsync(entry.Entity);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.Set<TEntity>().AddAsync(entry.Entity, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return entity;
         }
 
-        public async Task<TEntity> UpdateAsync(TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasLastModifierUserId lastModifierUserId)
@@ -54,11 +54,11 @@ namespace Bussiness.Repository
                     entry.State = EntityState.Modified;
                 }
             }
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return entry.Entity;
         }
 
-        public async Task DeleteAsync(TPrimaryKey id)
+        public async Task DeleteAsync(TPrimaryKey id, CancellationToken cancellationToken = default)
         {
             var entity = await _dbContext.Set<TEntity>().FindAsync(id);
             if (entity == null)
@@ -73,18 +73,18 @@ namespace Bussiness.Repository
             }
 
             _dbContext.Set<TEntity>().Remove(entry.Entity);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<TPrimaryKey> InsertAndGetIdAsync(TEntity entity)
+        public async Task<TPrimaryKey> InsertAndGetIdAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasCreatorUserId creatorUserId)
             {
                 creatorUserId.CreatorUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
             }
-            TEntity e = (await _dbContext.Set<TEntity>().AddAsync(entry.Entity)).Entity;
-            await _dbContext.SaveChangesAsync();
+            TEntity e = (await _dbContext.Set<TEntity>().AddAsync(entry.Entity, cancellationToken)).Entity;
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return e.Id;
         }
     }
@@ -108,25 +108,25 @@ namespace Bussiness.Repository
             return _dbContext.Set<TEntity>();
         }
 
-        public async Task<TEntity?> GetAsync(int id)
+        public async Task<TEntity?> GetAsync(int id, CancellationToken cancellationToken = default)
         {
-            TEntity? entity = await _dbContext.Set<TEntity>().AsNoTracking().Where(e => e.Id  == id).FirstOrDefaultAsync();
+            TEntity? entity = await _dbContext.Set<TEntity>().AsNoTracking().Where(e => e.Id  == id).FirstOrDefaultAsync(cancellationToken: cancellationToken);
             return entity;
         }
 
-        public async Task<TEntity> InsertAsync(TEntity entity)
+        public async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasCreatorUserId creatorUserId)
             {
                 creatorUserId.CreatorUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
             }
-            await _dbContext.Set<TEntity>().AddAsync(entry.Entity);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.Set<TEntity>().AddAsync(entry.Entity, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return entity;
         }
 
-        public async Task<TEntity> UpdateAsync(TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasLastModifierUserId lastModifierUserId)
@@ -137,11 +137,11 @@ namespace Bussiness.Repository
                     entry.State = EntityState.Modified;
                 }
             }
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return entry.Entity;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
         {
             var entity = await _dbContext.Set<TEntity>().FindAsync(id);
             if (entity == null)
@@ -156,10 +156,10 @@ namespace Bussiness.Repository
             }
 
             _dbContext.Set<TEntity>().Remove(entry.Entity);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<int> InsertAndGetIdAsync(TEntity entity)
+        public async Task<int> InsertAndGetIdAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasCreatorUserId creatorUserId)
@@ -167,7 +167,7 @@ namespace Bussiness.Repository
                 creatorUserId.CreatorUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
             }
             TEntity e = (await _dbContext.Set<TEntity>().AddAsync(entry.Entity)).Entity;
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return e.Id;
         }
     }

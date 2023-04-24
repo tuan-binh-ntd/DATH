@@ -7,9 +7,24 @@ namespace Database
 {
     public class Seed
     {
-        public static async Task SeedUsers(UserManager<AppUser> userManager,
-            RoleManager<AppRole> roleManager)
+        public static async Task SeedUsers(
+            UserManager<AppUser> userManager,
+            RoleManager<AppRole> roleManager,
+            DataContext dataContext)
         {
+            //Create Parent Warehouse
+            if (await dataContext.Warehouse.AnyAsync()) return;
+
+            Warehouse parentWarehouse = new()
+            { 
+                Name = "ParentWarehouse",
+                CreationTime = DateTime.Now,
+                CreatorUserId = 1
+            };
+            await dataContext.Warehouse.AddAsync(parentWarehouse);
+            await dataContext.SaveChangesAsync();
+
+            //Create Addmin Account
             if (await userManager.Users.AnyAsync()) return;
 
             var roles = new List<AppRole>
@@ -23,13 +38,6 @@ namespace Database
             {
                 await roleManager.CreateAsync(role);
             }
-
-            //foreach (var user in users)
-            //{
-            //    user.UserName = user.UserName!.ToLower();
-            //    await userManager.CreateAsync(user, "Pa$$w0rd");
-            //    await userManager.AddToRoleAsync(user, "Member");
-            //}
 
             var admin = new AppUser()
             {

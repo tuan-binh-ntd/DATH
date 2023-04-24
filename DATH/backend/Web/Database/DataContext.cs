@@ -27,6 +27,9 @@ namespace Database
         public DbSet<Promotion> Promotion { get; set; }
         public DbSet<Shipping> Shipping { get; set; }
         public DbSet<Photo> Photo { get; set; }
+        public DbSet<Warehouse> Warehouse { get; set; }
+        public DbSet<Installment> Installment { get; set; }
+        public DbSet<Payment> Payment { get; set; }
         //End Entity Declaration
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -78,7 +81,7 @@ namespace Database
                 .HasForeignKey(e => e.SpecificationCategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //Set decimal scale
+            //Set decimal scale for Price col in Product tbl
             modelBuilder.Entity<Product>().Property(p => p.Price).HasPrecision(19, 5);
 
             // One to Many Relationship (ProductCategory, Product)
@@ -88,7 +91,7 @@ namespace Database
                 .HasForeignKey(e => e.ProductCategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //Set decimal scale
+            //Set decimal scale for Cost col in Shipping tbl
             modelBuilder.Entity<Shipping>().Property(p => p.Cost).HasPrecision(19, 5);
 
             // One to Many Relationship (Product, Photo)
@@ -97,6 +100,10 @@ namespace Database
                 .WithMany(s => s.Photos)
                 .HasForeignKey(e => e.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            //Set decimal scale for Balance col in Installment tbl
+            modelBuilder.Entity<Installment>().Property(i => i.Balance).HasPrecision(19, 5);
+
         }
 
         // Set SoftDelete
