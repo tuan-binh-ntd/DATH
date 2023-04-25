@@ -3,9 +3,11 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize } from 'rxjs';
 import { ProductCategory } from 'src/app/models/product-category.model';
+import { Specification } from 'src/app/models/specification.model';
 import { DrawerFormBaseComponent } from 'src/app/routes/components/drawer-form-base/drawer-form-base.component';
 import { ProductCategoryService } from 'src/app/services/product-category.service';
 import { ProductService } from 'src/app/services/product.service';
+import { SpecificationService } from 'src/app/services/specification.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
 
 @Component({
@@ -15,24 +17,35 @@ import { checkResponseStatus } from 'src/app/shared/helper';
 })
 export class ProductDrawerComponent extends DrawerFormBaseComponent {
   productCategories: ProductCategory[] = [];
+  listSpecification: Specification[] = [];
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,
     protected override message: NzMessageService,
     protected productService: ProductService,
     protected productCategoryService: ProductCategoryService,
+    protected specificationService: SpecificationService,
   ) {
     super(fb, cdr, message);
   }
   override ngOnInit(): void {
     this.initForm();
     this.fetchCategories();
+    this.fetchSpecification();
   }
 
   fetchCategories() {
     this.productCategoryService.getAll().subscribe(res => {
       if (checkResponseStatus(res)) {
         this.productCategories = res.data;
+      }
+    })
+  }
+
+  fetchSpecification() {
+    this.specificationService.getAll().subscribe(res => {
+      if (checkResponseStatus(res)) {
+        this.listSpecification = res.data;
       }
     })
   }
@@ -57,6 +70,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
       price: [null, Validators.required],
       description: [null],
       productCategoryId: [null, Validators.required],
+      specificationCategoryId: [null],
     })
   }
 
@@ -65,7 +79,9 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     if (this.drawerForm.valid) {
       this.isLoading = true;
       if (this.mode === 'create') {
-        this.productService.create(this.drawerForm.getRawValue()).pipe(
+        this.productService.create({...this.drawerForm.getRawValue(), 
+          specificationCategoryId: this.drawerForm.get('specificationCategoryId')?.value ? 
+          this.drawerForm.get('specificationCategoryId')?.value.join('') : "" }).pipe(
           finalize(() => this.isLoading = false)
         ).subscribe(res => {
           if (checkResponseStatus(res)) {

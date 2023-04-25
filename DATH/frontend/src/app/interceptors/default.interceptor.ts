@@ -3,21 +3,31 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
+  HttpInterceptor,
+  HttpErrorResponse
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class DefaultInterceptor implements HttpInterceptor {
 
-  constructor(private cookieService: CookieService) {}
+  constructor(private cookieService: CookieService, private router: Router) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request.clone({
       setHeaders: {
         Authorization: `Bearer ` + this.cookieService.get('token')
       }
-    }));
+    })).pipe(
+      catchError((error: HttpErrorResponse) => {
+        let errorMsg = '';
+        if(error.status === 403){
+          this.router.navigateByUrl('passport/login');
+        }
+        return throwError(errorMsg);
+      })
+    );
   }
 }

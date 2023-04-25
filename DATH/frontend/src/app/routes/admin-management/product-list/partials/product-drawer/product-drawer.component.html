@@ -10,22 +10,6 @@
   <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
 
     <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="category" nzRequired>
-        <span>Category</span>
-      </nz-form-label>
-      <nz-form-control [nzSpan]="24">
-      <nz-select
-        nzShowSearch
-        nzAllowClear
-        nzPlaceHolder="Select a category"
-        formControlName="specificationCategoryId"
-      >
-      <nz-option *ngFor="let category of productCategories" [nzLabel]="category.name" [nzValue]="category.id"></nz-option>
-      </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
       <nz-form-label [nzSpan]="24" nzFor="name" nzRequired>
         <span>Name</span>
       </nz-form-label>
@@ -43,30 +27,52 @@
 
     <nz-form-item>
       <nz-form-label [nzSpan]="24" nzFor="spec" nzRequired>
-        <span>Name</span>
+        <span>Specification</span>
       </nz-form-label>
-      <!-- <nz-form-control>
-        <nz-select [(ngModel)]="multipleValue" [nzSize]="size" nzMode="multiple" nzPlaceHolder="Please select">
-          <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
+      <nz-form-control>
+        <nz-select formControlName="specificationId" nzMode="multiple" nzPlaceHolder="Select specification">
+          <nz-option *ngFor="let option of listSpecification" [nzLabel]="option.code" [nzValue]="option.value"></nz-option>
         </nz-select>
-      </nz-form-control> -->
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="price" nzRequired>
-        <span>Price</span>
-      </nz-form-label>
-      <nz-form-control [nzSpan]="24" nzErrorTip="Price is required">
-        <input
-          nz-input
-          name="price"
-          type="price"
-          id="price"
-          formControlName="price"
-          placeholder="Input price"
-        />
       </nz-form-control>
     </nz-form-item>
+
+    <div nz-row nzGutter="16">
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="category" nzRequired>
+            <span>Category</span>
+          </nz-form-label>
+          <nz-form-control [nzSpan]="24">
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Select a category"
+            formControlName="productCategoryId"
+          >
+          <nz-option *ngFor="let category of productCategories" [nzLabel]="category.name" [nzValue]="category.id"></nz-option>
+          </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="price" nzRequired>
+            <span>Price</span>
+          </nz-form-label>
+          <nz-form-control [nzSpan]="24" nzErrorTip="Price is required">
+            <nz-input-number
+              class="w-100"
+              nz-input
+              name="price"
+              id="price"
+              formControlName="price"
+              placeholder="Input price"
+            ></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+</div>
+    </div>
+   
 
     <nz-form-item>
       <nz-form-label [nzSpan]="24" nzFor="description">
