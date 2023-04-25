@@ -21,7 +21,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     protected override message: NzMessageService,
     protected productService: ProductService,
     protected productCategoryService: ProductCategoryService,
-  ){
+  ) {
     super(fb, cdr, message);
   }
   override ngOnInit(): void {
@@ -29,10 +29,10 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     this.fetchCategories();
   }
 
-  fetchCategories(){
+  fetchCategories() {
     this.productCategoryService.getAll().subscribe(res => {
-      if(checkResponseStatus(res)){
-        this.productCategories =res.data;
+      if (checkResponseStatus(res)) {
+        this.productCategories = res.data;
       }
     })
   }
@@ -56,48 +56,48 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
       name: [null, Validators.required],
       price: [null, Validators.required],
       description: [null],
-      specificationCategoryId: [null, Validators.required],
+      productCategoryId: [null, Validators.required],
     })
   }
 
-override submitForm() {
+  override submitForm() {
     this.validateForm();
-    if(this.drawerForm.valid){
+    if (this.drawerForm.valid) {
       this.isLoading = true;
-      if(this.mode === 'create'){
+      if (this.mode === 'create') {
         this.productService.create(this.drawerForm.getRawValue()).pipe(
           finalize(() => this.isLoading = false)
         ).subscribe(res => {
-          if(checkResponseStatus(res)){
+          if (checkResponseStatus(res)) {
             this.message.success('Create successfully');
             this.changeToDetail();
             this.onCreate.emit(res.data);
           }
         })
       }
-      else{
+      else {
         this.productService.update(this.drawerForm.value.id, this.drawerForm.getRawValue())
-        .pipe(
-          finalize(() => this.isLoading = false)).subscribe(res => {
-          if(checkResponseStatus(res)){
-            this.message.success('Update successfully');
-              this.changeToDetail();
-              this.onUpdate.emit(res.data);
-          }
-        })
+          .pipe(
+            finalize(() => this.isLoading = false)).subscribe(res => {
+              if (checkResponseStatus(res)) {
+                this.message.success('Update successfully');
+                this.changeToDetail();
+                this.onUpdate.emit(res.data);
+              }
+            })
       }
     }
   }
 
-  deleteItem(){
+  deleteItem() {
     this.productService
-          .delete(this.drawerForm.value.id)
-          .subscribe((res) => {
-            if (checkResponseStatus(res)) {
-              this.message.success('Delete successfully');
-              this.closeDrawer();
-              this.onDelete.emit(res.data);
-            }
-          });
+      .delete(this.drawerForm.value.id)
+      .subscribe((res) => {
+        if (checkResponseStatus(res)) {
+          this.message.success('Delete successfully');
+          this.closeDrawer();
+          this.onDelete.emit(res.data);
+        }
+      });
   }
 }

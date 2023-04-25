@@ -6,5 +6,6 @@ export interface Product {
   price: number | null,
   description: string | null,
   productCategoryId: number | null,
+  specificationId: string | null
   //photos: Photo[] | null,
 }
