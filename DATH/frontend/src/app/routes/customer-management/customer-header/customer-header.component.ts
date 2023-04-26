@@ -7,12 +7,14 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NzConfigService } from 'ng-zorro-antd/core/config';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable, Observer, map, switchMap, timer } from 'rxjs';
 import { Account } from 'src/app/models/account.model';
 import { Customer } from 'src/app/models/customer.model';
 import { AccountService } from 'src/app/services/account.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { checkResponseStatus, PASSWORD_REGEX } from 'src/app/shared/helper';
 
 @Component({
@@ -26,7 +28,8 @@ export class CustomerHeaderComponent implements OnInit {
     private fb: FormBuilder,
     private accountService: AccountService,
     private cookerService: CookieService,
-    private router: Router
+    private router: Router,
+    private themeService: ThemeService
   ) {}
   isVisible: boolean = false;
   signUpForm!: FormGroup;
@@ -202,5 +205,9 @@ export class CustomerHeaderComponent implements OnInit {
 
   changeInfo() {
     this.router.navigateByUrl('/change-info');
+  }
+
+  changeTheme(){
+    this.themeService.toggleTheme();
   }
 }

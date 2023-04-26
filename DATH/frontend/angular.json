@@ -29,8 +29,21 @@
             ],
             "styles": [
               "./node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
-              "src/styles.less"
+              "src/styles.less",
+              {
+                "input": "src/assets/styles/default.less",
+                "bundleName": "default",
+                "inject": false
+              },
+              {
+                "input": "src/assets/styles/dark.less",
+                "bundleName": "dark",
+                "inject": false
+              }
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/assets/styles/themes/mixin.less"]
+            },
             "scripts": []
           },
           "configurations": {
@@ -97,9 +110,21 @@
               "src/assets"
             ],
             "styles": [
-              "./node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
-              "src/styles.less"
+              "src/styles.less",
+              {
+                "input": "src/assets/styles/default.less",
+                "bundleName": "default",
+                "inject": false
+              },
+              {
+                "input": "src/assets/styles/dark.less",
+                "bundleName": "dark",
+                "inject": false
+              }
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/assets/styles/themes/mixin.less"]
+            },
             "scripts": []
           }
         }

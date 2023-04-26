@@ -2,7 +2,7 @@
    
    .btn-icon {
         display: inline-block;
-        color: rgba(0, 0, 0, 0.55);
+        color: @primary-color;
         font-weight: 400;
         text-decoration: none;
         background-color: transparent;
@@ -12,11 +12,10 @@
         box-shadow: none;
         transition: background-color 0.1s ease-out;
     
-        &:hover,
-        &:active
+        &:hover
         // &:focus
         {
-          color: rgba(0, 0, 0, 0.85);
+          color: fade(@primary-color, 85%);
           background-color: rgba(0, 0, 0,0.1);
         }
     

@@ -13,6 +13,7 @@ import { DefaultInterceptor } from './interceptors/default.interceptor';
 import { CookieService } from 'ngx-cookie-service';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
+import { AppInitializerProvider } from './services/app-initializer.service';
 registerLocaleData(en);
 
 
@@ -27,6 +28,7 @@ registerLocaleData(en);
     SharedModule,
   ],
   providers: [
+    AppInitializerProvider,
     { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true },
     { provide: NZ_I18N, useValue: en_US },
     [CookieService],
