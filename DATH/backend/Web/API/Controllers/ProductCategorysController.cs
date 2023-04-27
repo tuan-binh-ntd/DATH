@@ -14,14 +14,23 @@ namespace API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IRepository<ProductCategory> _productCateRepo;
+        private readonly IRepository<SpecificationCategory> _specCateRepo;
+        private readonly IRepository<Product, long> _productRepo;
+        private readonly IRepository<Specification, long> _specRepo;
 
         public ProductCategorysController(
             IMapper mapper,
-            IRepository<ProductCategory> productCateRepo
+            IRepository<ProductCategory> productCateRepo,
+            IRepository<SpecificationCategory> specCateRepo,
+            IRepository<Product, long> productRepo,
+            IRepository<Specification, long> specRepo
             )
         {
             _mapper = mapper;
             _productCateRepo = productCateRepo;
+            _specCateRepo = specCateRepo;
+            _productRepo = productRepo;
+            _specRepo = specRepo;
         }
 
         [HttpGet]
@@ -71,7 +80,7 @@ namespace API.Controllers
         public async Task<IActionResult> Update(int id, ProductCategoryInput input)
         {
             ProductCategory? productCategory = await _productCateRepo.GetAsync(id);
-            if(productCategory == null) return CustomResult(HttpStatusCode.NoContent);
+            if (productCategory == null) return CustomResult(HttpStatusCode.NoContent);
 
             _mapper.Map(input, productCategory);
 
@@ -86,6 +95,52 @@ namespace API.Controllers
         {
             await _productCateRepo.DeleteAsync(id);
             return CustomResult(id, HttpStatusCode.OK);
+        }
+
+        [HttpGet("{id}/specifications")]
+        public async Task<IActionResult> GetFilterForProductCategory(int id)
+        {
+            List<string?> specificationIdList = await _productRepo.GetAll().AsNoTracking().Where(p => p.ProductCategoryId == id).Select(p => p.SpecificationId).ToListAsync();
+
+            string specificationIds = string.Join(",", specificationIdList);
+
+            specificationIdList = specificationIds.Split(",").ToList()!;
+
+            List<SpecificationCategoryDto> specificationCategories = await (from sc in _specCateRepo.GetAll().AsNoTracking()
+                                                                           join s in _specRepo.GetAll().AsNoTracking() on sc.Id equals s.SpecificationCategoryId
+                                                                           where specificationIdList.Contains(s.Id.ToString())
+                                                                           select new SpecificationCategoryDto
+                                                                           {
+                                                                               Id = sc.Id,
+                                                                               Code = sc.Code,
+                                                                               Value = sc.Value,
+                                                                               SpecificationCode = s.Code,
+                                                                               SpecificationValue = s.Value,
+                                                                               SpecificationId = s.Id,
+                                                                           }).ToListAsync();
+
+
+            var list = specificationCategories
+            .GroupBy(sc => new { sc.Id, sc.Code, sc.Value })
+            .Select(sc => new
+            {
+                sc.Key.Id,
+                sc.Key.Code,
+                sc.Key.Value,
+                Specifications = sc.GroupBy(sc => new
+                {
+                    Id = sc.SpecificationId,
+                    Code = sc.SpecificationCode,
+                    Value = sc.SpecificationValue,
+                }).Select(s => new
+                {
+                    s.Key.Id,
+                    s.Key.Code,
+                    s.Key.Value,
+                }).ToList()
+            }).ToList();
+
+            return CustomResult(list, HttpStatusCode.OK);
         }
     }
 }
