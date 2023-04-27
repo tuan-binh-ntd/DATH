@@ -1,4 +1,4 @@
-﻿using Entities;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Bussiness.Dto
 {
@@ -9,5 +9,6 @@ namespace Bussiness.Dto
         public string? Description { get; set; }
         public int? ProductCategoryId { get; set; }
         public string? SpecificationId { get; set; }
+        public IFormFile? File { get; set; }
     }
 }

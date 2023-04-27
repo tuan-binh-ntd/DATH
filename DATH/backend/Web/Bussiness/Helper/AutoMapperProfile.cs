@@ -8,51 +8,81 @@ namespace Bussiness.Helper
     {
         public AutoMapperProfile()
         {
+            //Declare Mapper AppUser
             CreateMap<AppUser, RegisterDto>().ReverseMap();
 
-            CreateMap<ShopInput, Shop>().ReverseMap();
-
-            CreateMap<RegisterDto, Customer>().ReverseMap();
 
             CreateMap<RegisterDto, Employee>().ReverseMap();
 
+
+            CreateMap<Employee, UserDto>().ReverseMap();
+            //End Declare Mapper AppUser
+
+            //Declare Mapper Shop
             CreateMap<ShopInput, Shop>().ReverseMap();
+
+            CreateMap<Shop, ShopForViewDto>().ReverseMap();
+            //End Declare Mapper Shop
+
+            //Declare Mapper Customer
+            CreateMap<RegisterDto, Customer>().ReverseMap();
 
             CreateMap<Customer, UserDto>().ReverseMap();
 
-            CreateMap<Employee, UserDto>().ReverseMap();
-
             CreateMap<Customer, CustomerInput>().ReverseMap();
 
+            CreateMap<Customer, CustomerForViewDto>().ReverseMap();
+            //End Declare Mapper Customer
+
+            //Declare Mapper SpecificationCategory
             CreateMap<SpecificationCategoryInput, SpecificationCategory>().ReverseMap();
 
+            CreateMap<SpecificationCategory, SpecificationCategoryForViewDto>().ReverseMap();
+            //End Declare Mapper SpecificationCategory
+
+            //Declare Mapper Specification
             CreateMap<SpecificationInput, Specification>().ReverseMap();
 
+            CreateMap<Specification, SpecificationForViewDto>().ReverseMap();
+            //End Declare Mapper Specification
+
+            //Declare Mapper ProductCategory
             CreateMap<ProductCategory, ProductCategoryInput>().ReverseMap();
 
+            CreateMap<ProductCategory, ProductCategoryForViewDto>().ReverseMap();
+            //End Declare Mapper ProductCategory
+
+
+            //Declare Mapper Product
             CreateMap<Product, ProductInput>().ReverseMap();
 
+            CreateMap<Product, ProductForViewDto>().ReverseMap();
+            //End Declare Mapper Product
+
+            //Declare Mapper Shipping
             CreateMap<Shipping, ShippingInput>().ReverseMap();
 
+            CreateMap<Shipping, ShippingForViewDto>().ReverseMap();
+            //End Declare Mapper Shipping
+
+            //Declare Mapper Promotion
             CreateMap<Promotion, PromotionInput>().ReverseMap();
 
-            CreateMap<Shop, ShopForViewDto>().ReverseMap();
-
-            CreateMap<Specification, SpecificationForViewDto>().ReverseMap();
-
-            CreateMap<SpecificationCategory, SpecificationCategoryForViewDto>().ReverseMap();
-
-            CreateMap<Product, ProductForViewDto>().ReverseMap();
-
             CreateMap<Promotion, PromotionForViewDto>().ReverseMap();
+            //End Declare Mapper Promotion
 
-            CreateMap<ProductCategory, ProductCategoryForViewDto>().ReverseMap();
-
+            //Declare Mapper Photo
             CreateMap<Photo, PhotoDto>().ReverseMap();
+            //End Declare Mapper Photo
 
+            //Declare Mapper Employee
             CreateMap<Employee, EmployeeInput>().ReverseMap();
+            //End Declare Mapper Employee
 
-            CreateMap<Customer, CustomerForViewDto>().ReverseMap();
+            //Declare Mapper Employee
+            CreateMap<Warehouse, WarehouseInput>().ReverseMap();
+            CreateMap<Warehouse, WarehouseForViewDto>().ReverseMap();
+            //End Declare Mapper Employee
         }
     }
 }

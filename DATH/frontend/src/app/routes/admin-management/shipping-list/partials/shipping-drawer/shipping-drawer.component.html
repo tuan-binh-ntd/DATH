@@ -29,14 +29,14 @@
         <span>Cost</span>
       </nz-form-label>
       <nz-form-control [nzSpan]="24" nzErrorTip="Cost is required">
-        <input
-          nz-input
+        <nz-input-number
+        class="w-100"
           name="cost"
-          type="cost"
           id="cost"
           formControlName="cost"
+          [nzStep]="1000"
           placeholder="Input cost"
-        />
+        ></nz-input-number>
       </nz-form-control>
     </nz-form-item>
 

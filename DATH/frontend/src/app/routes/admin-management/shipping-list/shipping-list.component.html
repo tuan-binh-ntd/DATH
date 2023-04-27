@@ -45,10 +45,7 @@
       <ng-container *ngFor="let data of rowSelectionTable.data">
         <tr (click)="goToDetail(data)">
           <td>{{ data.name }}</td>
-          <td>{{ data.code }}</td>
-          <td>{{ data.startDate }}</td>
-          <td>{{ data.endDate }}</td>
-          <td>{{ data.discount }}</td>
+          <td>{{ data.cost }}</td>
         </tr>
       </ng-container>
     </tbody>

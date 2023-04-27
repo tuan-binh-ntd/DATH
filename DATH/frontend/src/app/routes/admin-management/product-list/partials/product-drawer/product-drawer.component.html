@@ -8,7 +8,6 @@
   (onSubmit)="submitForm()"
 >
   <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
-
     <nz-form-item>
       <nz-form-label [nzSpan]="24" nzFor="name" nzRequired>
         <span>Name</span>
@@ -30,8 +29,16 @@
         <span>Specification</span>
       </nz-form-label>
       <nz-form-control>
-        <nz-select formControlName="specificationId" nzMode="multiple" nzPlaceHolder="Select specification">
-          <nz-option *ngFor="let option of listSpecification" [nzLabel]="option.code" [nzValue]="option.value"></nz-option>
+        <nz-select
+          formControlName="specificationId"
+          nzMode="multiple"
+          nzPlaceHolder="Select specification"
+        >
+          <nz-option
+            *ngFor="let option of specifications"
+            [nzLabel]="option.code"
+            [nzValue]="option.id"
+          ></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
@@ -43,14 +50,18 @@
             <span>Category</span>
           </nz-form-label>
           <nz-form-control [nzSpan]="24">
-          <nz-select
-            nzShowSearch
-            nzAllowClear
-            nzPlaceHolder="Select a category"
-            formControlName="productCategoryId"
-          >
-          <nz-option *ngFor="let category of productCategories" [nzLabel]="category.name" [nzValue]="category.id"></nz-option>
-          </nz-select>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Select a category"
+              formControlName="productCategoryId"
+            >
+              <nz-option
+                *ngFor="let category of productCategories"
+                [nzLabel]="category.name"
+                [nzValue]="category.id"
+              ></nz-option>
+            </nz-select>
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -70,9 +81,8 @@
             ></nz-input-number>
           </nz-form-control>
         </nz-form-item>
-</div>
+      </div>
     </div>
-   
 
     <nz-form-item>
       <nz-form-label [nzSpan]="24" nzFor="description">
@@ -101,13 +111,13 @@
     (onClick)="closeDrawer()"
   ></app-button-base>
   <app-button-base
-  class="float-right"
-  text="Save"
-  buttonClass="btn-success mr-2"
-  iconClass="fa-solid fa-floppy-disk"
-  *ngIf="isEdit"
-  (onClick)="submitForm()"
-></app-button-base>
+    class="float-right"
+    text="Save"
+    buttonClass="btn-success mr-2"
+    iconClass="fa-solid fa-floppy-disk"
+    *ngIf="isEdit"
+    (onClick)="submitForm()"
+  ></app-button-base>
   <app-button-base
     class="float-right"
     text="Back"

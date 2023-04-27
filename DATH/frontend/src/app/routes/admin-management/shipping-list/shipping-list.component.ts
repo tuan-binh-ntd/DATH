@@ -15,7 +15,7 @@ import { PaginationInput } from 'src/app/models/pagination-input';
 export class ShippingListComponent extends ListBaseComponent {
   @ViewChild('drawerFormBase') override drawerFormBase!: ShippingDrawerComponent;
   @HostListener('window:resize', ['$event'])
- 
+
   paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
   constructor(protected override msg: NzMessageService,
     private shippingService: ShippingService) {
@@ -31,40 +31,14 @@ export class ShippingListComponent extends ListBaseComponent {
       class: 'text-left',
     },
     {
-      name: 'Code',
+      name: 'Cost',
       width: '15%',
-      sortKey: 'code',
-      sortOrder: null,
-      sortDirections: ['ascend', 'descend', null],
-      class: 'text-left',
-    },
-    {
-      name: 'Start Date',
-      width: '15%',
-      sortKey: 'startDate',
-      sortOrder: null,
-      sortDirections: ['ascend', 'descend', null],
-      class: 'text-left',
-    },
-    {
-      name: 'End Date',
-      width: '15%',
-      sortKey: 'endDate',
-      sortOrder: null,
-      sortDirections: ['ascend', 'descend', null],
-      class: 'text-left',
-    },
-    {
-      name: 'Discount',
-      width: 'auto',
-      sortKey: 'discount',
+      sortKey: 'cost',
       sortOrder: null,
       sortDirections: ['ascend', 'descend', null],
       class: 'text-left',
     },
   ];
-
- 
 
   override fetchData(): void {
     this.shippingService.getAll(this.paginationParam.pageNum, this.paginationParam.pageSize).pipe(

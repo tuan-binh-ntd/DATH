@@ -36,7 +36,7 @@ export class ListBaseComponent {
   }
 
 
-  
+
   ngOnInit(): void {
     this.fetchData();
   }
@@ -61,15 +61,14 @@ export class ListBaseComponent {
 
    onUpdateItem(data: any){
     const index = this.listOfData.findIndex(item => item.id === data.id);
-    this.listOfData.splice(0, index, 1);
+    this.listOfData = [...this.listOfData.slice(0, index), data, ...this.listOfData.slice(index + 1)];
     this.listOfData = [...this.listOfData];
    }
 
-   onDeleteItem(id: any){
-    const index = this.listOfData.findIndex(item => item.id === id);
+   onDeleteItem(data: any){
+    const index = this.listOfData.findIndex(item => item.id === data.id);
     this.listOfData.splice(index, 1);
     this.listOfData = [...this.listOfData];
-
    }
 
 }

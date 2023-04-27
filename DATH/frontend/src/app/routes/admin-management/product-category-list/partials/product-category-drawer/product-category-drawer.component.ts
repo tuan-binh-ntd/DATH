@@ -21,6 +21,19 @@ export class ProductCategoryDrawerComponent extends DrawerFormBaseComponent {
     super(fb, cdr, message);
   }
 
+  override checkEditForm() {
+    const formValue = this.drawerForm.getRawValue();
+    if (this.isEdit) {
+      this.setEnableForm();
+      this.titleDrawer = `Edit: ${formValue?.name}`;
+      this.markAsTouched();
+    } else {
+      this.setDisableForm();
+      this.titleDrawer = `${formValue?.name}`;
+      this.markAsUntouched();
+    }
+  }
+
   override initForm(): void {
     this.drawerForm = this.fb.group({
       id: [null],

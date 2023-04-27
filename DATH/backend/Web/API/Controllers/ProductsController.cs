@@ -4,6 +4,7 @@ using Bussiness.Helper;
 using Bussiness.Interface;
 using Bussiness.Repository;
 using Bussiness.Services;
+using Database;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,32 +18,96 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly IRepository<Product, long> _productRepo;
         private readonly IPhotoService _photoService;
+        private readonly IRepository<Specification, long> _specificationRepo;
+        private readonly DataContext _dataContext;
 
         public ProductsController(
             IMapper mapper,
             IRepository<Product, long> productRepo,
-            IPhotoService photoService
+            IPhotoService photoService,
+            IRepository<Specification, long> specificationRepo,
+            DataContext dataContext
             )
         {
             _mapper = mapper;
             _productRepo = productRepo;
             _photoService = photoService;
+            _specificationRepo = specificationRepo;
+            _dataContext = dataContext;
         }
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
             IQueryable<ProductForViewDto> query = from p in _productRepo.GetAll().AsNoTracking()
-                                                          select new ProductForViewDto()
-                                                          {
-                                                              Id = p.Id,
-                                                              Name = p.Name,
-                                                              Price = p.Price,
-                                                              Description = p.Description
-                                                          };
+                                                  select new ProductForViewDto()
+                                                  {
+                                                      Id = p.Id,
+                                                      Name = p.Name,
+                                                      Price = p.Price,
+                                                      Description = p.Description,
+                                                      ProductCategoryId = p.ProductCategoryId,
+                                                      SpecificationId = p.SpecificationId,
+                                                  };
 
-            if (input.PageNum != null && input.PageSize != null) return CustomResult(await query.Pagination(input), HttpStatusCode.OK);
-            else return CustomResult(await query.ToListAsync(), HttpStatusCode.OK);
+            ICollection<ProductForViewDto> list = new List<ProductForViewDto>();
+
+            if (input.PageNum != null && input.PageSize != null)
+            {
+                PaginationResult<ProductForViewDto> products = await query.Pagination(input);
+                list = products.Content!;
+                await HandleProductList(list);
+                return CustomResult(products, HttpStatusCode.OK);
+            }
+            else
+            {
+                list = await query.ToListAsync();
+                await HandleProductList(list);
+                return CustomResult(list, HttpStatusCode.OK);
+            }
+
+
+
+        }
+
+        private async Task HandleProductList(ICollection<ProductForViewDto> list)
+        {
+            if (list != null)
+            {
+                foreach (ProductForViewDto product in list!)
+                {
+                    await HandleProduct(product);
+                }
+            }
+        }
+
+        private async Task HandleProduct(ProductForViewDto product)
+        {
+            if (product != null)
+            {
+                // Get specification list for product
+                List<string>? specifications = product.SpecificationId != null ? product.SpecificationId!.Split(",").ToList() : null;
+                if (specifications != null)
+                {
+                    product.Specifications = await (from s in _specificationRepo.GetAll().AsNoTracking()
+                                                    where specifications.Contains(s.Id.ToString())
+                                                    select new SpecificationDto
+                                                    {
+                                                        Id = s.Id,
+                                                        Code = s.Code,
+                                                        Value = s.Value
+                                                    }).ToListAsync();
+                }
+
+                // Get photo list for product
+                product.Photos = await (from p in _dataContext.Photo.AsNoTracking()
+                                        where p.ProductId == product.Id
+                                        select new PhotoDto
+                                        {
+                                            Id = p.Id,
+                                            Url = p.Url,
+                                        }).ToListAsync();
+            }
         }
 
         [HttpGet("{id}", Name = "Products")]
@@ -55,7 +120,9 @@ namespace API.Controllers
                                                       Id = p.Id,
                                                       Name = p.Name,
                                                       Price = p.Price,
-                                                      Description = p.Description
+                                                      Description = p.Description,
+                                                      ProductCategoryId = p.ProductCategoryId,
+                                                      SpecificationId = p.SpecificationId,
                                                   };
             ProductForViewDto? data = await query.FirstOrDefaultAsync();
             if (data == null) return CustomResult(HttpStatusCode.NoContent);
@@ -71,6 +138,11 @@ namespace API.Controllers
 
             ProductForViewDto? res = new();
             _mapper.Map(product, res);
+
+            await AddPhoto(res.Id, input.File!);
+
+
+            await HandleProduct(res);
 
             return CustomResult(res, HttpStatusCode.OK);
         }
@@ -88,7 +160,9 @@ namespace API.Controllers
             ProductForViewDto? res = new();
             _mapper.Map(product, res);
 
-            return CustomResult(product, HttpStatusCode.OK);
+            await HandleProduct(res);
+
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpDelete("{id}")]
@@ -102,7 +176,7 @@ namespace API.Controllers
         public async Task<IActionResult> AddPhoto(long id, IFormFile file)
         {
             Product? product = await _productRepo.GetAsync(id);
-            if(product == null) return CustomResult(HttpStatusCode.NoContent);
+            if (product == null) return CustomResult(HttpStatusCode.NoContent);
 
             var result = await _photoService.AddPhotoAsync(file);
 
@@ -119,10 +193,11 @@ namespace API.Controllers
             ProductForViewDto? res = new();
             _mapper.Map(product, res);
 
+            await HandleProduct(res);
 
             if (await _productRepo.UpdateAsync(product) != null)
             {
-                res.Photos = new List<PhotoDto> { _mapper.Map<PhotoDto>(photo) };
+                res.Photos!.Add(_mapper.Map<PhotoDto>(photo));
                 return CustomResult(res, HttpStatusCode.OK);
             }
             return CustomResult("Problem adding photo", HttpStatusCode.BadRequest);

@@ -17,7 +17,8 @@ import { checkResponseStatus } from 'src/app/shared/helper';
 })
 export class ProductDrawerComponent extends DrawerFormBaseComponent {
   productCategories: ProductCategory[] = [];
-  listSpecification: Specification[] = [];
+  specifications: Specification[] = [];
+
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,
@@ -45,7 +46,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
   fetchSpecification() {
     this.specificationService.getAll().subscribe(res => {
       if (checkResponseStatus(res)) {
-        this.listSpecification = res.data;
+        this.specifications = res.data;
       }
     })
   }
@@ -54,11 +55,11 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     const formValue = this.drawerForm.getRawValue();
     if (this.isEdit) {
       this.setEnableForm();
-      this.titleDrawer = `Edit: ${formValue?.code}`;
+      this.titleDrawer = `Edit: ${formValue?.name}`;
       this.markAsTouched();
     } else {
       this.setDisableForm();
-      this.titleDrawer = `${formValue?.code}`;
+      this.titleDrawer = `${formValue?.name}`;
       this.markAsUntouched();
     }
   }
@@ -70,7 +71,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
       price: [null, Validators.required],
       description: [null],
       productCategoryId: [null, Validators.required],
-      specificationCategoryId: [null],
+      specificationId: [null],
     })
   }
 
@@ -79,9 +80,8 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     if (this.drawerForm.valid) {
       this.isLoading = true;
       if (this.mode === 'create') {
-        this.productService.create({...this.drawerForm.getRawValue(), 
-          specificationCategoryId: this.drawerForm.get('specificationCategoryId')?.value ? 
-          this.drawerForm.get('specificationCategoryId')?.value.join('') : "" }).pipe(
+        this.productService.create({...this.drawerForm.getRawValue(),
+          specificationId: this.drawerForm.get('specificationId')?.value.join(',')}).pipe(
           finalize(() => this.isLoading = false)
         ).subscribe(res => {
           if (checkResponseStatus(res)) {

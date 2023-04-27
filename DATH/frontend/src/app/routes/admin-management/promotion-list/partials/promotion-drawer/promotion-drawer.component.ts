@@ -28,11 +28,11 @@ export class PromotionDrawerComponent extends DrawerFormBaseComponent{
     const formValue = this.drawerForm.getRawValue();
     if (this.isEdit) {
       this.setEnableForm();
-      this.titleDrawer = `Edit: ${formValue?.code}`;
+      this.titleDrawer = `Edit: ${formValue?.name}`;
       this.markAsTouched();
     } else {
       this.setDisableForm();
-      this.titleDrawer = `${formValue?.code}`;
+      this.titleDrawer = `${formValue?.name}`;
       this.markAsUntouched();
     }
   }
