@@ -9,17 +9,9 @@ import { checkResponseStatus } from 'src/app/shared/helper';
   styleUrls: ['./customer-home.component.less']
 })
 export class CustomerHomeComponent {
-  listOfData: Product[] = [];
-  constructor(private productService: ProductService,){}
+  constructor(){}
   ngOnInit():void{
-    this.fetchData();
   }
 
-  fetchData(){
-    this.productService.getAll().subscribe(res => {
-      if(checkResponseStatus(res)){
-        this.listOfData = res.data;
-      }
-    })
-  }
+ 
 }
