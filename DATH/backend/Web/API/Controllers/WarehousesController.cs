@@ -76,7 +76,7 @@ namespace API.Controllers
             _mapper.Map(input, data);
 
             await _warehouseRepo.UpdateAsync(data);
-            ShippingForViewDto? res = new();
+            WarehouseForViewDto? res = new();
             _mapper.Map(data, res);
             return CustomResult(res, HttpStatusCode.OK);
         }
