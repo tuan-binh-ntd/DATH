@@ -1,0 +1,71 @@
+<app-page-grid>
+  <h2>Installment Management</h2>
+  <div nz-row class="mb-2">
+    <div nz-col nzSpan="6">
+      <nz-input-group [nzSuffix]="searchIcon">
+        <input type="text" nz-input placeholder="Search..." />
+      </nz-input-group>
+    </div>
+    <div nz-col nzSpan="18">
+      <button
+        nz-button
+        nzType="primary"
+        class="float-right"
+        (click)="goToCreate()"
+      >
+        Create
+      </button>
+    </div>
+  </div>
+  <ng-template #searchIcon>
+    <span><i class="fa-solid fa-search mr-2 text-muted"></i></span>
+  </ng-template>
+  <nz-table
+    #rowSelectionTable
+    [nzData]="listOfData"
+    [nzShowPagination]="false"
+    [nzFrontPagination]="false"
+    [nzScroll]="{ y: scrollY }"
+  >
+    <thead>
+      <tr>
+        <th
+          *ngFor="let column of listOfColumn"
+          [nzWidth]="column.width"
+          [nzSortOrder]="column.sortOrder"
+          [ngClass]="column.class"
+          [nzSortDirections]="column.sortDirections"
+          (nzSortOrderChange)="onSort($event, column)"
+        >
+          {{ column.name }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let data of rowSelectionTable.data">
+        <tr (click)="goToDetail(data)">
+          <td>{{ data.term }}</td>
+          <td>{{ data.balance }}</td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </nz-table>
+  <br />
+  <nz-pagination
+    class="float-right"
+    nzShowSizeChanger
+    [nzPageIndex]="paginationParam.pageNum"
+    [nzTotal]="paginationParam.totalCount"
+    [nzPageSize]="paginationParam.pageSize"
+    nzFrontPagination="false"
+    (nzPageSizeChange)="pageSizeChanged($event)"
+    (nzPageIndexChange)="pageNumChanged($event)"
+  ></nz-pagination>
+</app-page-grid>
+
+<app-product-category-drawer
+  #drawerFormBase
+  (onCreate)="onCreateItem($event)"
+  (onUpdate)="onUpdateItem($event)"
+  (onDelete)="onDeleteItem($event)"
+></app-product-category-drawer>

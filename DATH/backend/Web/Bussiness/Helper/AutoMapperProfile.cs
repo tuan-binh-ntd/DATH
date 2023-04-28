@@ -83,6 +83,11 @@ namespace Bussiness.Helper
             CreateMap<Warehouse, WarehouseInput>().ReverseMap();
             CreateMap<Warehouse, WarehouseForViewDto>().ReverseMap();
             //End Declare Mapper Employee
+
+            //Declare Mapper Installment
+            CreateMap<Installment, InstallmentInput>().ReverseMap();
+            CreateMap<Installment, InstallmentForViewDto>().ReverseMap();
+            //End Declare Mapper Installment
         }
     }
 }

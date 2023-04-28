@@ -25,6 +25,8 @@ import { ShopDrawerComponent } from './shop-list/partials/shop-drawer/shop-drawe
 import { ShippingDrawerComponent } from './shipping-list/partials/shipping-drawer/shipping-drawer.component';
 import { RegisterEmployeeListComponent } from './register-employee-list/register-employee-list.component';
 import { RegisterEmployeeDrawerComponent } from './register-employee-list/partials/register-employee-drawer/register-employee-drawer.component';
+import { InstallmentListComponent } from './installment-list/installment-list.component';
+import { InstallmentDrawerComponent } from './installment-list/partials/installment-drawer/installment-drawer.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,9 @@ import { RegisterEmployeeDrawerComponent } from './register-employee-list/partia
     ShopDrawerComponent,
     ShippingDrawerComponent,
     RegisterEmployeeListComponent,
-    RegisterEmployeeDrawerComponent
+    RegisterEmployeeDrawerComponent,
+    InstallmentListComponent,
+    InstallmentDrawerComponent
   ],
   imports: [
     AdminManagementRoutingModule,
