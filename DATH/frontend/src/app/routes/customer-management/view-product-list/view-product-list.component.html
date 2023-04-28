@@ -16,6 +16,15 @@
                     <span><i class="fa-solid fa-search  mr-2 text-muted"></i></span>
                   </ng-template>
         </div>
-        <div nz-col nzSpan="18"></div>
+        <div nz-col nzSpan="18">
+          <span class="float-right cursor-poiter" nz-dropdown  [nzDropdownMenu]="menu">Sort By <i class="fa-solid fa-arrow-down ml-2"></i></span>
+          <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu nzSelectable>
+              <li nz-menu-item>Newest</li>
+              <li nz-menu-item>Price: High-Low</li>
+              <li nz-menu-item>Price: Low-High</li>
+            </ul>
+          </nz-dropdown-menu>
+        </div>
       </div>
 </app-page-grid>

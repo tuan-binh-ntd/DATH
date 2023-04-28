@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-enum ThemeType {
+export enum ThemeType {
   dark = 'dark',
   default = 'default',
 }
@@ -9,7 +9,7 @@ enum ThemeType {
   providedIn: 'root',
 })
 export class ThemeService {
-  currentTheme = ThemeType.default;
+  currentTheme = localStorage.getItem('theme') ?? ThemeType.default;
 
   constructor() {}
 
@@ -35,6 +35,7 @@ export class ThemeService {
       style.onload = resolve;
       style.onerror = reject;
       document.head.append(style);
+      localStorage.setItem('theme', id);
     });
   }
 
