@@ -12,7 +12,6 @@ namespace Entities
         public decimal Price { get; set; }
         public string? Description { get; set; }
         public string? SpecificationId { get; set; }
-        public ICollection<Specification>? Specifications { get; set; }
 
         //Relationship
         public int? ProductCategoryId { get; set; }
