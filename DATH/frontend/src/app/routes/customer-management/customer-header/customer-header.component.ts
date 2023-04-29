@@ -45,8 +45,14 @@ export class CustomerHeaderComponent implements OnInit {
   }
 
   setCurrentUser() {
-    this.customer = JSON.parse(localStorage.getItem('user')!);
+    if(!this.cookerService.get('token')){
+      this.logOut();
+      this.accountService.setCurrentUser(null);
+    }
+    else{
+      this.customer = JSON.parse(localStorage.getItem('user')!);
     this.accountService.setCurrentUser(this.customer);
+    }
   }
 
   getCurrentUser() {
@@ -61,8 +67,6 @@ export class CustomerHeaderComponent implements OnInit {
       if (checkResponseStatus(res)) {
         this.signUpForm.reset();
         this.msg.success('Successfully!');
-        if (this.signInForm.get('remember')?.value)
-          this.cookerService.set('user', res.data);
         this.handleCancel();
       } else {
         this.msg.error('There is an error from server');
@@ -155,6 +159,7 @@ export class CustomerHeaderComponent implements OnInit {
 
   logOut() {
     this.accountService.logOut();
+    this.router.navigateByUrl('/home');
     this.isLoggedIn = false;
   }
 

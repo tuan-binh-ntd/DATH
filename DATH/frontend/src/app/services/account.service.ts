@@ -23,32 +23,32 @@ export class AccountService {
       map((response: any) => {
         const user = response;
         if (user) {
-          this.setCurrentUser(user.data);
-          this.cookieService.set(
-            'token',
-            user.data.token,
-            7,
-            '/',
-            undefined,
-            true,
-            'None'
-          );
+          this.setCurrentUser(user.data, payload.remember);
         }
         return user;
       })
     );
   }
 
-  setCurrentUser(account: Account) {
-    localStorage.setItem('user', JSON.stringify(account));
+  setCurrentUser(account: Account | null, expired?: boolean) {
+    if(account){
+      localStorage.setItem('user', JSON.stringify(account));
+      this.cookieService.set(
+        'token',
+        account.token!,
+        expired ? 7 : 1,
+        '/',
+        undefined,
+        true,
+        'None'
+      );
+    }
     this.currentUserSource.next(account);
   }
-  
 
   signUp(payload: Register): Observable<Account> {
     return this.http.post<Account>(this.baseUrl + 'customers', payload).pipe(
       map((response: any) => {
-        debugger
         const user = response;
         if (user) {
           this.setCurrentUser(user.data);
@@ -58,7 +58,8 @@ export class AccountService {
     );
   }
 
-  logOut(){
+  logOut() {
+    this.cookieService.delete('token');
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
   }
@@ -72,7 +73,7 @@ export class AccountService {
         }
         return user;
       })
-    )
+    );
   }
 
   checkUsername(username: string): Observable<any> {
