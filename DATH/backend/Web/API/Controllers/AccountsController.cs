@@ -197,7 +197,7 @@ namespace API.Controllers
 
             var result = await _userManager.ChangePasswordAsync(user, input.CurrentPassword!, input.NewPassword!);
 
-            if (!result.Succeeded) return CustomResult("Password incrrect", result.Errors, HttpStatusCode.BadRequest);
+            if (!result.Succeeded) return CustomResult("Password incorrect", result.Errors, HttpStatusCode.BadRequest);
 
             return CustomResult(new { user.UserName }, HttpStatusCode.OK);
         }
