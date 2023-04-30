@@ -13,7 +13,7 @@ import { checkResponseStatus } from 'src/app/shared/helper';
   styleUrls: ['./customer-change-info.component.less']
 })
 export class CustomerChangeInfoComponent {
-  selectedIndex: number = 1;
+  selectedIndex: number = 0;
   infoForm!: FormGroup;
   addressForm!: FormGroup;
   changePasswordForm!: FormGroup;
