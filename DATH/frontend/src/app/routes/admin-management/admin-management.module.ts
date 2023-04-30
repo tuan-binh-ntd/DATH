@@ -29,6 +29,8 @@ import { InstallmentListComponent } from './installment-list/installment-list.co
 import { InstallmentDrawerComponent } from './installment-list/partials/installment-drawer/installment-drawer.component';
 import { WarehouseListComponent } from './warehouse-list/warehouse-list.component';
 import { WarehouseDrawerComponent } from './warehouse-list/partials/warehouse-drawer/warehouse-drawer.component';
+import { PaymentListComponent } from './payment-list/payment-list.component';
+import { PaymentDrawerComponent } from './payment-list/partials/payment-drawer/payment-drawer.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,9 @@ import { WarehouseDrawerComponent } from './warehouse-list/partials/warehouse-dr
     InstallmentListComponent,
     InstallmentDrawerComponent,
     WarehouseListComponent,
-    WarehouseDrawerComponent
+    WarehouseDrawerComponent,
+    PaymentListComponent,
+    PaymentDrawerComponent
   ],
   imports: [
     AdminManagementRoutingModule,

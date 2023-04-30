@@ -88,6 +88,11 @@ namespace Bussiness.Helper
             CreateMap<Installment, InstallmentInput>().ReverseMap();
             CreateMap<Installment, InstallmentForViewDto>().ReverseMap();
             //End Declare Mapper Installment
+
+            //Declare Mapper Payment
+            CreateMap<Payment, PaymentForViewDto>().ReverseMap();
+            CreateMap<Payment, PaymentInput>().ReverseMap();
+            //End Declare Mapper Payment
         }
     }
 }

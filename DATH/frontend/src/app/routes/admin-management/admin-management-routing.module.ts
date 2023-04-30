@@ -13,6 +13,7 @@ import { PromotionListComponent } from './promotion-list/promotion-list.componen
 import { RegisterEmployeeListComponent } from './register-employee-list/register-employee-list.component';
 import { InstallmentListComponent } from './installment-list/installment-list.component';
 import { WarehouseListComponent } from './warehouse-list/warehouse-list.component';
+import { PaymentListComponent } from './payment-list/payment-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -89,6 +90,13 @@ const routes: Routes = [
     component: WarehouseListComponent,
     data: {
       breadcrumb: 'Home / Warehouse'
+    },
+  },
+  {
+    path: 'payment',
+    component: PaymentListComponent,
+    data: {
+      breadcrumb: 'Home / Payment'
     },
   },
 ];
