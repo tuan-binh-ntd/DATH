@@ -1,0 +1,93 @@
+<app-drawer-form-base
+  [mode]="mode"
+  [isEdit]="isEdit"
+  [isVisible]="isVisible"
+  [titleDrawer]="titleDrawer"
+  (onCloseDrawer)="isVisible = false"
+  [customFooterTpl]="footerTpl"
+  (onSubmit)="submitForm()"
+>
+  <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="shop" nzRequired>
+        <span>Shop</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select a shop"
+          formControlName="shopId"
+        >
+          <nz-option
+            *ngFor="let shop of shops"
+            [nzLabel]="shop.name"
+            [nzValue]="shop.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="name" nzRequired>
+        <span>Name</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Name is required">
+        <input
+          nz-input
+          name="name"
+          type="name"
+          id="name"
+          formControlName="name"
+          placeholder="Input name"
+        />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</app-drawer-form-base>
+
+<ng-template #footerTpl>
+  <app-button-base
+    class="float-left"
+    text="Close"
+    type="default"
+    iconClass="fa-solid fa-xmark"
+    (onClick)="closeDrawer()"
+  ></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Save"
+    buttonClass="btn-success mr-2"
+    iconClass="fa-solid fa-floppy-disk"
+    *ngIf="isEdit"
+    (onClick)="submitForm()"
+  ></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Back"
+    iconClass="fa-solid fa-arrow-left"
+    *ngIf="mode === 'detail' && isEdit"
+    (onClick)="changeToDetail()"
+  ></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Edit"
+    type="primary"
+    iconClass="fa-solid fa-pen-to-square"
+    *ngIf="mode === 'detail' && !isEdit"
+    (onClick)="changeToUpdate()"
+  ></app-button-base>
+
+  <app-button-base
+    class="float-right"
+    text="Delete"
+    buttonClass="btn-danger mr-2"
+    iconClass="fa-solid fa-trash"
+    *ngIf="mode === 'detail' && !isEdit"
+    nz-popconfirm
+    nzOkText="Ok"
+    nzCancelText="Cancel"
+    nzPopconfirmTitle="Delete this record"
+    (nzOnConfirm)="deleteItem()"
+  ></app-button-base>
+</ng-template>

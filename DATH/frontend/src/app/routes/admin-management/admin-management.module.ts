@@ -25,6 +25,10 @@ import { ShopDrawerComponent } from './shop-list/partials/shop-drawer/shop-drawe
 import { ShippingDrawerComponent } from './shipping-list/partials/shipping-drawer/shipping-drawer.component';
 import { RegisterEmployeeListComponent } from './register-employee-list/register-employee-list.component';
 import { RegisterEmployeeDrawerComponent } from './register-employee-list/partials/register-employee-drawer/register-employee-drawer.component';
+import { InstallmentListComponent } from './installment-list/installment-list.component';
+import { InstallmentDrawerComponent } from './installment-list/partials/installment-drawer/installment-drawer.component';
+import { WarehouseListComponent } from './warehouse-list/warehouse-list.component';
+import { WarehouseDrawerComponent } from './warehouse-list/partials/warehouse-drawer/warehouse-drawer.component';
 import { PaymentListComponent } from './payment-list/payment-list.component';
 import { PaymentDrawerComponent } from './payment-list/partials/payment-drawer/payment-drawer.component';
 
@@ -49,6 +53,10 @@ import { PaymentDrawerComponent } from './payment-list/partials/payment-drawer/p
     ShippingDrawerComponent,
     RegisterEmployeeListComponent,
     RegisterEmployeeDrawerComponent,
+    InstallmentListComponent,
+    InstallmentDrawerComponent,
+    WarehouseListComponent,
+    WarehouseDrawerComponent,
     PaymentListComponent,
     PaymentDrawerComponent
   ],
