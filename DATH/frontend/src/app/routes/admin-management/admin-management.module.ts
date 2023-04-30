@@ -27,6 +27,8 @@ import { RegisterEmployeeListComponent } from './register-employee-list/register
 import { RegisterEmployeeDrawerComponent } from './register-employee-list/partials/register-employee-drawer/register-employee-drawer.component';
 import { InstallmentListComponent } from './installment-list/installment-list.component';
 import { InstallmentDrawerComponent } from './installment-list/partials/installment-drawer/installment-drawer.component';
+import { WarehouseListComponent } from './warehouse-list/warehouse-list.component';
+import { WarehouseDrawerComponent } from './warehouse-list/partials/warehouse-drawer/warehouse-drawer.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,9 @@ import { InstallmentDrawerComponent } from './installment-list/partials/installm
     RegisterEmployeeListComponent,
     RegisterEmployeeDrawerComponent,
     InstallmentListComponent,
-    InstallmentDrawerComponent
+    InstallmentDrawerComponent,
+    WarehouseListComponent,
+    WarehouseDrawerComponent
   ],
   imports: [
     AdminManagementRoutingModule,

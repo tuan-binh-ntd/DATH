@@ -12,6 +12,7 @@ import { ShippingListComponent } from './shipping-list/shipping-list.component';
 import { PromotionListComponent } from './promotion-list/promotion-list.component';
 import { RegisterEmployeeListComponent } from './register-employee-list/register-employee-list.component';
 import { InstallmentListComponent } from './installment-list/installment-list.component';
+import { WarehouseListComponent } from './warehouse-list/warehouse-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -81,6 +82,13 @@ const routes: Routes = [
     component: InstallmentListComponent,
     data: {
       breadcrumb: 'Home / Installment'
+    },
+  },
+  {
+    path: 'warehouse',
+    component: WarehouseListComponent,
+    data: {
+      breadcrumb: 'Home / Warehouse'
     },
   },
 ];
