@@ -44,6 +44,7 @@ namespace API.Controllers
         public async Task<IActionResult> Get(int id)
         {
             IQueryable<InstallmentForViewDto> query = from i in _installmentRepo.GetAll().AsNoTracking()
+                                                      where i.Id == id
                                                       select new InstallmentForViewDto()
                                                       {
                                                           Id = i.Id,
@@ -57,7 +58,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(WarehouseInput input)
+        public async Task<IActionResult> Create(InstallmentInput input)
         {
             Installment? data = new();
             _mapper.Map(input, data);
@@ -69,7 +70,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, WarehouseInput input)
+        public async Task<IActionResult> Update(int id, InstallmentInput input)
         {
             Installment? data = await _installmentRepo.GetAsync(id);
             if (data == null) return CustomResult(HttpStatusCode.NoContent);

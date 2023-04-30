@@ -13,13 +13,18 @@
         <span>Term</span>
       </nz-form-label>
       <nz-form-control [nzSpan]="24" nzErrorTip="Term is required">
-        <input
-          nz-input
+        <nz-input-number
+          class="w-100"
           name="term"
           id="term"
           formControlName="term"
           placeholder="Input term"
-        />
+          [nzMin]="1"
+          [nzMax]="12"
+          [nzStep]="1"
+          [nzFormatter]="formatterTerm"
+          [nzParser]="parserTerm"
+        ></nz-input-number>
       </nz-form-control>
     </nz-form-item>
 
@@ -28,13 +33,18 @@
         <span>Balance</span>
       </nz-form-label>
       <nz-form-control [nzSpan]="24" nzErrorTip="Balance is required">
-        <input
-          nz-input
+        <nz-input-number
+          class="w-100"
           name="balance"
           id="balance"
           formControlName="balance"
           placeholder="Input balance"
-        />
+          [nzMin]="1"
+          [nzMax]="100"
+          [nzStep]="1"
+          [nzFormatter]="formatterPercent"
+          [nzParser]="parserPercent"
+        ></nz-input-number>
       </nz-form-control>
     </nz-form-item>
   </form>

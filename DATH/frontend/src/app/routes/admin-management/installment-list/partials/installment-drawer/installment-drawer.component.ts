@@ -12,6 +12,11 @@ import { finalize } from 'rxjs';
   styleUrls: ['./installment-drawer.component.less']
 })
 export class InstallmentDrawerComponent extends DrawerFormBaseComponent{
+  formatterPercent = (value: number): string => value != null ? `${value} %` : '';
+  parserPercent = (value: string): string => value != null ? value.replace(' %', '') : '';
+  formatterTerm = (value: number): string => value != null ? value == 1 ? `${value} month` : `${value} months` : '';
+  parserTerm = (value: string): string => value != null ? value == '1' ? value.replace(' month', '') : value.replace(' months', '') : '';
+
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,
@@ -25,11 +30,11 @@ export class InstallmentDrawerComponent extends DrawerFormBaseComponent{
     const formValue = this.drawerForm.getRawValue();
     if (this.isEdit) {
       this.setEnableForm();
-      this.titleDrawer = `Edit: ${formValue?.name}`;
+      this.titleDrawer = `Edit: ${formValue?.term}`;
       this.markAsTouched();
     } else {
       this.setDisableForm();
-      this.titleDrawer = `${formValue?.name}`;
+      this.titleDrawer = `${formValue?.term}`;
       this.markAsUntouched();
     }
   }
