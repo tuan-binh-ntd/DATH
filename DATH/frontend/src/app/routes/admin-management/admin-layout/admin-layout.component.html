@@ -17,7 +17,7 @@
     </div>
     <ul nz-menu nzMode="inline">
       <li nz-menu-item [routerLink]="'dashboard'" [nzMatchRouter]="true">
-        <span><i class="fa-solid fa-shop mr-2 text-muted"></i></span>
+        <span><i class="fa-solid fa-chart-line mr-2 text-muted"></i></span>
         <span>Dashboard</span>
       </li>
 
@@ -48,17 +48,17 @@
       </li>
 
       <li nz-menu-item [routerLink]="'shipping'" [nzMatchRouter]="true">
-        <span><i class="fa-solid fa-shop mr-2 text-muted"></i></span>
+        <span><i class="fa-solid fa-truck-fast mr-2 text-muted"></i></span>
         <span>Shipping</span>
       </li>
 
       <li nz-menu-item [routerLink]="'payment'" [nzMatchRouter]="true">
-        <span><i class="fa-solid fa-shop mr-2 text-muted"></i></span>
+        <span><i class="fa-solid fa-money-check-dollar mr-2 text-muted"></i></span>
         <span>Payment</span>
       </li>
 
       <li nz-menu-item [routerLink]="'promotion'" [nzMatchRouter]="true">
-        <span><i class="fa-solid fa-shop mr-2 text-muted"></i></span>
+        <span><i class="fa-solid fa-coins mr-2 text-muted"></i></span>
         <span>Promotion</span>
       </li>
 
@@ -77,7 +77,7 @@
 
       <li nz-submenu [nzTitle]="order">
         <ng-template #order>
-          <i class="fa-solid fa-truck-fast mr-2 text-muted"></i>
+          <i class="fa-solid fa-file-invoice mr-2 text-muted"></i>
           <span>Order Management</span>
         </ng-template>
         <ul>
@@ -122,9 +122,9 @@
         <span>Account Management</span>
       </li>
 
-      <li nz-menu-item [nzMatchRouter]="true">
+      <li nz-menu-item [routerLink]="'register-employee'" [nzMatchRouter]="true">
         <i class="fa-solid fa-users mr-2 text-muted"></i>
-        <span>User Management</span>
+        <span>Employee Management</span>
       </li>
 
       <li nz-menu-item [nzMatchRouter]="true">

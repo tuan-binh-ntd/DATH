@@ -17,5 +17,6 @@ namespace Bussiness.Dto
         public bool IsActive { get; set; }
         public string? AvatarUrl { get; set; }
         public string? Token { get; set; }
+        public UserType Type { get; set; }
     }
 }

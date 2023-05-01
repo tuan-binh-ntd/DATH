@@ -4,10 +4,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgZorroAntdModule } from '../routes/ng-zorro-antd/ng-zorro-antd.module';
+import { EmployeeTypePipe } from './employee-type.pipe';
 
 
 @NgModule({
   declarations: [
+    EmployeeTypePipe
   ],
   imports: [
     CommonModule,
@@ -24,6 +26,7 @@ import { NgZorroAntdModule } from '../routes/ng-zorro-antd/ng-zorro-antd.module'
     RouterModule,
     HttpClientModule,
     NgZorroAntdModule,
+    EmployeeTypePipe
   ]
 })
 export class SharedModule { }

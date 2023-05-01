@@ -199,14 +199,6 @@ export class CustomerHeaderComponent implements OnInit {
       );
     };
   };
-  confirmationValidator = (control: any): { [s: string]: boolean } => {
-    if (!control.value) {
-      return { required: true };
-    } else if (control.value !== this.signUpForm.controls['password'].value) {
-      return { confirm: true, error: true };
-    }
-    return {};
-  };
 
   changeInfo() {
     this.router.navigateByUrl('/change-info');

@@ -1,4 +1,3 @@
-
 import formatISO from 'date-fns/formatISO';
 export function checkResponseStatus(response: any): boolean{
     if(response && response.statusCode === 200 && response.data) {
@@ -26,6 +25,12 @@ export const  PHONE_REGEX: string = '[0-9]+$';
 export const  IDNUMBER_REGEX: string = '^[0-9]+$';
 
 export const  PASSWORD_REGEX: string = '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$';
+
+export enum EmployeeType {
+  Sale = 1,
+  Orders = 2,
+  Warehouse = 3
+}
 
 
 

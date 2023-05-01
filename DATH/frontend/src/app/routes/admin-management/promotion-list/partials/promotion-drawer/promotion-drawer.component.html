@@ -45,7 +45,7 @@
         <span>Start Date</span>
       </nz-form-label>
       <nz-form-control [nzSpan]="24" nzErrorTip="Start Date is required">
-        <nz-date-picker formControlName="startDate"></nz-date-picker>
+        <nz-date-picker formControlName="startDate" class="w-100"></nz-date-picker>
       </nz-form-control>
     </nz-form-item>
 
@@ -54,23 +54,27 @@
         <span>End Date</span>
       </nz-form-label>
       <nz-form-control [nzSpan]="24" nzErrorTip="End Date is required">
-        <nz-date-picker formControlName="endDate"></nz-date-picker>
+        <nz-date-picker formControlName="endDate" class="w-100"></nz-date-picker>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="discount">
+      <nz-form-label [nzSpan]="24" nzFor="discount" nzRequired>
         <span>Discount</span>
       </nz-form-label>
-      <nz-form-control [nzSpan]="24">
-        <input
-        nz-input
-        name="discount"
-        type="discount"
-        id="discount"
-        formControlName="discount"
-        placeholder="Input discount"
-        />
+      <nz-form-control [nzSpan]="24" nzErrorTip="Discount is required">
+        <nz-input-number
+          class="w-100"
+          name="discount"
+          id="discount"
+          formControlName="discount"
+          placeholder="Input discount"
+          [nzMin]="1"
+          [nzMax]="100"
+          [nzStep]="1"
+          [nzFormatter]="formatterPercent"
+          [nzParser]="parserPercent"
+        ></nz-input-number>
       </nz-form-control>
     </nz-form-item>
   </form>

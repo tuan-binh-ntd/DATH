@@ -91,8 +91,8 @@ namespace API.Controllers
         {
             Shop? shop = await _shopRepo.GetAsync((int)input.ShopId!);
 
-            Warehouse? warehouse = await _warehouseRepo.GetAll().AsNoTracking().Where(w => w.ShopId == input.ShopId).FirstOrDefaultAsync();
-            if (warehouse != null) return CustomResult("Shop had warehouse", HttpStatusCode.BadRequest);
+            //Warehouse? warehouse = await _warehouseRepo.GetAll().AsNoTracking().Where(w => w.ShopId == input.ShopId).FirstOrDefaultAsync();
+            //if (warehouse != null) return CustomResult("Shop had warehouse", HttpStatusCode.BadRequest);
 
             Warehouse? data = await _warehouseRepo.GetAsync(id);
             if (data == null) return CustomResult(HttpStatusCode.NoContent);

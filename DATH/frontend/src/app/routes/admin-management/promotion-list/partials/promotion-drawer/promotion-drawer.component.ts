@@ -12,6 +12,9 @@ import { checkResponseStatus } from 'src/app/shared/helper';
   styleUrls: ['./promotion-drawer.component.less']
 })
 export class PromotionDrawerComponent extends DrawerFormBaseComponent{
+  formatterPercent = (value: number): string => value != null ? `${value} %` : '';
+  parserPercent = (value: string): string => value != null ? value.replace(' %', '') : '';
+
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,

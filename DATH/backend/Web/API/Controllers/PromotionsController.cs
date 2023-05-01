@@ -63,7 +63,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ShopInput input)
+        public async Task<IActionResult> Create(PromotionInput input)
         {
             Promotion data = new();
             _mapper.Map(input, data);
@@ -76,7 +76,7 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, ShopInput input)
+        public async Task<IActionResult> Update(int id, PromotionInput input)
         {
             Promotion? data = await _promotionRepo.GetAsync(id);
             if (data == null) return CustomResult(HttpStatusCode.NoContent);

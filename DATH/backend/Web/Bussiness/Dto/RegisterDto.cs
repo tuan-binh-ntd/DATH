@@ -27,5 +27,7 @@ namespace Bussiness.Dto
         public bool IsActive { get; set; }
         public string? AvatarUrl { get; set; }
         public int? ShopId { get; set; }
+        public string? Code { get; set; }
+        public EmployeeType Type { get; set; }
     }
 }
