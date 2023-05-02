@@ -15,7 +15,7 @@ export class EmployeeService {
 
   getAllEmployee(pageNum?: number, pageSize?: number): Observable<ResponseResult<Employee>> {
     if (pageNum === undefined && pageSize === undefined) return this.http.get<ResponseResult<Employee>>(this.baseUrl);
-    return this.http.get<ResponseResult<Employee>>(this.baseUrl + '/' + pageNum + '/' + pageSize);
+    return this.http.get<ResponseResult<Employee>>(this.baseUrl + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
   }
 
   update(id: number, payload: Employee): Observable<any>{

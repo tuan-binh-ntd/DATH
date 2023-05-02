@@ -218,7 +218,7 @@ namespace Database.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customer", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Employee", b =>
@@ -300,7 +300,7 @@ namespace Database.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Employee");
+                    b.ToTable("Employee", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Installment", b =>
@@ -343,7 +343,7 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Installment");
+                    b.ToTable("Installment", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Payment", b =>
@@ -383,7 +383,7 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Payment");
+                    b.ToTable("Payment", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Photo", b =>
@@ -411,7 +411,7 @@ namespace Database.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Photo");
+                    b.ToTable("Photo", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Product", b =>
@@ -466,7 +466,7 @@ namespace Database.Migrations
 
                     b.HasIndex("ProductCategoryId");
 
-                    b.ToTable("Product");
+                    b.ToTable("Product", (string)null);
                 });
 
             modelBuilder.Entity("Entities.ProductCategory", b =>
@@ -506,7 +506,7 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductCategory");
+                    b.ToTable("ProductCategory", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Promotion", b =>
@@ -560,7 +560,7 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Promotion");
+                    b.ToTable("Promotion", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Shipping", b =>
@@ -604,7 +604,7 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Shipping");
+                    b.ToTable("Shipping", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Shop", b =>
@@ -648,7 +648,7 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Shop");
+                    b.ToTable("Shop", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Specification", b =>
@@ -701,7 +701,7 @@ namespace Database.Migrations
 
                     b.HasIndex("SpecificationCategoryId");
 
-                    b.ToTable("Specification");
+                    b.ToTable("Specification", (string)null);
                 });
 
             modelBuilder.Entity("Entities.SpecificationCategory", b =>
@@ -745,7 +745,7 @@ namespace Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SpecificationCategory");
+                    b.ToTable("SpecificationCategory", (string)null);
                 });
 
             modelBuilder.Entity("Entities.Warehouse", b =>
@@ -795,7 +795,7 @@ namespace Database.Migrations
                         .IsUnique()
                         .HasFilter("[ShopId] IS NOT NULL");
 
-                    b.ToTable("Warehouse");
+                    b.ToTable("Warehouse", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>

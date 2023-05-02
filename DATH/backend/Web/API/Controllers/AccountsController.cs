@@ -106,6 +106,7 @@ namespace API.Controllers
             Employee employee = new()
             {
                 UserId = user.Id,
+                JoinDate = DateTime.Now,
             };
             _mapper.Map(registerDto, employee);
 
@@ -115,6 +116,7 @@ namespace API.Controllers
 
             UserDto userDto = new()
             {
+                Username = user.UserName,
                 Token = await _tokenService.CreateToken(user)
             };
             _mapper.Map(employee, userDto);
@@ -138,6 +140,7 @@ namespace API.Controllers
 
             UserDto res = new()
             {
+                Type = user.Type,
                 Username = user.UserName,
                 Token = await _tokenService.CreateToken(user)
             };
@@ -197,7 +200,7 @@ namespace API.Controllers
 
             var result = await _userManager.ChangePasswordAsync(user, input.CurrentPassword!, input.NewPassword!);
 
-            if (!result.Succeeded) return CustomResult("Password incrrect", result.Errors, HttpStatusCode.BadRequest);
+            if (!result.Succeeded) return CustomResult("Password incorrect", result.Errors, HttpStatusCode.BadRequest);
 
             return CustomResult(new { user.UserName }, HttpStatusCode.OK);
         }

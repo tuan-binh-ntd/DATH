@@ -46,8 +46,8 @@
         <tr (click)="goToDetail(data)">
           <td>{{ data.name }}</td>
           <td>{{ data.code }}</td>
-          <td>{{ data.startDate }}</td>
-          <td>{{ data.endDate }}</td>
+          <td>{{ data.startDate | date : "longDate" }}</td>
+          <td>{{ data.endDate | date : "longDate" }}</td>
           <td>{{ data.discount }}</td>
         </tr>
       </ng-container>

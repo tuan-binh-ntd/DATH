@@ -22,7 +22,7 @@ export class SpecificationDrawerComponent extends DrawerFormBaseComponent implem
     protected override message: NzMessageService,
     protected specificationService: SpecificationService,
     protected specificationCategoryService: SpecificationCategoryService,
-  ){
+  ) {
     super(fb, cdr, message);
   }
   override ngOnInit(): void {
@@ -30,9 +30,9 @@ export class SpecificationDrawerComponent extends DrawerFormBaseComponent implem
     this.fetchCategories();
   }
 
-  fetchCategories(){
+  fetchCategories() {
     this.specificationCategoryService.getAll().subscribe(res => {
-      if(checkResponseStatus(res)){
+      if (checkResponseStatus(res)) {
         this.categories = res.data;
       }
     })
@@ -41,7 +41,7 @@ export class SpecificationDrawerComponent extends DrawerFormBaseComponent implem
   override patchDataToForm(data: any): void {
     super.patchDataToForm(data);
     const category = this.categories.find(item => item.id === data.specificationCategoryId);
-    if(category) this.categoryType = category?.code!;
+    if (category) this.categoryType = category?.code!;
   }
 
   override initForm(): void {
@@ -54,22 +54,22 @@ export class SpecificationDrawerComponent extends DrawerFormBaseComponent implem
     })
   }
 
-  onChangeCategory(ev: any){
-    if(ev){
+  onChangeCategory(ev: any) {
+    if (ev) {
       const category = this.categories.find(item => item.id === ev);
       this.categoryType = category?.code!;
     }
   }
 
-override submitForm() {
+  override submitForm() {
     this.validateForm();
-    if(this.drawerForm.valid){
+    if (this.drawerForm.valid) {
       this.isLoading = true;
-      if(this.mode === 'create'){
+      if (this.mode === 'create') {
         this.specificationService.create(this.drawerForm.getRawValue()).pipe(
           finalize(() => this.isLoading = false)
         ).subscribe(res => {
-          if(checkResponseStatus(res)){
+          if (checkResponseStatus(res)) {
             this.message.success('Create successfully');
             this.data = res.data;
             this.changeToDetail();
@@ -77,30 +77,30 @@ override submitForm() {
           }
         })
       }
-      else{
+      else {
         this.specificationService.update(this.drawerForm.value.id, this.drawerForm.getRawValue())
-        .pipe(
-          finalize(() => this.isLoading = false)).subscribe(res => {
-          if(checkResponseStatus(res)){
-            this.message.success('Update successfully');
-            this.data = res.data;
-              this.changeToDetail();
-              this.onUpdate.emit(res.data);
-          }
-        })
+          .pipe(
+            finalize(() => this.isLoading = false)).subscribe(res => {
+              if (checkResponseStatus(res)) {
+                this.message.success('Update successfully');
+                this.data = res.data;
+                this.changeToDetail();
+                this.onUpdate.emit(res.data);
+              }
+            })
       }
     }
   }
 
-  deleteItem(){
+  deleteItem() {
     this.specificationService
-          .delete(this.drawerForm.value.id)
-          .subscribe((res) => {
-            if (checkResponseStatus(res)) {
-              this.message.success('Delete successfully');
-              this.closeDrawer();
-              this.onDelete.emit(res.data);
-            }
-          });
+      .delete(this.drawerForm.value.id)
+      .subscribe((res) => {
+        if (checkResponseStatus(res)) {
+          this.message.success('Delete successfully');
+          this.closeDrawer();
+          this.onDelete.emit(res.data);
+        }
+      });
   }
 }

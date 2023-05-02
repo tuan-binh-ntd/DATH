@@ -1,1 +1,311 @@
-<p>register-employee-drawer works!</p>
+<app-drawer-form-base
+  [mode]="mode"
+  [isEdit]="isEdit"
+  [isVisible]="isVisible"
+  [titleDrawer]="titleDrawer"
+  (onCloseDrawer)="isVisible = false"
+  [customFooterTpl]="footerTpl"
+  (onSubmit)="submitForm()"
+>
+  <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
+    <div nz-row nzGutter="16">
+      <div nz-col nzSpan="12" class="pr-1">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="shop" nzRequired>
+            <span>Shop</span>
+          </nz-form-label>
+          <nz-form-control [nzSpan]="24">
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Select a shop"
+              formControlName="shopId"
+            >
+              <nz-option
+                *ngFor="let shop of shops"
+                [nzLabel]="shop.name"
+                [nzValue]="shop.id"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
+            <span>Code</span>
+          </nz-form-label>
+          <nz-form-control [nzSpan]="24" nzErrorTip="Code is required">
+            <input
+              nz-input
+              name="code"
+              type="text"
+              id="code"
+              formControlName="code"
+              placeholder="Code"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="firstName" nzRequired>
+        <span>First Name</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="First name is required">
+        <input
+          nz-input
+          name="firstName"
+          type="text"
+          id="firstName"
+          formControlName="firstName"
+          placeholder="First name"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="lastName" nzRequired>
+        <span>Last Name</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Last name is required">
+        <input
+          nz-input
+          name="lastName"
+          type="text"
+          id="lastName"
+          formControlName="lastName"
+          placeholder="Last name"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="email" nzRequired>
+        Email
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Email is required">
+        <input
+          nz-input
+          name="email"
+          type="text"
+          id="email"
+          formControlName="email"
+          placeholder="Email"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="address" nzRequired>
+        <span>Address</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Address is required">
+        <input
+          nz-input
+          name="address"
+          type="text"
+          id="address"
+          formControlName="address"
+          placeholder="Address"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <div nz-row nzGutter="16">
+      <div nz-col nzSpan="12" class="pr-1">
+        <nz-form-item>
+          <nz-form-label
+            nzAlign="start"
+            [nzSpan]="24"
+            nzFor="birthday"
+            nzRequired
+            >Birthday</nz-form-label
+          >
+          <nz-form-control nzErrorTip="Please input your birthday!">
+            <nz-date-picker
+              class="w-100"
+              formControlName="birthday"
+            ></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-form-item>
+          <nz-form-label nzAlign="start" [nzSpan]="24" nzFor="gender" nzRequired
+            >Gender</nz-form-label
+          >
+          <nz-radio-group
+            formControlName="gender"
+            nzButtonStyle="solid"
+            class="mb-3"
+          >
+            <label nz-radio-button [nzValue]="1 | number">Male</label>
+            <label nz-radio-button [nzValue]="0 | number">Female</label>
+          </nz-radio-group>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="type" nzRequired>
+        <span>Type</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Type is required">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select a type"
+          formControlName="type"
+        >
+          <nz-option
+            *ngFor="let type of types"
+            [nzLabel]="type.name"
+            [nzValue]="type.value"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="username" nzRequired>
+        <span>Username</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" [nzErrorTip]="errorCodeUsername">
+        <ng-template #errorCodeUsername let-control>
+          <div
+            *ngIf="
+              drawerForm.controls['username'].invalid &&
+              (drawerForm.controls['username'].dirty ||
+                drawerForm.controls['username'].touched)
+            "
+          >
+            <span *ngIf="drawerForm.get('username')?.hasError('required')"
+              >Username is required</span
+            >
+            <span
+              *ngIf="drawerForm.get('username')?.hasError('usernameDuplicated')"
+              >Username is existed</span
+            >
+          </div>
+        </ng-template>
+        <input
+          nz-input
+          name="username"
+          type="text"
+          id="username"
+          formControlName="username"
+          placeholder="Username"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <div nz-row nzGutter="16">
+      <div nz-col nzSpan="24" class="pr-1">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="password" nzRequired
+            >Password
+          </nz-form-label>
+          <nz-form-control [nzSpan]="24" [nzErrorTip]="passwordErr">
+            <input
+              nz-input
+              type="password"
+              formControlName="password"
+              placeholder="Password"
+            />
+            <ng-template #passwordErr let-control>
+              <div
+                *ngIf="
+                  drawerForm.controls['password'].invalid &&
+                  (drawerForm.controls['password'].dirty ||
+                    drawerForm.controls['password'].touched)
+                "
+              >
+                <span *ngIf="drawerForm.get('password')?.hasError('required')"
+                  >Password is required</span
+                >
+                <span *ngIf="drawerForm.get('password')?.hasError('pattern')"
+                  >Must contain one uppercase (A-Z) and one digit</span
+                >
+              </div>
+            </ng-template></nz-form-control
+          >
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row nzGutter="16">
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-label [nzSpan]="24" nzFor="checkPassword" nzRequired
+            >Confirm Password</nz-form-label
+          >
+          <nz-form-control [nzSpan]="24" [nzErrorTip]="errorTpl">
+            <input
+              nz-input
+              type="password"
+              formControlName="checkPassword"
+              id="checkPassword"
+              placeholder="Confirm Password"
+            />
+            <ng-template #errorTpl let-control>
+              <ng-container *ngIf="control.hasError('required')"
+                >Please confirm your password!</ng-container
+              >
+              <ng-container *ngIf="control.hasError('notMatch')">
+                Two passwords that you enter is inconsistent!
+              </ng-container>
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </form>
+</app-drawer-form-base>
+
+<ng-template #footerTpl>
+  <app-button-base
+    class="float-left"
+    text="Close"
+    type="default"
+    iconClass="fa-solid fa-xmark"
+    (onClick)="closeDrawer()"
+  ></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Save"
+    buttonClass="btn-success mr-2"
+    iconClass="fa-solid fa-floppy-disk"
+    *ngIf="isEdit"
+    (onClick)="submitForm()"
+  ></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Back"
+    iconClass="fa-solid fa-arrow-left"
+    *ngIf="mode === 'detail' && isEdit"
+    (onClick)="changeToDetail()"
+  ></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Edit"
+    type="primary"
+    iconClass="fa-solid fa-pen-to-square"
+    *ngIf="mode === 'detail' && !isEdit"
+    (onClick)="changeToUpdate()"
+  ></app-button-base>
+
+  <app-button-base
+    class="float-right"
+    text="Delete"
+    buttonClass="btn-danger mr-2"
+    iconClass="fa-solid fa-trash"
+    *ngIf="mode === 'detail' && !isEdit"
+    nz-popconfirm
+    nzOkText="Ok"
+    nzCancelText="Cancel"
+    nzPopconfirmTitle="Delete this record"
+    (nzOnConfirm)="deleteItem()"
+  ></app-button-base>
+</ng-template>

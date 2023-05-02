@@ -5,8 +5,6 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize } from 'rxjs';
 import { checkResponseStatus } from 'src/app/shared/helper';
 import { EmployeeService } from 'src/app/services/employee.service';
-import { ResponseResult } from 'src/app/models/response';
-import { Employee } from 'src/app/models/employee.model';
 import { PaginationInput } from 'src/app/models/pagination-input';
 
 @Component({
@@ -25,25 +23,49 @@ export class RegisterEmployeeListComponent extends ListBaseComponent {
   }
   override listOfColumn: any[] = [
     {
-      name: 'Name',
+      name: 'Shop Name',
       width: '15%',
-      sortKey: 'name',
+      sortKey: 'shopName',
       sortOrder: null,
       sortDirections: ['ascend', 'descend', null],
       class: 'text-left',
     },
     {
-      name: 'Price',
+      name: 'Code',
       width: '15%',
-      sortKey: 'price',
+      sortKey: 'code',
       sortOrder: null,
       sortDirections: ['ascend', 'descend', null],
       class: 'text-left',
     },
     {
-      name: 'Description',
-      width: 'auto',
-      sortKey: 'description',
+      name: 'Type',
+      width: '15%',
+      sortKey: 'type',
+      sortOrder: null,
+      sortDirections: ['ascend', 'descend', null],
+      class: 'text-left',
+    },
+    {
+      name: 'Full Name',
+      width: '15%',
+      sortKey: 'firstName',
+      sortOrder: null,
+      sortDirections: ['ascend', 'descend', null],
+      class: 'text-left',
+    },
+    {
+      name: 'Join Date',
+      width: '15%',
+      sortKey: 'joinDate',
+      sortOrder: null,
+      sortDirections: ['ascend', 'descend', null],
+      class: 'text-left',
+    },
+    {
+      name: 'IsActive',
+      width: '15%',
+      sortKey: 'isActive',
       sortOrder: null,
       sortDirections: ['ascend', 'descend', null],
       class: 'text-left',
