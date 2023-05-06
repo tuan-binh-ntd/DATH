@@ -139,9 +139,6 @@ namespace API.Controllers
             ProductForViewDto? res = new();
             _mapper.Map(product, res);
 
-            await AddPhoto(res.Id, input.File!);
-
-
             await HandleProduct(res);
 
             return CustomResult(res, HttpStatusCode.OK);

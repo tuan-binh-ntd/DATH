@@ -15,7 +15,7 @@ import { PaginationInput } from 'src/app/models/pagination-input';
 export class ProductListComponent extends ListBaseComponent {
   @ViewChild('drawerFormBase') override drawerFormBase!: ProductDrawerComponent;
   @HostListener('window:resize', ['$event'])
- 
+
   paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
   constructor(protected override msg: NzMessageService,
     private productService: ProductService) {
@@ -24,7 +24,7 @@ export class ProductListComponent extends ListBaseComponent {
   override listOfColumn: any[] = [
     {
       name: 'Name',
-      width: '15%',
+      width: '30%',
       sortKey: 'name',
       sortOrder: null,
       sortDirections: ['ascend', 'descend', null],
