@@ -14,6 +14,7 @@ export class DrawerFormBaseComponent  {
   @Input() isLoading: boolean = false;
   @Input() titleDrawer: string = '';
   @Input() customFooterTpl: string | TemplateRef<{}> = "";
+  @Input() width = '30%"';
   @Output() onChangeEdit = new EventEmitter();
   @Output() onCloseDrawer = new EventEmitter();
   @Output() onSubmit = new EventEmitter();

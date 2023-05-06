@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
-import { finalize } from 'rxjs';
+import { finalize, Observable, Observer } from 'rxjs';
 import { Photo } from 'src/app/models/photo.model';
 import { ProductCategory } from 'src/app/models/product-category.model';
 import { Specification } from 'src/app/models/specification.model';
@@ -171,4 +171,22 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
   isString(value: any): value is string {
     return typeof value === "string";
   }
+
+  beforeUpload = (file: NzUploadFile, _fileList: NzUploadFile[]): Observable<boolean> =>
+  new Observable((observer: Observer<boolean>) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      this.message.error('You can only upload JPG file!');
+      observer.complete();
+      return;
+    }
+    const isLt2M = file.size! / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      this.message.error('Image must smaller than 2MB!');
+      observer.complete();
+      return;
+    }
+    observer.next(isJpgOrPng && isLt2M);
+    observer.complete();
+  });
 }
