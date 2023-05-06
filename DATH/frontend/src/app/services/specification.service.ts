@@ -18,6 +18,8 @@ export class SpecificationService {
     return this.http.get<ResponseResult<Specification>>(this.baseUrl + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
   }
 
+
+
   get(id: number){
     return this.http.get(this.baseUrl + '/' + id);
   }

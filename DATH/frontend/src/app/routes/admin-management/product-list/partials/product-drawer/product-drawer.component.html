@@ -89,14 +89,7 @@
         <span>Description</span>
       </nz-form-label>
       <nz-form-control [nzSpan]="24">
-        <textarea
-          nz-input
-          id="description"
-          name="description"
-          [nzAutosize]="true"
-          placeholder=""
-          formControlName="description"
-        ></textarea>
+        <ckeditor [editor]="Editor" formControlName="description"></ckeditor>
       </nz-form-control>
     </nz-form-item>
   </form>

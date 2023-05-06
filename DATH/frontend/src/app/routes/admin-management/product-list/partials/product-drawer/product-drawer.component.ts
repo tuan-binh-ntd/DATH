@@ -9,7 +9,7 @@ import { ProductCategoryService } from 'src/app/services/product-category.servic
 import { ProductService } from 'src/app/services/product.service';
 import { SpecificationService } from 'src/app/services/specification.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
-
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 @Component({
   selector: 'app-product-drawer',
   templateUrl: './product-drawer.component.html',
@@ -18,7 +18,7 @@ import { checkResponseStatus } from 'src/app/shared/helper';
 export class ProductDrawerComponent extends DrawerFormBaseComponent {
   productCategories: ProductCategory[] = [];
   specifications: Specification[] = [];
-
+  public Editor = ClassicEditor;
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,

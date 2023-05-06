@@ -6,7 +6,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgZorroAntdModule } from '../routes/ng-zorro-antd/ng-zorro-antd.module';
 import { EmployeeTypePipe } from './employee-type.pipe';
 
-
 @NgModule({
   declarations: [
     EmployeeTypePipe

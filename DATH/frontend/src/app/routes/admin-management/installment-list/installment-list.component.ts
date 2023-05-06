@@ -14,10 +14,6 @@ import { finalize } from 'rxjs';
 })
 export class InstallmentListComponent extends ListBaseComponent {
   @ViewChild('drawerFormBase') override drawerFormBase!: InstallmentDrawerComponent;
-  @HostListener('window:resize', ['$event'])
-
-  paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
-
   constructor(protected override msg: NzMessageService,
     private installmentService: InstallmentService,) {
     super(msg);

@@ -19,6 +19,12 @@ export class ProductService {
     return this.http.get<ResponseResult<Product>>(this.baseUrl + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
   }
 
+  getAllByCategory(categoryId: number, pageNum?: number, pageSize?: number): Observable<ResponseResult<Product>>{
+    if(pageNum === undefined && pageSize === undefined) return this.http.get<ResponseResult<Product>>(this.baseUrl);
+    return this.http.get<ResponseResult<Product>>(this.baseUrl + '/by-category/' + categoryId + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
+  }
+
+
   get(id: number){
     return this.http.get(this.baseUrl + '/' + id);
   }

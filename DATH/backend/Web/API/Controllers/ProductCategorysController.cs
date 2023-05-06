@@ -4,6 +4,7 @@ using Bussiness.Helper;
 using Bussiness.Repository;
 using Bussiness.Services;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -32,7 +33,7 @@ namespace API.Controllers
             _productRepo = productRepo;
             _specRepo = specRepo;
         }
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
@@ -97,6 +98,7 @@ namespace API.Controllers
             return CustomResult(id, HttpStatusCode.OK);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}/specifications")]
         public async Task<IActionResult> GetFilterForProductCategory(int id)
         {

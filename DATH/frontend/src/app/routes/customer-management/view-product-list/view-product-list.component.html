@@ -1,30 +1,62 @@
-<app-page-grid >
-      <div nz-row>
-        <div nz-col nzSpan="6">
-          <h2 class="text-center">{{ type }}</h2>
-        </div>
-        <div nz-col nzSpan="18">
+<app-page-grid>
+  <div nz-row nzGutter="16">
+    <div nz-col nzSpan="4">
+      <h2 class="text-center mb-2">{{ type }}</h2>
+    </div>
+    <div nz-col nzSpan="20">
+      <span
+      class="float-right cursor-poiter "
+      nz-dropdown
+      [nzDropdownMenu]="menu"
+      >Sort By <i class="fa-solid fa-arrow-down ml-2"></i
+    ></span>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item>Newest</li>
+        <li nz-menu-item>Price: High-Low</li>
+        <li nz-menu-item>Price: Low-High</li>
+      </ul>
+    </nz-dropdown-menu>
+    </div>
+  </div>
+  <div nz-row nzGutter="16">
+    <div nz-col nzSpan="4">
+      <nz-input-group [nzSuffix]="searchIcon" class="mb-2">
+        <input type="text" nz-input placeholder="Search..." />
+      </nz-input-group>
+      <ng-template #searchIcon>
+        <span><i class="fa-solid fa-search mr-2 text-muted"></i></span>
+      </ng-template>
 
+      <nz-collapse>
+        <nz-collapse-panel nzHeader="Colour">
+          <div nz-row nzGutter="16">
+            <div nz-col nzSan="8" *ngFor="let item of listColor">
+              <nz-avatar
+                nz-tooltip
+                [nzTooltipTitle]="item.code"
+                [nzSize]="40"
+                [ngStyle]="{ 'background-color': item.value }"
+              ></nz-avatar>
+            </div>
+          </div>
+        </nz-collapse-panel>
+      </nz-collapse>
+    </div>
+    <div nz-col nzSpan="20">
+   
+      <nz-list nzGrid>
+        <div nz-row [nzGutter]="16">
+          <div nz-col [nzSpan]="6" *ngFor="let item of listOfData">
+            <nz-list-item>
+              <nz-card>
+                <h3>{{ item.name }}</h3>
+                <h5>{{ item.price }}</h5>
+              </nz-card>
+            </nz-list-item>
+          </div>
         </div>
-      </div>
-      <div nz-row nzGutter="16">
-        <div nz-col nzSpan="6">
-                <nz-input-group [nzSuffix]="searchIcon">
-                  <input type="text" nz-input placeholder="Search..." />
-                </nz-input-group>
-                <ng-template #searchIcon>
-                    <span><i class="fa-solid fa-search  mr-2 text-muted"></i></span>
-                  </ng-template>
-        </div>
-        <div nz-col nzSpan="18">
-          <span class="float-right cursor-poiter" nz-dropdown  [nzDropdownMenu]="menu">Sort By <i class="fa-solid fa-arrow-down ml-2"></i></span>
-          <nz-dropdown-menu #menu="nzDropdownMenu">
-            <ul nz-menu nzSelectable>
-              <li nz-menu-item>Newest</li>
-              <li nz-menu-item>Price: High-Low</li>
-              <li nz-menu-item>Price: Low-High</li>
-            </ul>
-          </nz-dropdown-menu>
-        </div>
-      </div>
+      </nz-list>
+    </div>
+  </div>
 </app-page-grid>

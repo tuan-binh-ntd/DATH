@@ -1,5 +1,6 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { PaginationInput } from 'src/app/models/pagination-input';
 import { DrawerFormBaseComponent } from '../drawer-form-base/drawer-form-base.component';
 
 @Component({
@@ -16,6 +17,8 @@ export class ListBaseComponent {
   currentRecord: any;
   isLoadingTable: boolean = false;
   scrollY: string = '';
+  paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
+
   constructor(protected msg: NzMessageService){}
 
   @HostListener('window:resize', ['$event'])
