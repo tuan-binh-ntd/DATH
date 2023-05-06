@@ -1,5 +1,5 @@
 export interface Photo {
-  id: string | null,
+  id: number | null,
   url: string | null,
   publicId: string | null,
   productId: number | null,

@@ -176,10 +176,7 @@ namespace API.Controllers
 
             if(input.File != null)
             {
-            await AddPhoto(res.Id, input.File!);
             }
-
-
             await HandleProduct(res);
 
             return CustomResult(res, HttpStatusCode.OK);

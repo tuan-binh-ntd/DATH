@@ -78,6 +78,8 @@
               id="price"
               formControlName="price"
               placeholder="Input price"
+              [nzFormatter]="formatterPrice"
+              [nzParser]="parserPrice"
             ></nz-input-number>
           </nz-form-control>
         </nz-form-item>
@@ -92,6 +94,31 @@
         <ckeditor [editor]="Editor" formControlName="description"></ckeditor>
       </nz-form-control>
     </nz-form-item>
+    <!-- Start Upload Image -->
+    <div class="clearfix">
+      <nz-upload
+        [nzAction]="uploadUrl"
+        nzListType="picture-card"
+        [(nzFileList)]="fileList"
+        [nzPreview]="handlePreview"
+      >
+        <div class="w-20">
+          <i class="fa-solid fa-arrow-up-from-bracket"></i>
+          <span> Upload</span>
+        </div>
+      </nz-upload>
+      <nz-modal
+        [nzVisible]="previewVisible"
+        [nzContent]="modalContent"
+        [nzFooter]="null"
+        (nzOnCancel)="previewVisible = false"
+      >
+        <ng-template #modalContent>
+          <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+        </ng-template>
+      </nz-modal>
+    </div>
+    <!-- End Upload Image -->
   </form>
 </app-drawer-form-base>
 

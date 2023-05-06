@@ -45,7 +45,7 @@
       <ng-container *ngFor="let data of rowSelectionTable.data">
         <tr (click)="goToDetail(data)">
           <td>{{ data.name }}</td>
-          <td>{{ data.price }}</td>
+          <td>{{ data.price | moneyFormatter}}</td>
           <td>{{ data.description }}</td>
         </tr>
       </ng-container>
