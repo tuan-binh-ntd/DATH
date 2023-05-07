@@ -15,7 +15,6 @@ import { checkResponseStatus } from 'src/app/shared/helper';
 export class WarehouseListComponent extends ListBaseComponent {
   @ViewChild('drawerFormBase') override drawerFormBase!: WarehouseDrawerComponent;
 
-  paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
   constructor(protected override msg: NzMessageService,
     private warehouseService: WarehouseService) {
     super(msg);

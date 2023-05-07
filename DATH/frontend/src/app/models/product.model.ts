@@ -7,5 +7,5 @@ export interface Product {
   description: string | null,
   productCategoryId: number | null,
   specificationId: string | null
-  //photos: Photo[] | null,
+  photos: Photo[] | null,
 }

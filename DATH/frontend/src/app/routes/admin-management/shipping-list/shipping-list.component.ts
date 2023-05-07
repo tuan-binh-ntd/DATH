@@ -14,9 +14,7 @@ import { PaginationInput } from 'src/app/models/pagination-input';
 })
 export class ShippingListComponent extends ListBaseComponent {
   @ViewChild('drawerFormBase') override drawerFormBase!: ShippingDrawerComponent;
-  @HostListener('window:resize', ['$event'])
 
-  paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
   constructor(protected override msg: NzMessageService,
     private shippingService: ShippingService) {
     super(msg);

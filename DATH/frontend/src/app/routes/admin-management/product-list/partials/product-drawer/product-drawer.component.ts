@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
-import { finalize } from 'rxjs';
+import { finalize, Observable, Observer } from 'rxjs';
 import { Photo } from 'src/app/models/photo.model';
 import { ProductCategory } from 'src/app/models/product-category.model';
 import { Specification } from 'src/app/models/specification.model';
@@ -11,7 +11,7 @@ import { ProductCategoryService } from 'src/app/services/product-category.servic
 import { ProductService } from 'src/app/services/product.service';
 import { SpecificationService } from 'src/app/services/specification.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
-
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -28,6 +28,7 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
 export class ProductDrawerComponent extends DrawerFormBaseComponent {
   productCategories: ProductCategory[] = [];
   specifications: Specification[] = [];
+  public Editor = ClassicEditor;
   formatterPrice = (value: number): string => value !== null ? `${value}đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
   parserPrice = (value: string): string => value.replace(/\đ\s?|(,*)/g, '');
   fileList: NzUploadFile[] = [];
@@ -44,7 +45,6 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
   };
 
   uploadUrl: string = '';
-
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,
@@ -171,4 +171,22 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
   isString(value: any): value is string {
     return typeof value === "string";
   }
+
+  beforeUpload = (file: NzUploadFile, _fileList: NzUploadFile[]): Observable<boolean> =>
+  new Observable((observer: Observer<boolean>) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      this.message.error('You can only upload JPG file!');
+      observer.complete();
+      return;
+    }
+    const isLt2M = file.size! / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      this.message.error('Image must smaller than 2MB!');
+      observer.complete();
+      return;
+    }
+    observer.next(isJpgOrPng && isLt2M);
+    observer.complete();
+  });
 }

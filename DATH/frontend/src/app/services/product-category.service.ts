@@ -4,18 +4,23 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ProductCategory } from '../models/product-category.model';
 import { ResponseResult } from '../models/response';
+import { Specification } from '../models/specification.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductCategoryService {
-  baseUrl: string = environment.baseUrl + 'productcategorys';
+  baseUrl: string = environment.baseUrl + 'productcategorys/';
 
   constructor(private http: HttpClient) { }
 
   getAll(pageNum?: number, pageSize?: number): Observable<ResponseResult<ProductCategory>> {
     if (pageNum === undefined && pageSize === undefined) return this.http.get<ResponseResult<ProductCategory>>(this.baseUrl);
     else return this.http.get<ResponseResult<ProductCategory>>(this.baseUrl + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
+  }
+
+  getAllBySpecificationById(id: number){
+    return this.http.get<ResponseResult<Specification>>(this.baseUrl + id + '/specifications');
   }
 
   get(id: number){

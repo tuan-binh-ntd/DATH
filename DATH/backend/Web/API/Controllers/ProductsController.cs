@@ -70,6 +70,41 @@ namespace API.Controllers
 
         }
 
+        [AllowAnonymous]
+        [HttpGet("by-category/{productCategoryId}", Name = "ProductsCategory")]
+        public async Task<IActionResult> GetByCategory([FromQuery] PaginationInput input,int productCategoryId)
+        {
+            IQueryable<ProductForViewDto> query = from p in _productRepo.GetAll().AsNoTracking()
+                                                  select new ProductForViewDto()
+                                                  {
+                                                      Id = p.Id,
+                                                      Name = p.Name,
+                                                      Price = p.Price,
+                                                      Description = p.Description,
+                                                      ProductCategoryId = p.ProductCategoryId,
+                                                      SpecificationId = p.SpecificationId,
+                                                  };
+            query = query.Where(item => item.ProductCategoryId == productCategoryId);
+            ICollection<ProductForViewDto> list = new List<ProductForViewDto>();
+
+            if (input.PageNum != null && input.PageSize != null)
+            {
+                PaginationResult<ProductForViewDto> products = await query.Pagination(input);
+                list = products.Content!;
+                await HandleProductList(list);
+                return CustomResult(products, HttpStatusCode.OK);
+            }
+            else
+            {
+                list = await query.ToListAsync();
+                await HandleProductList(list);
+                return CustomResult(list, HttpStatusCode.OK);
+            }
+
+
+
+        }
+
         private async Task HandleProductList(ICollection<ProductForViewDto> list)
         {
             if (list != null)
@@ -139,6 +174,9 @@ namespace API.Controllers
             ProductForViewDto? res = new();
             _mapper.Map(product, res);
 
+            if(input.File != null)
+            {
+            }
             await HandleProduct(res);
 
             return CustomResult(res, HttpStatusCode.OK);

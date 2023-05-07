@@ -15,7 +15,6 @@ import { PaginationInput } from 'src/app/models/pagination-input';
 export class SpecificationListComponent extends ListBaseComponent {
   @ViewChild('drawerFormBase') override drawerFormBase!: SpecificationDrawerComponent;
  
-  paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
   constructor(protected override msg: NzMessageService,
     private specificationService: SpecificationService) {
     super(msg);

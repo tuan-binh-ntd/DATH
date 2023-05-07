@@ -7,7 +7,6 @@ import { NgZorroAntdModule } from '../routes/ng-zorro-antd/ng-zorro-antd.module'
 import { EmployeeTypePipe } from './employee-type.pipe';
 import { MoneyFormatterPipe } from './money-formatter.pipe';
 
-
 @NgModule({
   declarations: [
     EmployeeTypePipe,

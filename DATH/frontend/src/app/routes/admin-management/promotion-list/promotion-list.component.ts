@@ -14,9 +14,7 @@ import { PaginationInput } from 'src/app/models/pagination-input';
 })
 export class PromotionListComponent extends ListBaseComponent {
   @ViewChild('drawerFormBase') override drawerFormBase!: PromotionDrawerComponent;
-  @HostListener('window:resize', ['$event'])
  
-  paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
   constructor(protected override msg: NzMessageService,
     private promotionService: PromotionService) {
     super(msg);
