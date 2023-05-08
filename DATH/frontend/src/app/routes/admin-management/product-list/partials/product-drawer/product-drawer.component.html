@@ -20,6 +20,7 @@
             [nzPreview]="handlePreview"
             nzType="drag"
             [nzBeforeUpload]="beforeUpload"
+            [nzRemove] = "removePhoto"
           >
             <div class="w-100">
               <i class="fa-solid fa-arrow-up-from-bracket"></i>
@@ -40,7 +41,7 @@
         </div>
       </div>
     </div>
- 
+
         <nz-form-item>
           <nz-form-label [nzSpan]="24" nzFor="name" nzRequired>
             <span>Name</span>

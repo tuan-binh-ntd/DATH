@@ -102,7 +102,7 @@ namespace API.Controllers
         [HttpGet("{id}/specifications")]
         public async Task<IActionResult> GetFilterForProductCategory(int id)
         {
-            List<string?> specificationIdList = await _productRepo.GetAll().AsNoTracking().Where(p => p.ProductCategoryId == id).Select(p => p.SpecificationId).ToListAsync();
+            List<string>? specificationIdList = await _productRepo.GetAll().AsNoTracking().Where(p => p.ProductCategoryId == id).Select(p => p.SpecificationId!.Substring(1)).ToListAsync();
 
             string specificationIds = string.Join(",", specificationIdList);
 

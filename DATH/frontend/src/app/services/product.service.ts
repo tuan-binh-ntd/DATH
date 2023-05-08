@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Product } from '../models/product.model';
-import { PaginationResult } from '../models/pagination-result';
 import { ResponseResult } from '../models/response';
 
 @Injectable({
@@ -39,5 +38,9 @@ export class ProductService {
 
   delete(id: number): Observable<any>{
     return this.http.delete(this.baseUrl + '/' + id);
+  }
+
+  removePhoto(id: number, photoId: number): Observable<any>{
+    return this.http.delete(this.baseUrl + '/' +id + '/photos' + '/' +photoId);
   }
 }

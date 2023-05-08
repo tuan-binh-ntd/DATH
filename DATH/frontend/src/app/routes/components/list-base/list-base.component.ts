@@ -69,7 +69,7 @@ export class ListBaseComponent {
    }
 
    onDeleteItem(data: any){
-    const index = this.listOfData.findIndex(item => item.id === data.id);
+    const index = this.listOfData.findIndex(item => item.id === data);
     this.listOfData.splice(index, 1);
     this.listOfData = [...this.listOfData];
    }

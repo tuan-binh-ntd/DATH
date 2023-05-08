@@ -10,7 +10,7 @@ import { Specification } from '../models/specification.model';
   providedIn: 'root'
 })
 export class ProductCategoryService {
-  baseUrl: string = environment.baseUrl + 'productcategorys/';
+  baseUrl: string = environment.baseUrl + 'productcategorys';
 
   constructor(private http: HttpClient) { }
 

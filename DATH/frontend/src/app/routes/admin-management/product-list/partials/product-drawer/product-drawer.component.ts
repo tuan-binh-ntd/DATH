@@ -87,7 +87,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     // set action upload image
     this.uploadUrl = `https://localhost:7114/api/products/${data.id}/photos`;
     // set file list
-    if(data.photos !== undefined) {
+    if (data.photos !== undefined) {
       this.fileList = (data.photos as Photo[]).map((e) => ({
         uid: `${e.id}`,
         name: 'image.png',
@@ -173,20 +173,30 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
   }
 
   beforeUpload = (file: NzUploadFile, _fileList: NzUploadFile[]): Observable<boolean> =>
-  new Observable((observer: Observer<boolean>) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-      this.message.error('You can only upload JPG file!');
+    new Observable((observer: Observer<boolean>) => {
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        this.message.error('You can only upload JPG file!');
+        observer.complete();
+        return;
+      }
+      const isLt2M = file.size! / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.message.error('Image must smaller than 2MB!');
+        observer.complete();
+        return;
+      }
+      observer.next(isJpgOrPng && isLt2M);
       observer.complete();
-      return;
-    }
-    const isLt2M = file.size! / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      this.message.error('Image must smaller than 2MB!');
-      observer.complete();
-      return;
-    }
-    observer.next(isJpgOrPng && isLt2M);
-    observer.complete();
-  });
+    });
+
+  removePhoto = (file: NzUploadFile): boolean => {
+    this.productService.removePhoto(this.data.id, +file.uid).subscribe(res => {
+      if (checkResponseStatus(res)) {
+        this.message.success('Remove successfully');
+        this.changeToDetail();
+      }
+    });
+    return true;
+  }
 }

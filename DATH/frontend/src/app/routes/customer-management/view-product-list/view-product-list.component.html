@@ -5,18 +5,18 @@
     </div>
     <div nz-col nzSpan="20">
       <span
-      class="float-right cursor-poiter "
-      nz-dropdown
-      [nzDropdownMenu]="menu"
-      >Sort By <i class="fa-solid fa-arrow-down ml-2"></i
-    ></span>
-    <nz-dropdown-menu #menu="nzDropdownMenu">
-      <ul nz-menu nzSelectable>
-        <li nz-menu-item>Newest</li>
-        <li nz-menu-item>Price: High-Low</li>
-        <li nz-menu-item>Price: Low-High</li>
-      </ul>
-    </nz-dropdown-menu>
+        class="float-right cursor-poiter"
+        nz-dropdown
+        [nzDropdownMenu]="menu"
+        >Sort By <i class="fa-solid fa-arrow-down ml-2"></i
+      ></span>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item>Newest</li>
+          <li nz-menu-item>Price: High-Low</li>
+          <li nz-menu-item>Price: Low-High</li>
+        </ul>
+      </nz-dropdown-menu>
     </div>
   </div>
   <div nz-row nzGutter="16">
@@ -44,14 +44,13 @@
       </nz-collapse>
     </div>
     <div nz-col nzSpan="20">
-   
       <nz-list nzGrid>
         <div nz-row [nzGutter]="16">
           <div nz-col [nzSpan]="6" *ngFor="let item of listOfData">
             <nz-list-item>
               <nz-card>
                 <h3>{{ item.name }}</h3>
-                <h5>{{ item.price }}</h5>
+                <h5>{{ item.price | moneyFormatter}}</h5>
               </nz-card>
             </nz-list-item>
           </div>

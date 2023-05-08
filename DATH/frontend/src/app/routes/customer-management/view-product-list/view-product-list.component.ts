@@ -17,9 +17,9 @@ import { checkResponseStatus } from 'src/app/shared/helper';
 export class ViewProductListComponent {
   constructor(private route: ActivatedRoute,
     private productService: ProductService,
-    private productCategoryService: ProductCategoryService){}
-    paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
-  
+    private productCategoryService: ProductCategoryService) { }
+  paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
+
   type: string | null = '';
   categoryId: number = 0;
 
@@ -27,7 +27,7 @@ export class ViewProductListComponent {
   listSpecification: Specification[] = [];
   listOfData: Product[] = [];
   listColor: Specification[] = [];
-   ngOnInit(){
+  ngOnInit() {
     this.route.paramMap.pipe(
       switchMap(async params => {
         await this.fetchProductCategories();
@@ -45,29 +45,29 @@ export class ViewProductListComponent {
     ).subscribe();
   }
 
-  async fetchProductCategories(){
-    await this.productCategoryService.getAll().toPromise().then((res:any) => {
-      if(checkResponseStatus(res)){
+  async fetchProductCategories() {
+    await this.productCategoryService.getAll().toPromise().then((res: any) => {
+      if (checkResponseStatus(res)) {
         this.listCategory = res?.data;
       }
     })
   }
 
-  async fetchProductCategoriesSpecification(){
-    await this.productCategoryService.getAllBySpecificationById(this.categoryId).subscribe((res:any) => {
-      if(checkResponseStatus(res)){
+  async fetchProductCategoriesSpecification() {
+    await this.productCategoryService.getAllBySpecificationById(this.categoryId).subscribe((res: any) => {
+      if (checkResponseStatus(res)) {
         this.listSpecification = res?.data;
         this.listColor = res.data.find((item: any) => item.code === 'color')?.specifications;
       }
     })
   }
 
-  fetchData(){
+  fetchData() {
     this.productService.getAllByCategory(this.categoryId, this.paginationParam.pageNum, this.paginationParam.pageSize).subscribe(res => {
-      if(checkResponseStatus(res)){
+      if (checkResponseStatus(res)) {
         this.listOfData = res.data.content;
       }
     })
   }
-  
+
 }

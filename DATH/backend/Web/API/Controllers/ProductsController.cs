@@ -35,11 +35,16 @@ namespace API.Controllers
             _specificationRepo = specificationRepo;
             _dataContext = dataContext;
         }
+
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] PaginationInput input)
+        public async Task<IActionResult> Get([FromQuery] PaginationInput input, [FromQuery] ProductFilterDto filter)
         {
+
+
             IQueryable<ProductForViewDto> query = from p in _productRepo.GetAll().AsNoTracking()
+                                                  //where string.IsNullOrWhiteSpace(filter.SpecificationIds) || filter.SpecificationIds!.Contains(p.SpecificationId!)
+                                                  where filter.Price == null || (p.Price >= filter.Price - 1000000 && p.Price <= filter.Price + 1000000)
                                                   select new ProductForViewDto()
                                                   {
                                                       Id = p.Id,
@@ -47,7 +52,7 @@ namespace API.Controllers
                                                       Price = p.Price,
                                                       Description = p.Description,
                                                       ProductCategoryId = p.ProductCategoryId,
-                                                      SpecificationId = p.SpecificationId,
+                                                      SpecificationId = p.SpecificationId!.Substring(1),
                                                   };
 
             ICollection<ProductForViewDto> list = new List<ProductForViewDto>();
@@ -57,6 +62,7 @@ namespace API.Controllers
                 PaginationResult<ProductForViewDto> products = await query.Pagination(input);
                 list = products.Content!;
                 await HandleProductList(list);
+
                 return CustomResult(products, HttpStatusCode.OK);
             }
             else
@@ -65,14 +71,11 @@ namespace API.Controllers
                 await HandleProductList(list);
                 return CustomResult(list, HttpStatusCode.OK);
             }
-
-
-
         }
 
         [AllowAnonymous]
         [HttpGet("by-category/{productCategoryId}", Name = "ProductsCategory")]
-        public async Task<IActionResult> GetByCategory([FromQuery] PaginationInput input,int productCategoryId)
+        public async Task<IActionResult> GetByCategory([FromQuery] PaginationInput input, int productCategoryId)
         {
             IQueryable<ProductForViewDto> query = from p in _productRepo.GetAll().AsNoTracking()
                                                   select new ProductForViewDto()
@@ -82,7 +85,7 @@ namespace API.Controllers
                                                       Price = p.Price,
                                                       Description = p.Description,
                                                       ProductCategoryId = p.ProductCategoryId,
-                                                      SpecificationId = p.SpecificationId,
+                                                      SpecificationId = p.SpecificationId!.Substring(1),
                                                   };
             query = query.Where(item => item.ProductCategoryId == productCategoryId);
             ICollection<ProductForViewDto> list = new List<ProductForViewDto>();
@@ -157,7 +160,7 @@ namespace API.Controllers
                                                       Price = p.Price,
                                                       Description = p.Description,
                                                       ProductCategoryId = p.ProductCategoryId,
-                                                      SpecificationId = p.SpecificationId,
+                                                      SpecificationId = p.SpecificationId!.Substring(1),
                                                   };
             ProductForViewDto? data = await query.FirstOrDefaultAsync();
             if (data == null) return CustomResult(HttpStatusCode.NoContent);
@@ -168,13 +171,15 @@ namespace API.Controllers
         public async Task<IActionResult> Create(ProductInput input)
         {
             Product product = new();
+            input.SpecificationId = $",{input.SpecificationId}";
             _mapper.Map(input, product);
             await _productRepo.InsertAsync(product);
 
             ProductForViewDto? res = new();
+            product.SpecificationId = product.SpecificationId![1..];
             _mapper.Map(product, res);
 
-            if(input.File != null)
+            if (input.File != null)
             {
             }
             await HandleProduct(res);
@@ -187,12 +192,13 @@ namespace API.Controllers
         {
             Product? product = await _productRepo.GetAsync(id);
             if (product == null) return CustomResult(HttpStatusCode.NoContent);
-
+            input.SpecificationId = $",{input.SpecificationId}";
             _mapper.Map(input, product);
 
             await _productRepo.UpdateAsync(product);
 
             ProductForViewDto? res = new();
+            product.SpecificationId = product.SpecificationId![1..];
             _mapper.Map(product, res);
 
             await HandleProduct(res);
@@ -236,6 +242,31 @@ namespace API.Controllers
                 return CustomResult(res, HttpStatusCode.OK);
             }
             return CustomResult("Problem adding photo", HttpStatusCode.BadRequest);
+        }
+
+        [HttpDelete("{id}/photos/{photoId}")]
+        public async Task<IActionResult> RemovePhoto(long id, int photoId)
+        {
+            Product? product = await _productRepo.GetAll().Where(p => p.Id == id).Include(p => p.Photos).FirstOrDefaultAsync();
+
+            if (product == null) return CustomResult(HttpStatusCode.NoContent);
+
+            Photo? photo = product.Photos!.SingleOrDefault(p => p.Id == photoId);
+            if (photo == null) return CustomResult(HttpStatusCode.NotFound);
+
+            if (photo.PublicId != null)
+            {
+                var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+                if (result.Error != null) return CustomResult(result.Error.Message, HttpStatusCode.BadRequest);
+            }
+
+            product.Photos!.Remove(photo);
+
+            if (await _productRepo.UpdateAsync(product) != null)
+            {
+                return CustomResult(HttpStatusCode.OK);
+            }
+            return CustomResult("Failed to delete your photo", HttpStatusCode.BadRequest);
         }
     }
 }
