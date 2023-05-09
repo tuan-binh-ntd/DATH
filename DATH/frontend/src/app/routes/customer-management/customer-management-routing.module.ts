@@ -22,8 +22,11 @@ const routes: Routes = [
     path: 'change-info',
     component: CustomerChangeInfoComponent,
     canActivate: [CustomerAuthGuard],
-
   },
+  {
+    path: '**',
+    component: CustomerHomeComponent,
+  }
 ];
 
 @NgModule({

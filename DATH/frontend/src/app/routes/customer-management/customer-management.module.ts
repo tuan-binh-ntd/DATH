@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 
 import { CustomerManagementRoutingModule } from './customer-management-routing.module';
 import { ComponentsModule } from '../components/components.module';
@@ -24,6 +24,6 @@ import { CustomerChangeInfoComponent } from './customer-change-info/customer-cha
     CustomerManagementRoutingModule,
     ComponentsModule,
     SharedModule,
-  ]
+  ],
 })
 export class CustomerManagementModule { } 

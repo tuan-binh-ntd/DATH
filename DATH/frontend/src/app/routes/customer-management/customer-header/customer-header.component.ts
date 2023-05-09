@@ -159,7 +159,7 @@ export class CustomerHeaderComponent implements OnInit {
 
   logOut() {
     this.accountService.logOut();
-    this.router.navigateByUrl('/home');
+    // this.router.navigateByUrl('/home');
     this.isLoggedIn = false;
   }
 
