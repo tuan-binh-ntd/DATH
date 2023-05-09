@@ -3,12 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Database;
 using Entities.Interface;
 using Microsoft.AspNetCore.Http;
+using Bussiness.Extensions;
 
 namespace Bussiness.Repository
 {
     public class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey> where TEntity : class, IEntity<TPrimaryKey>
     {
         private readonly DataContext _dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ISession _session;
 
         public Repository(
@@ -17,6 +19,7 @@ namespace Bussiness.Repository
             )
         {
             _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
             _session = httpContextAccessor.HttpContext!.Session;
         }
 
@@ -36,7 +39,7 @@ namespace Bussiness.Repository
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasCreatorUserId creatorUserId)
             {
-                creatorUserId.CreatorUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
+                creatorUserId.CreatorUserId = GetCurrentUserId();
             }
             await _dbContext.Set<TEntity>().AddAsync(entry.Entity, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -48,7 +51,7 @@ namespace Bussiness.Repository
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasLastModifierUserId lastModifierUserId)
             {
-                lastModifierUserId.LastModifierUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
+                lastModifierUserId.LastModifierUserId = GetCurrentUserId();
                 if (entry.State == EntityState.Detached)
                 {
                     entry.State = EntityState.Modified;
@@ -69,7 +72,7 @@ namespace Bussiness.Repository
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is ISoftDelete deleteUserId)
             {
-                deleteUserId.DeleteUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
+                deleteUserId.DeleteUserId = GetCurrentUserId();
             }
 
             _dbContext.Set<TEntity>().Remove(entry.Entity);
@@ -81,17 +84,37 @@ namespace Bussiness.Repository
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasCreatorUserId creatorUserId)
             {
-                creatorUserId.CreatorUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
+                creatorUserId.CreatorUserId = GetCurrentUserId();
             }
             TEntity e = (await _dbContext.Set<TEntity>().AddAsync(entry.Entity, cancellationToken)).Entity;
             await _dbContext.SaveChangesAsync(cancellationToken);
             return e.Id;
+        }
+
+        public long? GetCurrentUserId()
+        {
+            if (_session.GetString("UserId") == null)
+            {
+                if (_httpContextAccessor.HttpContext!.User.GetUserId() == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return _httpContextAccessor.HttpContext!.User.GetUserId();
+                }
+            }
+            else
+            {
+                return long.Parse(_session.GetString("UserId")!);
+            }
         }
     }
 
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity<int>
     {
         private readonly DataContext _dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ISession _session;
 
         public Repository(
@@ -100,6 +123,7 @@ namespace Bussiness.Repository
             )
         {
             _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
             _session = httpContextAccessor.HttpContext!.Session;
         }
 
@@ -119,7 +143,7 @@ namespace Bussiness.Repository
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasCreatorUserId creatorUserId)
             {
-                creatorUserId.CreatorUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
+                creatorUserId.CreatorUserId = GetCurrentUserId();
             }
             await _dbContext.Set<TEntity>().AddAsync(entry.Entity, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -131,7 +155,7 @@ namespace Bussiness.Repository
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasLastModifierUserId lastModifierUserId)
             {
-                lastModifierUserId.LastModifierUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
+                lastModifierUserId.LastModifierUserId = GetCurrentUserId();
                 if (entry.State == EntityState.Detached)
                 {
                     entry.State = EntityState.Modified;
@@ -152,7 +176,7 @@ namespace Bussiness.Repository
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is ISoftDelete deleteUserId)
             {
-                deleteUserId.DeleteUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
+                deleteUserId.DeleteUserId = GetCurrentUserId();
             }
 
             _dbContext.Set<TEntity>().Remove(entry.Entity);
@@ -164,11 +188,30 @@ namespace Bussiness.Repository
             EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(entity);
             if (entry.Entity is IHasCreatorUserId creatorUserId)
             {
-                creatorUserId.CreatorUserId = _session.GetString("UserId") == null ? null : long.Parse(_session.GetString("UserId")!);
+                creatorUserId.CreatorUserId = GetCurrentUserId();
             }
             TEntity e = (await _dbContext.Set<TEntity>().AddAsync(entry.Entity)).Entity;
             await _dbContext.SaveChangesAsync(cancellationToken);
             return e.Id;
+        }
+
+        public long? GetCurrentUserId()
+        {
+            if(_session.GetString("UserId") == null)
+            {
+                if(_httpContextAccessor.HttpContext!.User.GetUserId() == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return _httpContextAccessor.HttpContext!.User.GetUserId();
+                }
+            }
+            else
+            {
+                return long.Parse(_session.GetString("UserId")!);
+            }
         }
     }
 }
