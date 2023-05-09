@@ -9,9 +9,9 @@ namespace Bussiness.Extensions
             return user?.FindFirst(ClaimTypes.Name)?.Value!;
         }
 
-        public static long GetUserId(this ClaimsPrincipal user)
+        public static long? GetUserId(this ClaimsPrincipal user)
         {
-            return long.Parse(user?.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            return user != null ? long.Parse(user?.FindFirst(ClaimTypes.NameIdentifier)?.Value!) : null;
         }
     }
 }
