@@ -28,7 +28,7 @@
         <span><i class="fa-solid fa-search mr-2 text-muted"></i></span>
       </ng-template>
 
-      <nz-collapse  *ngIf="listColor.length > 0">
+      <nz-collapse *ngIf="listColor.length > 0">
         <nz-collapse-panel nzHeader="Colour">
           <div nz-row nzGutter="16">
             <div nz-col nzSan="8" *ngFor="let item of listColor" class="mb-2">
@@ -38,48 +38,71 @@
                 [nzSize]="40"
                 [ngStyle]="{ 'background-color': item.value }"
                 class="cursor-pointer"
-              ></nz-avatar>
+                [ngClass]="{ 'selected-avatar': isSelected(item.id) }"
+                (click)="toggleSelection(item.id)"
+                [nzIcon]="isSelected(item.id) ? 'check' : ''"
+              >
+              </nz-avatar>
             </div>
           </div>
         </nz-collapse-panel>
       </nz-collapse>
 
-      <nz-collapse  *ngIf="listCapacity.length > 0">
-        <nz-collapse-panel nzHeader="Capacity" >
-          <nz-checkbox-wrapper style="width: 100%;" >
+      <nz-collapse *ngIf="listCapacity.length > 0">
+        <nz-collapse-panel nzHeader="Capacity">
+          <nz-checkbox-wrapper style="width: 100%">
             <div nz-row nzGutter="16">
-                  <div nz-col nzSpan="12" *ngFor="let item of listCapacity" class="mb-2"><label nz-checkbox  [nzValue]="item.code" >{{item.value}}</label></div>
-                </div>
-                </nz-checkbox-wrapper>
+              <div
+                nz-col
+                nzSpan="12"
+                *ngFor="let item of listCapacity"
+                class="mb-2"
+              >
+                <label nz-checkbox [nzValue]="item.code" [ngModel]="null" (ngModelChange)="toggleSelection(item.id)">{{
+                  item.value
+                }}</label>
+              </div>
+            </div>
+          </nz-checkbox-wrapper>
         </nz-collapse-panel>
       </nz-collapse>
 
       <nz-collapse>
-        <nz-collapse-panel nzHeader="Price" >
-        <nz-slider [nzMax]="50000000"
-         [nzTipFormatter]="formatter" [nzMin]="10000000" 
-         nzIncluded nzRange [nzStep]="1000000"
-         [nzMarks]="marks"></nz-slider>
-     </nz-collapse-panel>
-       </nz-collapse>
-
+        <nz-collapse-panel nzHeader="Price">
+          <nz-slider
+            [nzMax]="50000000"
+            [nzTipFormatter]="formatter"
+            [nzMin]="10000000"
+            nzIncluded
+            nzRange
+            [nzStep]="1000000"
+            [nzMarks]="marks"
+          ></nz-slider>
+        </nz-collapse-panel>
+      </nz-collapse>
     </div>
     <div nz-col nzSpan="20">
-      <nz-list nzGrid>
-        <div nz-row >
-          <div nz-col [nzSpan]="6" *ngFor="let item of listOfData">
-            <nz-list-item>
-              <nz-card nzHoverable style="width:240px" [nzCover]="coverTemplate">
-                <nz-card-meta [nzTitle]="item.name" ></nz-card-meta>
-                <span>{{item.price | number}}Đ</span>
-              </nz-card>
-              <ng-template #coverTemplate>
-                <img alt="example" [src]="item.photos![0]?.url" />
-              </ng-template>
-            </nz-list-item>
+      <cdk-virtual-scroll-viewport itemSize="332" class="demo-infinite-container" >
+        <nz-list nzGrid>
+          <div nz-row>
+            <div nz-col [nzSpan]="6" *cdkVirtualFor="let item of listOfData">
+              <nz-list-item>
+                <nz-card
+                  nzHoverable
+                  style="width: 240px"
+                  [nzCover]="coverTemplate"
+                >
+                  <nz-card-meta [nzTitle]="item.name"></nz-card-meta>
+                  <span>{{ item.price | number }}Đ</span>
+                </nz-card>
+                <ng-template #coverTemplate>
+                  <img alt="example" [src]="item.photos![0]?.url" />
+                </ng-template>
+              </nz-list-item>
+            </div>
           </div>
-        </div>
-      </nz-list>
+        </nz-list>
+      </cdk-virtual-scroll-viewport>
     </div>
   </div>
 </app-page-grid>

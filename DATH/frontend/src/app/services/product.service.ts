@@ -6,41 +6,64 @@ import { Product } from '../models/product.model';
 import { ResponseResult } from '../models/response';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductService {
   baseUrl: string = environment.baseUrl + 'products';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  getAll(pageNum?: number, pageSize?: number): Observable<ResponseResult<Product>>{
-    if(pageNum === undefined && pageSize === undefined) return this.http.get<ResponseResult<Product>>(this.baseUrl);
-    return this.http.get<ResponseResult<Product>>(this.baseUrl + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
+  getAll(
+    pageNum?: number,
+    pageSize?: number
+  ): Observable<ResponseResult<Product>> {
+    if (pageNum === undefined && pageSize === undefined)
+      return this.http.get<ResponseResult<Product>>(this.baseUrl);
+    return this.http.get<ResponseResult<Product>>(
+      this.baseUrl + '?pageNum=' + pageNum + '&pageSize=' + pageSize
+    );
   }
 
-  getAllByCategory(categoryId: number, pageNum?: number, pageSize?: number): Observable<ResponseResult<Product>>{
-    if(pageNum === undefined && pageSize === undefined) return this.http.get<ResponseResult<Product>>(this.baseUrl);
-    return this.http.get<ResponseResult<Product>>(this.baseUrl + '/by-category/' + categoryId + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
+  getAllByCategory(
+    categoryId: number,
+    pageNum?: number,
+    pageSize?: number,
+    specificationIds?: string
+  ): Observable<ResponseResult<Product>> {
+    if (pageNum === undefined && pageSize === undefined)
+      return this.http.get<ResponseResult<Product>>(this.baseUrl);
+    return this.http.get<ResponseResult<Product>>(
+      this.baseUrl +
+        '/by-category/' +
+        categoryId +
+        '?pageNum=' +
+        pageNum +
+        '&pageSize=' +
+        pageSize +
+        '&specificationIds=' +
+        specificationIds
+    );
   }
 
-
-  get(id: number){
+  get(id: number) {
     return this.http.get(this.baseUrl + '/' + id);
   }
 
-  update(id: number, payload: Product): Observable<any>{
+  update(id: number, payload: Product): Observable<any> {
     return this.http.put(this.baseUrl + '/' + id, payload);
   }
 
-  create(payload: Product): Observable<any>{
+  create(payload: Product): Observable<any> {
     return this.http.post(this.baseUrl, payload);
   }
 
-  delete(id: number): Observable<any>{
+  delete(id: number): Observable<any> {
     return this.http.delete(this.baseUrl + '/' + id);
   }
 
-  removePhoto(id: number, photoId: number): Observable<any>{
-    return this.http.delete(this.baseUrl + '/' +id + '/photos' + '/' +photoId);
+  removePhoto(id: number, photoId: number): Observable<any> {
+    return this.http.delete(
+      this.baseUrl + '/' + id + '/photos' + '/' + photoId
+    );
   }
 }

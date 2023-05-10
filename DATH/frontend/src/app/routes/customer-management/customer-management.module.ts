@@ -9,7 +9,7 @@ import { CustomerHeaderComponent } from './customer-header/customer-header.compo
 import { CustomerHomeComponent } from './customer-home/customer-home.component';
 import { ViewProductListComponent } from './view-product-list/view-product-list.component';
 import { CustomerChangeInfoComponent } from './customer-change-info/customer-change-info.component';
-
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
   declarations: [
@@ -24,6 +24,7 @@ import { CustomerChangeInfoComponent } from './customer-change-info/customer-cha
     CustomerManagementRoutingModule,
     ComponentsModule,
     SharedModule,
+    ScrollingModule,
   ],
 })
 export class CustomerManagementModule { } 
