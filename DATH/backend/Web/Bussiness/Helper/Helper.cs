@@ -1,13 +1,14 @@
 ﻿using Bussiness.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
+
 namespace Bussiness.Helper
 {
     public static class Helper
     {
         public static int Ceiling(int pageSize, int totalCount)
         {
-            return (int)Math.Ceiling((decimal) totalCount /pageSize);
+            return (int)Math.Ceiling((decimal)totalCount / pageSize);
         }
 
         public static IQueryable<TSource> PageBy<TSource>([NotNull] this IQueryable<TSource> query, [NotNull] PaginationInput input)
@@ -17,14 +18,14 @@ namespace Bussiness.Helper
 
         public static async Task<PaginationResult<TSource>> Pagination<TSource>([NotNull] this IQueryable<TSource> query, [NotNull] PaginationInput input, CancellationToken cancellationToken = default)
         {
-            int totalCocunt = await query.CountAsync(cancellationToken: cancellationToken);
+            int totalCount = await query.CountAsync(cancellationToken: cancellationToken);
 
             query = query.PageBy(input);
 
             PaginationResult<TSource> data = new()
             {
-                TotalCount = totalCocunt,
-                TotalPage = Helper.Ceiling((int)input.PageSize!, totalCocunt),
+                TotalCount = totalCount,
+                TotalPage = Ceiling((int)input.PageSize!, totalCount),
                 Content = await query.ToListAsync(cancellationToken: cancellationToken)
             };
 

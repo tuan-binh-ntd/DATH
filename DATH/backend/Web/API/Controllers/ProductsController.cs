@@ -73,7 +73,7 @@ namespace API.Controllers
             if (input.PageNum != null && input.PageSize != null)
             {
                 //PaginationResult<ProductForViewDto> products = await query.Pagination(input);
-                PaginationResult<ProductForViewDto> products = await query.AsQueryable().Pagination(input);
+                PaginationResult<ProductForViewDto> products = await _dapper.GetAllAndPaginationAsync<ProductForViewDto>("GetProduct", input, param);
                 list = products.Content!;
                 await HandleProductList(list);
 
