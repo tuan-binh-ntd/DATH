@@ -4,6 +4,7 @@ using Bussiness.Helper;
 using Bussiness.Interface;
 using Bussiness.Repository;
 using Bussiness.Services;
+using Dapper;
 using Database;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -20,13 +21,15 @@ namespace API.Controllers
         private readonly IPhotoService _photoService;
         private readonly IRepository<Specification, long> _specificationRepo;
         private readonly DataContext _dataContext;
+        private readonly IDapper _dapper;
 
         public ProductsController(
             IMapper mapper,
             IRepository<Product, long> productRepo,
             IPhotoService photoService,
             IRepository<Specification, long> specificationRepo,
-            DataContext dataContext
+            DataContext dataContext,
+            IDapper dapper
             )
         {
             _mapper = mapper;
@@ -34,32 +37,43 @@ namespace API.Controllers
             _photoService = photoService;
             _specificationRepo = specificationRepo;
             _dataContext = dataContext;
+            _dapper = dapper;
         }
 
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationInput input, [FromQuery] ProductFilterDto filter)
         {
+            DynamicParameters param = new();
 
+            if (filter != null)
+            {
+                param.Add("SpecificationId", filter.SpecificationIds);
+                param.Add("Price", filter.Price);
+                param.Add("Keyword", filter.Keyword);
+            }
 
-            IQueryable<ProductForViewDto> query = from p in _productRepo.GetAll().AsNoTracking()
-                                                  //where string.IsNullOrWhiteSpace(filter.SpecificationIds) || filter.SpecificationIds!.Contains(p.SpecificationId!)
-                                                  where filter.Price == null || (p.Price >= filter.Price - 1000000 && p.Price <= filter.Price + 1000000)
-                                                  select new ProductForViewDto()
-                                                  {
-                                                      Id = p.Id,
-                                                      Name = p.Name,
-                                                      Price = p.Price,
-                                                      Description = p.Description,
-                                                      ProductCategoryId = p.ProductCategoryId,
-                                                      SpecificationId = p.SpecificationId!.Substring(1),
-                                                  };
+            List<ProductForViewDto> query = _dapper.GetAll<ProductForViewDto>("GetProduct", param);
+
+            //IQueryable<ProductForViewDto> query = from p in _productRepo.GetAll().AsNoTracking()
+            //                                      //where string.IsNullOrWhiteSpace(filter.SpecificationIds) || filter.SpecificationIds!.Contains(p.SpecificationId!)
+            //                                      where filter.Price == null || (p.Price >= filter.Price - 1000000 && p.Price <= filter.Price + 1000000)
+            //                                      select new ProductForViewDto()
+            //                                      {
+            //                                          Id = p.Id,
+            //                                          Name = p.Name,
+            //                                          Price = p.Price,
+            //                                          Description = p.Description,
+            //                                          ProductCategoryId = p.ProductCategoryId,
+            //                                          SpecificationId = p.SpecificationId!.Substring(1),
+            //                                      };
 
             ICollection<ProductForViewDto> list = new List<ProductForViewDto>();
 
             if (input.PageNum != null && input.PageSize != null)
             {
-                PaginationResult<ProductForViewDto> products = await query.Pagination(input);
+                //PaginationResult<ProductForViewDto> products = await query.Pagination(input);
+                PaginationResult<ProductForViewDto> products = await query.AsQueryable().Pagination(input);
                 list = products.Content!;
                 await HandleProductList(list);
 
@@ -67,7 +81,8 @@ namespace API.Controllers
             }
             else
             {
-                list = await query.ToListAsync();
+                //list = await query.ToListAsync();
+                list = query;
                 await HandleProductList(list);
                 return CustomResult(list, HttpStatusCode.OK);
             }
