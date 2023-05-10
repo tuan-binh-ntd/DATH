@@ -1,5 +1,7 @@
+import { DecimalPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NzMark, NzMarks } from 'ng-zorro-antd/slider';
 import { forkJoin, switchMap } from 'rxjs';
 import { PaginationInput } from 'src/app/models/pagination-input';
 import { ProductCategory } from 'src/app/models/product-category.model';
@@ -17,9 +19,10 @@ import { checkResponseStatus } from 'src/app/shared/helper';
 export class ViewProductListComponent {
   constructor(private route: ActivatedRoute,
     private productService: ProductService,
-    private productCategoryService: ProductCategoryService) { }
+    private productCategoryService: ProductCategoryService,
+   ) { }
   paginationParam: PaginationInput = { pageNum: 1, pageSize: 10, totalPage: 0, totalCount: 0 };
-
+  
   type: string | null = '';
   categoryId: number = 0;
 
@@ -27,6 +30,15 @@ export class ViewProductListComponent {
   listSpecification: Specification[] = [];
   listOfData: Product[] = [];
   listColor: Specification[] = [];
+  listCapacity: Specification[] = [];
+  marks: NzMarks = {
+    0: "10000000",
+   100:"50000000",
+  };
+  formatter(value: any) {
+    return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+  }
+
   ngOnInit() {
     this.route.paramMap.pipe(
       switchMap(async params => {
@@ -34,6 +46,7 @@ export class ViewProductListComponent {
         this.listSpecification = [];
         this.listOfData = [];
         this.listColor = [];
+        this.listCapacity = [];
         this.type = params.get('type')?.toUpperCase()!;
         this.categoryId = this.listCategory.find(item => item.name?.toLowerCase() === this.type?.toLowerCase())?.id!;
         if (this.categoryId) {
@@ -58,6 +71,8 @@ export class ViewProductListComponent {
       if (checkResponseStatus(res)) {
         this.listSpecification = res?.data;
         this.listColor = res.data.find((item: any) => item.code === 'color')?.specifications;
+        this.listCapacity = res.data.find((item: any) => item.code === 'capacity')?.specifications;
+
       }
     })
   }
