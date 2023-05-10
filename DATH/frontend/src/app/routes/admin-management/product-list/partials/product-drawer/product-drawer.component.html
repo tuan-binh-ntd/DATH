@@ -17,6 +17,7 @@
             nzListType="picture-card"
             [(nzFileList)]="fileList"
             [nzMultiple]="true"
+            [nzDisabled]="!isEdit"
             [nzPreview]="handlePreview"
             nzType="drag"
             [nzBeforeUpload]="beforeUpload"
