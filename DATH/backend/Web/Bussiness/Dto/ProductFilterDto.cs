@@ -4,5 +4,6 @@
     {
         public string? SpecificationIds { get; set; }
         public decimal? Price { get; set; }
+        public string? Keyword { get; set; }
     }
 }

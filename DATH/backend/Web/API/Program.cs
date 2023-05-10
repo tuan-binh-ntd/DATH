@@ -36,6 +36,7 @@ builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddSingleton<ISession, SessionWrapper>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.AddScoped<IDapper, Dapperr>();
 // End  Declaration DI
 
 // Set up connection SQL Server
