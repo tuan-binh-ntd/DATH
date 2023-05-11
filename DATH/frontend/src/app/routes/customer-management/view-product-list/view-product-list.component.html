@@ -58,9 +58,13 @@
                 *ngFor="let item of listCapacity"
                 class="mb-2"
               >
-                <label nz-checkbox [nzValue]="item.code" [ngModel]="null" (ngModelChange)="toggleSelection(item.id)">{{
-                  item.value
-                }}</label>
+                <label
+                  nz-checkbox
+                  [nzValue]="item.code"
+                  [ngModel]="null"
+                  (ngModelChange)="toggleSelection(item.id)"
+                  >{{ item.value }}</label
+                >
               </div>
             </div>
           </nz-checkbox-wrapper>
@@ -81,11 +85,19 @@
         </nz-collapse-panel>
       </nz-collapse>
     </div>
-    <div nz-col nzSpan="20">
-      <cdk-virtual-scroll-viewport itemSize="332" class="demo-infinite-container" >
+    <div
+      nz-col
+      nzSpan="20"
+      class="search-results"
+      infiniteScroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="50"
+      (scrolled)="onScroll()"
+    >
+    <nz-spin [nzSpinning]="isLoading">
         <nz-list nzGrid>
           <div nz-row>
-            <div nz-col [nzSpan]="6" *cdkVirtualFor="let item of listOfData">
+            <div nz-col [nzSpan]="6" *ngFor="let item of listOfData">
               <nz-list-item>
                 <nz-card
                   nzHoverable
@@ -102,7 +114,7 @@
             </div>
           </div>
         </nz-list>
-      </cdk-virtual-scroll-viewport>
+      </nz-spin>
     </div>
   </div>
 </app-page-grid>

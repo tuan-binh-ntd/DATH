@@ -10,6 +10,8 @@ import { CustomerHomeComponent } from './customer-home/customer-home.component';
 import { ViewProductListComponent } from './view-product-list/view-product-list.component';
 import { CustomerChangeInfoComponent } from './customer-change-info/customer-change-info.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     ComponentsModule,
     SharedModule,
     ScrollingModule,
+    InfiniteScrollModule
   ],
 })
 export class CustomerManagementModule { } 
+platformBrowserDynamic().bootstrapModule(CustomerManagementModule);

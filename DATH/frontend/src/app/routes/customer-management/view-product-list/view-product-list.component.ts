@@ -1,6 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CollectionViewer, DataSource } from '@angular/cdk/collections'
+import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { ActivatedRoute } from '@angular/router';
 import { NzMark, NzMarks } from 'ng-zorro-antd/slider';
 import { forkJoin, switchMap } from 'rxjs';
@@ -16,7 +16,7 @@ import { checkResponseStatus } from 'src/app/shared/helper';
   selector: 'app-view-product-list',
   templateUrl: './view-product-list.component.html',
   styleUrls: ['./view-product-list.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  //changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewProductListComponent {
   constructor(
@@ -33,6 +33,7 @@ export class ViewProductListComponent {
 
   type: string | null = '';
   categoryId: number = 0;
+  isLoading: boolean = false;
 
   selectedItemIds: string[] = [];
   listCategory: ProductCategory[] = [];
@@ -102,18 +103,25 @@ export class ViewProductListComponent {
   }
 
   fetchData() {
+    this.isLoading = true;
     this.productService
       .getAllByCategory(
         this.categoryId,
         this.paginationParam.pageNum,
         this.paginationParam.pageSize,
-        JSON.stringify(this.selectedItemIds.unshift(','))
+        JSON.stringify(this.selectedItemIds.join(','))
       )
       .subscribe((res) => {
         if (checkResponseStatus(res)) {
-          this.listOfData = res.data.content;
+          this.listOfData = [...this.listOfData, ...res.data.content];
+          this.isLoading = false;
         }
       });
+  }
+
+  onScroll() {
+    this.paginationParam.pageNum++;
+    this.fetchData();
   }
 
   isSelected(id: string): boolean {
@@ -121,6 +129,7 @@ export class ViewProductListComponent {
   }
 
   toggleSelection(id: string) {
+    this.listOfData = [];
     const index = this.selectedItemIds.indexOf(id);
     if (index === -1) {
       this.selectedItemIds.push(id); // add item ID to selection
