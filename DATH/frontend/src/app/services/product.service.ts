@@ -24,31 +24,6 @@ export class ProductService {
     );
   }
 
-  getAllByCategory(
-    categoryId: number,
-    pageNum?: number,
-    pageSize?: number,
-    specificationIds?: string,
-    keyword?: string,
-  ): Observable<ResponseResult<Product>> {
-    if (pageNum === undefined && pageSize === undefined)
-      return this.http.get<ResponseResult<Product>>(this.baseUrl);
-      var keywordString = ""
-      if(keyword) keywordString +=  '&keyword=' + keyword
-    return this.http.get<ResponseResult<Product>>(
-      this.baseUrl +
-        '/by-category/' +
-        categoryId +
-        '?pageNum=' +
-        pageNum +
-        '&pageSize=' +
-        pageSize +
-        '&SpecificationIds=' +
-        "38" +
-        keywordString
-    );
-  }
-
   get(id: number) {
     return this.http.get(this.baseUrl + '/' + id);
   }

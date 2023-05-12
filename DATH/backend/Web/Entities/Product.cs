@@ -17,5 +17,6 @@ namespace Entities
         public int? ProductCategoryId { get; set; }
         public ProductCategory? ProductCategory { get; set; }
         public ICollection<Photo>? Photos { get; set; }
+        public ICollection<WarehouseDetail> Products { get; set; } = new List<WarehouseDetail>();
     }
 }
