@@ -22,7 +22,10 @@
   <div nz-row nzGutter="16">
     <div nz-col nzSpan="4">
       <nz-input-group [nzSuffix]="searchIcon" class="mb-2">
-        <input type="text" nz-input placeholder="Search..." />
+        <input type="text" nz-input placeholder="Search..."
+        #search
+        [(ngModel)]="listTextSearch"
+          />
       </nz-input-group>
       <ng-template #searchIcon>
         <span><i class="fa-solid fa-search mr-2 text-muted"></i></span>

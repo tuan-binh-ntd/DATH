@@ -1,9 +1,15 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { ActivatedRoute } from '@angular/router';
 import { NzMark, NzMarks } from 'ng-zorro-antd/slider';
-import { forkJoin, switchMap } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  forkJoin,
+  fromEvent,
+  switchMap,
+} from 'rxjs';
 import { PaginationInput } from 'src/app/models/pagination-input';
 import { ProductCategory } from 'src/app/models/product-category.model';
 import { Product } from 'src/app/models/product.model';
@@ -24,13 +30,14 @@ export class ViewProductListComponent {
     private productService: ProductService,
     private productCategoryService: ProductCategoryService
   ) {}
+  @ViewChild("search") search!: ElementRef;
   paginationParam: PaginationInput = {
     pageNum: 1,
     pageSize: 10,
     totalPage: 0,
     totalCount: 0,
   };
-
+  listTextSearch: string = '';
   type: string | null = '';
   categoryId: number = 0;
   isLoading: boolean = false;
@@ -73,8 +80,31 @@ export class ViewProductListComponent {
         })
       )
       .subscribe();
+
+  
   }
 
+ ngAfterViewInit(){
+  fromEvent(this.search.nativeElement, 'change')
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap((text) =>
+          this.productService.getAllByCategory(
+            this.categoryId,
+            1,
+            this.paginationParam.pageSize,
+            this.selectedItemIds.join(','),
+            this.listTextSearch,
+          )
+        )
+      )
+      .subscribe((res) => {
+        if (checkResponseStatus(res)) {
+          this.listOfData = res.data.content;
+        }
+      });
+ }
   async fetchProductCategories() {
     await this.productCategoryService
       .getAll()
@@ -109,19 +139,23 @@ export class ViewProductListComponent {
         this.categoryId,
         this.paginationParam.pageNum,
         this.paginationParam.pageSize,
-        JSON.stringify(this.selectedItemIds.join(','))
+        this.selectedItemIds.join(','),
+        this.listTextSearch,
       )
       .subscribe((res) => {
         if (checkResponseStatus(res)) {
           this.listOfData = [...this.listOfData, ...res.data.content];
           this.isLoading = false;
+          this.paginationParam.totalPage = res.data.totalPage;
         }
       });
   }
 
   onScroll() {
-    this.paginationParam.pageNum++;
-    this.fetchData();
+    if(this.paginationParam.pageNum < this.paginationParam.totalPage){
+      this.paginationParam.pageNum++;
+      this.fetchData();
+    }
   }
 
   isSelected(id: string): boolean {
@@ -136,6 +170,7 @@ export class ViewProductListComponent {
     } else {
       this.selectedItemIds.splice(index, 1); // remove item ID from selection
     }
+    this.paginationParam.pageNum = 1 ;
     this.fetchData();
   }
 }
