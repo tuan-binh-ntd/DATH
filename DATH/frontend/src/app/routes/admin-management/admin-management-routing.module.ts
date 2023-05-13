@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from 'src/app/guards/auth.guard';
-import { LoginComponent } from '../components/login/login.component';
 import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin.component';
 import { SpecificationCategoryListComponent } from './specification-category-list/specification-category-list.component';
 import { SpecificationListComponent } from './specification-list/specification-list.component';
@@ -14,10 +12,10 @@ import { RegisterEmployeeListComponent } from './register-employee-list/register
 import { InstallmentListComponent } from './installment-list/installment-list.component';
 import { WarehouseListComponent } from './warehouse-list/warehouse-list.component';
 import { PaymentListComponent } from './payment-list/payment-list.component';
+import { WarehouseDetailListComponent } from './warehouse-detail-list/warehouse-detail-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-
   {
     path: 'dashboard',
     component: DashboardAdminComponent,
@@ -89,7 +87,7 @@ const routes: Routes = [
     path: 'warehouse',
     component: WarehouseListComponent,
     data: {
-      breadcrumb: 'Home / Warehouse'
+      breadcrumb: 'Home / Warehouse Management / Warehouse'
     },
   },
   {
@@ -97,6 +95,13 @@ const routes: Routes = [
     component: PaymentListComponent,
     data: {
       breadcrumb: 'Home / Payment'
+    },
+  },
+  {
+    path: 'warehouse-detail',
+    component: WarehouseDetailListComponent,
+    data: {
+      breadcrumb: 'Home / Warehouse Management / Parent Warehouse'
     },
   },
 ];

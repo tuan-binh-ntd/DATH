@@ -6,31 +6,68 @@ import { ResponseResult } from '../models/response';
 import { Warehouse } from '../models/warehouse.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WarehouseService {
   baseUrl: string = environment.baseUrl + 'warehouses';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  getAll(pageNum?: number, pageSize?: number): Observable<ResponseResult<Warehouse>> {
-    if (pageNum === undefined && pageSize === undefined) return this.http.get<ResponseResult<Warehouse>>(this.baseUrl);
-    else return this.http.get<ResponseResult<Warehouse>>(this.baseUrl + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
+  getAll(
+    pageNum?: number,
+    pageSize?: number
+  ): Observable<ResponseResult<Warehouse>> {
+    if (pageNum === undefined && pageSize === undefined)
+      return this.http.get<ResponseResult<Warehouse>>(this.baseUrl);
+    else
+      return this.http.get<ResponseResult<Warehouse>>(
+        this.baseUrl + '?pageNum=' + pageNum + '&pageSize=' + pageSize
+      );
   }
 
-  get(id: number){
+  get(id: number): Observable<any> {
     return this.http.get(this.baseUrl + '/' + id);
   }
 
-  update(id: number, payload: Warehouse): Observable<any>{
+  update(id: number, payload: Warehouse): Observable<any> {
     return this.http.put(this.baseUrl + '/' + id, payload);
   }
 
-  create(payload: Warehouse): Observable<any>{
+  create(payload: Warehouse): Observable<any> {
     return this.http.post(this.baseUrl, payload);
   }
 
-  delete(id: number): Observable<any>{
+  delete(id: number): Observable<any> {
     return this.http.delete(this.baseUrl + '/' + id);
+  }
+
+  getProductsForWarehouse(
+    warehouseId: number,
+    pageNum?: number,
+    pageSize?: number
+  ): Observable<ResponseResult<Warehouse>> {
+    if (pageNum === undefined && pageSize === undefined)
+      return this.http.get<ResponseResult<Warehouse>>(this.baseUrl);
+    else
+      return this.http.get<ResponseResult<Warehouse>>(
+        this.baseUrl +
+          '/' +
+          warehouseId +
+          '/products' +
+          '?pageNum=' +
+          pageNum +
+          '&pageSize=' +
+          pageSize
+      );
+  }
+
+  addProductToParentWarehouse(
+    warehouseId: number,
+    payload: any
+  ): Observable<any> {
+    return this.http.post(
+      this.baseUrl + '/' + warehouseId + '/products',
+      payload
+    );
   }
 }

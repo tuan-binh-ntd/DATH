@@ -14,13 +14,14 @@ export class DrawerFormBaseComponent  {
   @Input() isLoading: boolean = false;
   @Input() titleDrawer: string = '';
   @Input() customFooterTpl: string | TemplateRef<{}> = "";
-  @Input() width = '30%"';
+  @Input() width = '30%';
   @Output() onChangeEdit = new EventEmitter();
   @Output() onCloseDrawer = new EventEmitter();
   @Output() onSubmit = new EventEmitter();
   @Output() onCreate = new EventEmitter();
   @Output() onUpdate = new EventEmitter();
   @Output() onDelete = new EventEmitter();
+  @Output() onRefreshList = new EventEmitter();
 
   data: any;
   drawerForm!: FormGroup;

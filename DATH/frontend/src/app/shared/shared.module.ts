@@ -6,11 +6,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgZorroAntdModule } from '../routes/ng-zorro-antd/ng-zorro-antd.module';
 import { EmployeeTypePipe } from './employee-type.pipe';
 import { MoneyFormatterPipe } from './money-formatter.pipe';
+import { EventTypeFormatterPipe } from './event-type-formatter.pipe';
 
 @NgModule({
   declarations: [
     EmployeeTypePipe,
-    MoneyFormatterPipe
+    MoneyFormatterPipe,
+    EventTypeFormatterPipe
   ],
   imports: [
     CommonModule,
@@ -28,7 +30,8 @@ import { MoneyFormatterPipe } from './money-formatter.pipe';
     HttpClientModule,
     NgZorroAntdModule,
     EmployeeTypePipe,
-    MoneyFormatterPipe
+    MoneyFormatterPipe,
+    EventTypeFormatterPipe
   ]
 })
 export class SharedModule { }

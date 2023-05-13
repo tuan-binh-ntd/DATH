@@ -1,4 +1,6 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import formatISO from 'date-fns/formatISO';
+import { throwError } from 'rxjs';
 export function checkResponseStatus(response: any): boolean{
     if(response && response.statusCode === 200 && response.data) {
         return true;
@@ -32,5 +34,7 @@ export enum EmployeeType {
   Warehouse = 3
 }
 
-
-
+export enum EventType {
+  Import = 1,
+  Export = 2,
+}

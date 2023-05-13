@@ -74,4 +74,10 @@ export class ListBaseComponent {
     this.listOfData = [...this.listOfData];
    }
 
+   onRefreshList(list: any[]) {
+    this.paginationParam.pageNum = 1;
+    this.paginationParam.pageSize = 10;
+    this.listOfData = [...list];
+   }
+
 }
