@@ -5,6 +5,7 @@ import { CustomerAuthGuard } from 'src/app/guards/customer-auth.guard';
 import { CustomerChangeInfoComponent } from './customer-change-info/customer-change-info.component';
 import { CustomerHomeComponent } from './customer-home/customer-home.component';
 import { CustomerLayoutComponent } from './customer-layout/customer-layout.component';
+import { ViewProductDetailComponent } from './view-product-list/partials/view-product-detail/view-product-detail.component';
 import { ViewProductListComponent } from './view-product-list/view-product-list.component';
 
 const routes: Routes = [
@@ -17,6 +18,10 @@ const routes: Routes = [
   {
     path: 'product/:type',
     component: ViewProductListComponent,
+  },
+  {
+    path: 'product-detail/:id',
+    component: ViewProductDetailComponent,
   },
   {
     path: 'change-info',

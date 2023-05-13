@@ -1,0 +1,51 @@
+<app-page-grid>
+  <div nz-row nzGutter="16">
+    <div nz-col nzSpan="12" class="text-center">
+      <img alt="example" [src]="data?.photos && data?.photos!.length > 0 ? data?.photos![0].url : ''" />
+    </div>
+    <div nz-col nzSpan="12">
+      <h2 class="mb-0">{{ data?.name }}</h2>
+      <nz-rate  [nzTooltips]="tooltips" [(ngModel)]="value"></nz-rate>
+      <nz-divider class="mt-2 mb-0"></nz-divider>
+      <h2 class="mt-1">{{data?.price | number}} VNĐ</h2>
+      <ng-container *ngIf="listCapacity.length > 0">
+        <dl>
+            <dt class="mb-2">
+                <label >Capacity</label>
+            </dt>
+            <dd>
+                <nz-radio-group>
+                  <label *ngFor="let item of listCapacity" class="mr-2" nz-radio-button [nzValue]="item.value"
+                    >{{item.code}}</label
+                  >
+                </nz-radio-group>
+            </dd>
+        </dl>
+      </ng-container>
+      <ng-container *ngIf="listColor.length > 0">
+        <dl>
+            <dt class="mb-2">
+                <span >Colour</span>
+            </dt>
+            <dd>
+                <nz-avatar
+                *ngFor="let item of listColor"
+                nz-tooltip
+                [nzTooltipTitle]="item?.code"
+                [nzSize]="40"
+                [ngClass]="{ 'selected-avatar': selectedItemId === item.id }"
+                [ngStyle]="{ 'background-color': item?.value, 'box-shadow': '2px 2px #ccc'  }"
+                class="cursor-pointer ml-2"
+                (click)="toggleSelection(item.id)"
+              >
+              </nz-avatar>
+            </dd>
+        </dl>
+      
+      </ng-container>
+      <button nz-button nzType="primary" class="w-100 h-50px" nzSize="large"  nzShape="round">
+        Add to cart
+      </button>
+    </div>
+  </div>
+</app-page-grid>

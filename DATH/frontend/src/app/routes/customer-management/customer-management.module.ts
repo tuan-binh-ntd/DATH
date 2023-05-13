@@ -12,6 +12,7 @@ import { CustomerChangeInfoComponent } from './customer-change-info/customer-cha
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { ViewProductDetailComponent } from './view-product-list/partials/view-product-detail/view-product-detail.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
     CustomerHeaderComponent,
     CustomerHomeComponent,
     ViewProductListComponent,
-    CustomerChangeInfoComponent
+    CustomerChangeInfoComponent,
+    ViewProductDetailComponent
   ],
   imports: [
     CommonModule,
