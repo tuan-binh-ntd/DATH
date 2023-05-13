@@ -24,7 +24,7 @@ export class ProductService {
     );
   }
 
-  get(id: number) {
+  get(id: string): Observable<any> {
     return this.http.get(this.baseUrl + '/' + id);
   }
 

@@ -105,7 +105,9 @@
                 <nz-card
                   nzHoverable
                   style="width: 240px"
+                  class="cursor-pointer"
                   [nzCover]="coverTemplate"
+                  (click)="goToDetail(item.id)"
                 >
                   <nz-card-meta [nzTitle]="item.name"></nz-card-meta>
                   <span>{{ item.price | number }}Đ</span>

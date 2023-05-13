@@ -1,13 +1,13 @@
-import {
-  Component,
-  ElementRef,
-  ViewChild,
-} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { NzMarks } from 'ng-zorro-antd/slider';
+import { DecimalPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, TemplateRef, ViewChild } from '@angular/core';
+import { CollectionViewer, DataSource } from '@angular/cdk/collections';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NzMark, NzMarks } from 'ng-zorro-antd/slider';
 import {
   debounceTime,
-  distinctUntilChanged,  fromEvent,
+  distinctUntilChanged,
+  forkJoin,
+  fromEvent,
   switchMap,
 } from 'rxjs';
 import { PaginationInput } from 'src/app/models/pagination-input';
@@ -27,10 +27,11 @@ import { checkResponseStatus } from 'src/app/shared/helper';
 export class ViewProductListComponent {
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private productService: ProductService,
     private productCategoryService: ProductCategoryService
   ) {}
-  @ViewChild('search') search!: ElementRef;
+  @ViewChild("search") search!: ElementRef;
   paginationParam: PaginationInput = {
     pageNum: 1,
     pageSize: 10,
@@ -64,26 +65,34 @@ export class ViewProductListComponent {
       .pipe(
         switchMap(async (params) => {
           await this.fetchProductCategories();
-          this.listSpecification = [];
-          this.listOfData = [];
-          this.listColor = [];
-          this.listCapacity = [];
+          this.resetList();
           this.type = params.get('type')?.toUpperCase()!;
           this.categoryId = this.listCategory.find(
             (item) => item.name?.toLowerCase() === this.type?.toLowerCase()
           )?.id!;
           if (this.categoryId) {
             await this.fetchProductCategoriesSpecification();
+            this.paginationParam.pageNum = 1;
             return this.fetchData();
           }
           return null;
         })
       )
       .subscribe();
+
+  
   }
 
-  ngAfterViewInit() {
-    fromEvent(this.search.nativeElement, 'change')
+  resetList(){
+    this.selectedItemIds = [];
+    this.listSpecification = [];
+    this.listOfData = [];
+    this.listColor = [];
+    this.listCapacity = [];
+    this.listTextSearch = ''
+  }
+ ngAfterViewInit(){
+  fromEvent(this.search.nativeElement, 'change')
       .pipe(
         debounceTime(500),
         distinctUntilChanged(),
@@ -93,7 +102,7 @@ export class ViewProductListComponent {
             1,
             this.paginationParam.pageSize,
             this.selectedItemIds.join(','),
-            this.listTextSearch
+            this.listTextSearch,
           )
         )
       )
@@ -102,7 +111,7 @@ export class ViewProductListComponent {
           this.listOfData = res.data.content;
         }
       });
-  }
+ }
   async fetchProductCategories() {
     await this.productCategoryService
       .getAll()
@@ -138,7 +147,7 @@ export class ViewProductListComponent {
         this.paginationParam.pageNum,
         this.paginationParam.pageSize,
         this.selectedItemIds.join(','),
-        this.listTextSearch
+        this.listTextSearch,
       )
       .subscribe((res) => {
         if (checkResponseStatus(res)) {
@@ -150,7 +159,7 @@ export class ViewProductListComponent {
   }
 
   onScroll() {
-    if (this.paginationParam.pageNum < this.paginationParam.totalPage) {
+    if(this.paginationParam.pageNum < this.paginationParam.totalPage){
       this.paginationParam.pageNum++;
       this.fetchData();
     }
@@ -168,7 +177,11 @@ export class ViewProductListComponent {
     } else {
       this.selectedItemIds.splice(index, 1); // remove item ID from selection
     }
-    this.paginationParam.pageNum = 1;
+    this.paginationParam.pageNum = 1 ;
     this.fetchData();
+  }
+
+  goToDetail(id: string | null){
+    this.router.navigateByUrl(`product-detail/${id}`);
   }
 }

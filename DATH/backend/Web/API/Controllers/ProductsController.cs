@@ -145,7 +145,7 @@ namespace API.Controllers
                                         }).ToListAsync();
             }
         }
-
+        [AllowAnonymous]
         [HttpGet("{id}", Name = "Products")]
         public async Task<IActionResult> Get(int id)
         {
@@ -161,8 +161,12 @@ namespace API.Controllers
                                                       SpecificationId = p.SpecificationId!.Substring(1),
                                                   };
             ProductForViewDto? data = await query.FirstOrDefaultAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NoContent);
-            return CustomResult(data, HttpStatusCode.OK);
+            if (data != null)
+            {
+                await HandleProduct(data);
+                return CustomResult(data, HttpStatusCode.OK);
+            }
+            return CustomResult(HttpStatusCode.NoContent);
         }
 
         [HttpPost]
