@@ -109,17 +109,17 @@ namespace API.Controllers
             specificationIdList = specificationIds.Split(",").ToList()!;
 
             List<SpecificationCategoryDto> specificationCategories = await (from sc in _specCateRepo.GetAll().AsNoTracking()
-                                                                           join s in _specRepo.GetAll().AsNoTracking() on sc.Id equals s.SpecificationCategoryId
-                                                                           where specificationIdList.Contains(s.Id.ToString())
-                                                                           select new SpecificationCategoryDto
-                                                                           {
-                                                                               Id = sc.Id,
-                                                                               Code = sc.Code,
-                                                                               Value = sc.Value,
-                                                                               SpecificationCode = s.Code,
-                                                                               SpecificationValue = s.Value,
-                                                                               SpecificationId = s.Id,
-                                                                           }).ToListAsync();
+                                                                            join s in _specRepo.GetAll().AsNoTracking() on sc.Id equals s.SpecificationCategoryId
+                                                                            where specificationIdList.Contains(s.Id.ToString())
+                                                                            select new SpecificationCategoryDto
+                                                                            {
+                                                                                Id = sc.Id,
+                                                                                Code = sc.Code,
+                                                                                Value = sc.Value,
+                                                                                SpecificationCode = s.Code,
+                                                                                SpecificationValue = s.Value,
+                                                                                SpecificationId = s.Id,
+                                                                            }).ToListAsync();
 
 
             var list = specificationCategories

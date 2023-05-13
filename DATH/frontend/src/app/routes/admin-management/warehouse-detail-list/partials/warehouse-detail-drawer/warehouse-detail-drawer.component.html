@@ -1,0 +1,89 @@
+<app-drawer-form-base
+  [mode]="mode"
+  [isEdit]="isEdit"
+  [isVisible]="isVisible"
+  [titleDrawer]="titleDrawer"
+  (onCloseDrawer)="isVisible = false"
+  [customFooterTpl]="footerTpl"
+  (onSubmit)="submitForm()"
+>
+  <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="objectName" nzRequired>
+        <span>Object Name</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Object name is required">
+        <input
+          nz-input
+          name="objectName"
+          type="text"
+          id="objectName"
+          formControlName="objectName"
+          placeholder="Input object name"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="shop" nzRequired>
+        <span>Product</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select a shop"
+          formControlName="productId"
+        >
+          <nz-option
+            *ngFor="let product of products"
+            [nzLabel]="product.name"
+            [nzValue]="product.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="quantity" nzRequired>
+        <span>Quantity</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Quantity is required">
+        <nz-input-number
+          class="w-100"
+          name="quantity"
+          id="quantity"
+          formControlName="quantity"
+          placeholder="Input quantity"
+          [nzMin]="1"
+          [nzStep]="10"
+        ></nz-input-number>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</app-drawer-form-base>
+
+<ng-template #footerTpl>
+  <app-button-base
+    class="float-left"
+    text="Close"
+    type="default"
+    iconClass="fa-solid fa-xmark"
+    (onClick)="closeDrawer()"
+  ></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Save"
+    buttonClass="btn-success mr-2"
+    iconClass="fa-solid fa-floppy-disk"
+    *ngIf="isEdit"
+    (onClick)="submitForm()"
+  ></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Back"
+    iconClass="fa-solid fa-arrow-left"
+    *ngIf="mode === 'detail' && isEdit"
+    (onClick)="changeToDetail()"
+  ></app-button-base>
+</ng-template>

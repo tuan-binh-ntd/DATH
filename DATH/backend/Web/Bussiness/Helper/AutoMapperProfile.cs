@@ -93,6 +93,10 @@ namespace Bussiness.Helper
             CreateMap<Payment, PaymentForViewDto>().ReverseMap();
             CreateMap<Payment, PaymentInput>().ReverseMap();
             //End Declare Mapper Payment
+
+            //Declare Mapper WarehouseDetail
+            CreateMap<WarehouseDetail, AddProductToWarehouseInput>().ReverseMap();
+            //End Declare Mapper WarehouseDetail
         }
     }
 }
