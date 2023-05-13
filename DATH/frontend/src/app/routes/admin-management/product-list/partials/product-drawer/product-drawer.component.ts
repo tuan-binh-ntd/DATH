@@ -174,7 +174,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
 
   beforeUpload = (file: NzUploadFile, _fileList: NzUploadFile[]): Observable<boolean> =>
     new Observable((observer: Observer<boolean>) => {
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp';
       if (!isJpgOrPng) {
         this.message.error('You can only upload JPG file!');
         observer.complete();

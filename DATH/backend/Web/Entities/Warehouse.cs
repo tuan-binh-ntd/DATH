@@ -11,5 +11,6 @@ namespace Entities
         //Relationship
         public Shop? Shop { get; set; }
         public int? ShopId { get; set; }
+        public ICollection<WarehouseDetail> Products { get; set; } = new List<WarehouseDetail>();
     }
 }

@@ -48,6 +48,7 @@ namespace API.Controllers
 
             if (filter != null)
             {
+                param.Add("ProductCategoryId", null);
                 param.Add("SpecificationId", filter.SpecificationIds);
                 param.Add("Price", filter.Price);
                 param.Add("Keyword", filter.Keyword);
@@ -55,24 +56,10 @@ namespace API.Controllers
 
             List<ProductForViewDto> query = _dapper.GetAll<ProductForViewDto>("GetProduct", param);
 
-            //IQueryable<ProductForViewDto> query = from p in _productRepo.GetAll().AsNoTracking()
-            //                                      //where string.IsNullOrWhiteSpace(filter.SpecificationIds) || filter.SpecificationIds!.Contains(p.SpecificationId!)
-            //                                      where filter.Price == null || (p.Price >= filter.Price - 1000000 && p.Price <= filter.Price + 1000000)
-            //                                      select new ProductForViewDto()
-            //                                      {
-            //                                          Id = p.Id,
-            //                                          Name = p.Name,
-            //                                          Price = p.Price,
-            //                                          Description = p.Description,
-            //                                          ProductCategoryId = p.ProductCategoryId,
-            //                                          SpecificationId = p.SpecificationId!.Substring(1),
-            //                                      };
-
             ICollection<ProductForViewDto> list = new List<ProductForViewDto>();
 
             if (input.PageNum != null && input.PageSize != null)
             {
-                //PaginationResult<ProductForViewDto> products = await query.Pagination(input);
                 PaginationResult<ProductForViewDto> products = await _dapper.GetAllAndPaginationAsync<ProductForViewDto>("GetProduct", input, param);
                 list = products.Content!;
                 await HandleProductList(list);

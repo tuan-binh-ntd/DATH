@@ -30,6 +30,7 @@ namespace Database
         public DbSet<Warehouse> Warehouse { get; set; }
         public DbSet<Installment> Installment { get; set; }
         public DbSet<Payment> Payment { get; set; }
+        public DbSet<WarehouseDetail> WarehouseDetail { get; set; }
         //End Entity Declaration
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -103,6 +104,19 @@ namespace Database
             
             //Set decimal scale for Balance col in Installment tbl
             modelBuilder.Entity<Installment>().Property(i => i.Balance).HasPrecision(19, 5);
+
+            // Many to many Relationship (Product, WarehouseDetail, Warehouse)
+            modelBuilder.Entity<Product>()
+                .HasMany(ur => ur.Products)
+                .WithOne(u => u.Product)
+                .HasForeignKey(ur => ur.ProductId)
+                .IsRequired();
+
+            modelBuilder.Entity<Warehouse>()
+                .HasMany(ur => ur.Products)
+                .WithOne(u => u.Warehouse)
+                .HasForeignKey(ur => ur.WarehouseId)
+                .IsRequired();
 
         }
 

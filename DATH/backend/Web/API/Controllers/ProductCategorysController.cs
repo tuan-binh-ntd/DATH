@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
 using Bussiness.Helper;
+using Bussiness.Interface;
 using Bussiness.Repository;
 using Bussiness.Services;
+using Dapper;
+using Database;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +21,19 @@ namespace API.Controllers
         private readonly IRepository<SpecificationCategory> _specCateRepo;
         private readonly IRepository<Product, long> _productRepo;
         private readonly IRepository<Specification, long> _specRepo;
+        private readonly IDapper _dapper;
+        private readonly IRepository<Specification, long> _specificationRepo;
+        private readonly DataContext _dataContext;
 
         public ProductCategorysController(
             IMapper mapper,
             IRepository<ProductCategory> productCateRepo,
             IRepository<SpecificationCategory> specCateRepo,
             IRepository<Product, long> productRepo,
-            IRepository<Specification, long> specRepo
+            IRepository<Specification, long> specRepo,
+            IDapper dapper,
+            IRepository<Specification, long> specificationRepo,
+            DataContext dataContext
             )
         {
             _mapper = mapper;
@@ -32,6 +41,9 @@ namespace API.Controllers
             _specCateRepo = specCateRepo;
             _productRepo = productRepo;
             _specRepo = specRepo;
+            _dapper = dapper;
+            _specificationRepo = specificationRepo;
+            _dataContext = dataContext;
         }
         [AllowAnonymous]
         [HttpGet]
@@ -143,6 +155,81 @@ namespace API.Controllers
             }).ToList();
 
             return CustomResult(list, HttpStatusCode.OK);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}/products")]
+        public async Task<IActionResult> GetProductByCategory(int id, [FromQuery] PaginationInput input, [FromQuery] ProductFilterDto filter)
+        {
+            DynamicParameters param = new();
+
+            if (filter != null)
+            {
+                param.Add("ProductCategoryId", id);
+                param.Add("SpecificationId", filter.SpecificationIds);
+                param.Add("Price", filter.Price);
+                param.Add("Keyword", filter.Keyword);
+            }
+
+            List<ProductForViewDto> query = _dapper.GetAll<ProductForViewDto>("GetProduct", param);
+
+            ICollection<ProductForViewDto> list = new List<ProductForViewDto>();
+
+            if (input.PageNum != null && input.PageSize != null)
+            {
+                PaginationResult<ProductForViewDto> products = await _dapper.GetAllAndPaginationAsync<ProductForViewDto>("GetProduct", input, param);
+                list = products.Content!;
+                await HandleProductList(list);
+
+                return CustomResult(products, HttpStatusCode.OK);
+            }
+            else
+            {
+                //list = await query.ToListAsync();
+                list = query;
+                await HandleProductList(list);
+                return CustomResult(list, HttpStatusCode.OK);
+            }
+        }
+
+        private async Task HandleProductList(ICollection<ProductForViewDto> list)
+        {
+            if (list != null)
+            {
+                foreach (ProductForViewDto product in list!)
+                {
+                    await HandleProduct(product);
+                }
+            }
+        }
+
+        private async Task HandleProduct(ProductForViewDto product)
+        {
+            if (product != null)
+            {
+                // Get specification list for product
+                List<string>? specifications = product.SpecificationId != null ? product.SpecificationId!.Split(",").ToList() : null;
+                if (specifications != null)
+                {
+                    product.Specifications = await (from s in _specificationRepo.GetAll().AsNoTracking()
+                                                    where specifications.Contains(s.Id.ToString())
+                                                    select new SpecificationDto
+                                                    {
+                                                        Id = s.Id,
+                                                        Code = s.Code,
+                                                        Value = s.Value
+                                                    }).ToListAsync();
+                }
+
+                // Get photo list for product
+                product.Photos = await (from p in _dataContext.Photo.AsNoTracking()
+                                        where p.ProductId == product.Id
+                                        select new PhotoDto
+                                        {
+                                            Id = p.Id,
+                                            Url = p.Url,
+                                        }).ToListAsync();
+            }
         }
     }
 }
