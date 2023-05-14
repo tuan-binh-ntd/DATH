@@ -13,6 +13,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { ViewProductDetailComponent } from './view-product-list/partials/view-product-detail/view-product-detail.component';
+import { SlickCarouselModule } from 'ngx-slick-carousel';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,7 @@ import { ViewProductDetailComponent } from './view-product-list/partials/view-pr
     CustomerHomeComponent,
     ViewProductListComponent,
     CustomerChangeInfoComponent,
-    ViewProductDetailComponent
+    ViewProductDetailComponent,
   ],
   imports: [
     CommonModule,
@@ -29,7 +30,8 @@ import { ViewProductDetailComponent } from './view-product-list/partials/view-pr
     ComponentsModule,
     SharedModule,
     ScrollingModule,
-    InfiniteScrollModule
+    InfiniteScrollModule,
+    SlickCarouselModule ,
   ],
 })
 export class CustomerManagementModule { } 

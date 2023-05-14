@@ -1,4 +1,5 @@
 @import "../node_modules/ng-zorro-antd/ng-zorro-antd.less";
+
 // -------- override less variables -----------
 @import "../src/assets/styles/utilities.less";
 @import "../src/assets/styles/colors.less";
@@ -27,7 +28,22 @@ body{
 //     width: 100%;
 //     z-index: 1;
 //   }
-
+owl-carousel-o {
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
+  
+  .owl-item {
+    height: 100vh;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50% 50%;
+  }
+  
 
   @form-item-margin-bottom:10px;
 @drawer-header-padding: @padding-xs @padding-xs;
