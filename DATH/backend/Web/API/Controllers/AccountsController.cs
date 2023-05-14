@@ -150,13 +150,12 @@ namespace API.Controllers
             if (customer == null)
             {
                 Employee? employee = await _employeeRepo.GetAll().AsNoTracking().Where(c => c.UserId == user.Id).FirstOrDefaultAsync();
-                _mapper.Map(res, employee);
+                res.EmployeeType = employee!.Type;
+                res.Code = employee!.Code;
+                _mapper.Map(employee, res);
 
                 return CustomResult(res);
             }
-            _mapper.Map(customer, res);
-
-
             _mapper.Map(customer, res);
 
             return CustomResult(res, HttpStatusCode.OK);

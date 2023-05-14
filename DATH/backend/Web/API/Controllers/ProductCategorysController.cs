@@ -185,7 +185,6 @@ namespace API.Controllers
             }
             else
             {
-                //list = await query.ToListAsync();
                 list = query;
                 await HandleProductList(list);
                 return CustomResult(list, HttpStatusCode.OK);

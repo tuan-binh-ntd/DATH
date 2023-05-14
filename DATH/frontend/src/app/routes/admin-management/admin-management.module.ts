@@ -34,6 +34,7 @@ import { PaymentDrawerComponent } from './payment-list/partials/payment-drawer/p
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { WarehouseDetailListComponent } from './warehouse-detail-list/warehouse-detail-list.component';
 import { WarehouseDetailDrawerComponent } from './warehouse-detail-list/partials/warehouse-detail-drawer/warehouse-detail-drawer.component';
+import { EmployeeChangeInfoComponent } from './employee-change-info/employee-change-info.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { WarehouseDetailDrawerComponent } from './warehouse-detail-list/partials
     PaymentListComponent,
     PaymentDrawerComponent,
     WarehouseDetailListComponent,
-    WarehouseDetailDrawerComponent
+    WarehouseDetailDrawerComponent,
+    EmployeeChangeInfoComponent
   ],
   imports: [
     AdminManagementRoutingModule,

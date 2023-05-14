@@ -18,5 +18,8 @@ namespace Bussiness.Dto
         public string? AvatarUrl { get; set; }
         public string? Token { get; set; }
         public UserType Type { get; set; }
+        public EmployeeType? EmployeeType { get; set; }
+        public DateTime? JoinDate { get; set; }
+        public string? Code { get; set; }
     }
 }

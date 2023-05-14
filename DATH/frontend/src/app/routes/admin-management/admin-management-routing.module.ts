@@ -13,6 +13,7 @@ import { InstallmentListComponent } from './installment-list/installment-list.co
 import { WarehouseListComponent } from './warehouse-list/warehouse-list.component';
 import { PaymentListComponent } from './payment-list/payment-list.component';
 import { WarehouseDetailListComponent } from './warehouse-detail-list/warehouse-detail-list.component';
+import { EmployeeChangeInfoComponent } from './employee-change-info/employee-change-info.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -102,6 +103,13 @@ const routes: Routes = [
     component: WarehouseDetailListComponent,
     data: {
       breadcrumb: 'Home / Warehouse Management / Parent Warehouse'
+    },
+  },
+  {
+    path: 'employee-change-info',
+    component: EmployeeChangeInfoComponent,
+    data: {
+      breadcrumb: 'Home / Change Information'
     },
   },
 ];

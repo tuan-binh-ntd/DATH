@@ -13,4 +13,6 @@ export interface Employee {
   email: string | null,
   joinDate: Date | null,
   isActive: boolean | null,
+  address: string | null,
+  phone: string | null,
 }
