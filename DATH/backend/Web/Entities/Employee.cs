@@ -22,6 +22,10 @@ namespace Entities
         [StringLength(1000)]
         public string? Address { get; set; }
         public bool IsActive { get; set; }
+        [StringLength(12)]
+        public string? IdNumber { get; set; }
+        [StringLength(11)]
+        public string? Phone { get; set; }
 
         //Relationship
         public long UserId { get; set; }

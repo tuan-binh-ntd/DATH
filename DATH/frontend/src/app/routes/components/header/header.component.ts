@@ -64,4 +64,8 @@ export class HeaderComponent implements OnInit {
     this.themeService.toggleTheme();
   }
 
+  changeInfo() {
+    this.router.navigateByUrl('/admin-management/employee-change-info');
+  }
+
 }

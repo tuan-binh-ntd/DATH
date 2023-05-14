@@ -11,7 +11,7 @@ using System.Net;
 
 namespace API.Controllers
 {
-    public class EmployeesController : AdminBaseController
+    public class EmployeesController : EmployeeBaseController
     {
         private readonly IMapper _mapper;
         private readonly IRepository<Shop> _shopRepo;
@@ -54,6 +54,7 @@ namespace API.Controllers
                                                        IsActive = e.IsActive,
                                                        Username = u.UserName
                                                    };
+
             if (input.PageNum != null && input.PageSize != null) return  CustomResult(await query.Pagination(input), HttpStatusCode.OK);
             else return CustomResult(await query.ToListAsync(), HttpStatusCode.OK);
         }
@@ -65,7 +66,30 @@ namespace API.Controllers
             if (employee == null) return CustomResult(null, HttpStatusCode.NoContent);
             _mapper.Map(input, employee);
             await _employeeRepo.UpdateAsync(employee);
-            return CustomResult(employee, HttpStatusCode.OK);
+
+            IQueryable<EmployeeForViewDto> query = from s in _shopRepo.GetAll().AsNoTracking()
+                                                   join e in _employeeRepo.GetAll().AsNoTracking() on s.Id equals e.ShopId
+                                                   join u in _userManager.Users on e.UserId equals u.Id
+                                                   where e.Id == id
+                                                   select new EmployeeForViewDto()
+                                                   {
+                                                       Id = e.Id,
+                                                       ShopName = s.Name,
+                                                       ShopId = s.Id,
+                                                       FirstName = e.FirstName,
+                                                       LastName = e.LastName,
+                                                       Code = e.Code,
+                                                       Gender = e.Gender,
+                                                       Birthday = e.Birthday,
+                                                       Type = e.Type,
+                                                       Email = e.Email,
+                                                       JoinDate = e.JoinDate,
+                                                       Address = e.Address,
+                                                       IsActive = e.IsActive,
+                                                       Username = u.UserName
+                                                   };
+
+            return CustomResult(await query.SingleOrDefaultAsync(), HttpStatusCode.OK);
         }
 
         [HttpDelete("{id}")]

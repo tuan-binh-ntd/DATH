@@ -1,0 +1,308 @@
+<div nz-row nzGutter="64" class="p-4">
+  <div nz-col nzSpan="24">
+    <nz-card nzTitle="Change information">
+      <nz-tabset nzTabPosition="left" [(nzSelectedIndex)]="selectedIndex">
+        <!-- Start Change Info View -->
+        <nz-tab nzTitle="Basic information">
+          <form nz-form [formGroup]="infoForm">
+            <div nz-row nzGutter="24">
+              <div nz-col nzSpan="12" class="pr-1">
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="24" nzFor="firstName" nzRequired>
+                    First Name
+                  </nz-form-label>
+                  <nz-form-control
+                    [nzSpan]="24"
+                    nzErrorTip="First name is required"
+                  >
+                    <input
+                      nz-input
+                      name="firstName"
+                      type="text"
+                      id="firstName"
+                      formControlName="firstName"
+                      placeholder="First name"
+                    />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+
+              <div nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="24" nzFor="lastName" nzRequired>
+                    Last Name
+                  </nz-form-label>
+                  <nz-form-control
+                    [nzSpan]="24"
+                    nzErrorTip="Last name is required"
+                  >
+                    <input
+                      nz-input
+                      name="lastName"
+                      type="text"
+                      id="lastName"
+                      formControlName="lastName"
+                      placeholder="Last name"
+                    />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+            </div>
+
+            <div nz-row nzGutter="24">
+              <div nz-col nzSpan="12" class="pr-1">
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="24" nzFor="email" nzRequired>
+                    Email
+                  </nz-form-label>
+                  <nz-form-control [nzSpan]="24" nzErrorTip="Email is required">
+                    <input
+                      nz-input
+                      name="email"
+                      type="text"
+                      id="email"
+                      formControlName="email"
+                      placeholder="Email"
+                    />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+
+              <div nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="24" nzFor="phone" nzRequired>
+                    Phone
+                  </nz-form-label>
+                  <nz-form-control [nzSpan]="24" nzErrorTip="Phone is required">
+                    <input
+                      nz-input
+                      name="phone"
+                      type="text"
+                      id="phone"
+                      formControlName="phone"
+                      placeholder="Phone"
+                      maxlength="11"
+                    />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+            </div>
+
+            <div nz-row nzGutter="24">
+              <div nz-col nzSpan="12" class="pr-1">
+                <nz-form-item>
+                  <nz-form-label
+                    nzAlign="start"
+                    [nzSpan]="24"
+                    nzFor="birthday"
+                    nzRequired
+                    >Birthday</nz-form-label
+                  >
+                  <nz-form-control nzErrorTip="Please input your birthday!">
+                    <nz-date-picker
+                      class="w-100"
+                      formControlName="birthday"
+                    ></nz-date-picker>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+
+              <div nz-col nzSpan="12">
+                <nz-form-item>
+                  <nz-form-label
+                    nzAlign="start"
+                    [nzSpan]="24"
+                    nzFor="gender"
+                    nzRequired
+                    >Gender</nz-form-label
+                  >
+                  <nz-radio-group
+                    formControlName="gender"
+                    nzButtonStyle="solid"
+                    class="mb-3"
+                  >
+                    <label nz-radio [nzValue]="1 | number">Male</label>
+                    <label nz-radio [nzValue]="0 | number">Female</label>
+                  </nz-radio-group>
+                </nz-form-item>
+              </div>
+            </div>
+
+            <div nz-row nzGutter="24">
+              <div nz-col nzSpan="12" class="pr-1">
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="24" nzRequired nzFor="idNumber">
+                    <span>Id Number</span>
+                  </nz-form-label>
+                  <nz-form-control
+                    [nzSpan]="24"
+                    nzErrorTip="Please input your id number!"
+                  >
+                    <input
+                      nz-input
+                      id="idNumber"
+                      formControlName="idNumber"
+                      placeholder="Id Number"
+                      maxlength="12"
+                    />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+              <div nz-col nzSpan="12" class="pr-1">
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="24" nzRequired nzFor="address">
+                    <span>Address</span>
+                  </nz-form-label>
+                  <nz-form-control
+                    [nzSpan]="24"
+                    nzErrorTip="Please input your address!"
+                  >
+                    <input
+                      nz-input
+                      id="address"
+                      formControlName="address"
+                      placeholder="Address"
+                    />
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+            </div>
+          </form>
+
+          <div nz-row>
+            <div class="w-100 mt-2">
+              <button
+                class="w-10"
+                nzAlign="center"
+                nz-button
+                nzType="primary"
+                (click)="submitInfoForm()"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </nz-tab>
+        <!-- End Change Info View -->
+        <!-- Start Change Password View -->
+        <nz-tab nzTitle="Change password">
+          <form nz-form [formGroup]="changePasswordForm">
+            <nz-form-item>
+              <nz-form-label [nzSpan]="24" nzFor="currentPassword" nzRequired>
+                Current Password
+              </nz-form-label>
+              <nz-form-control
+                [nzSpan]="24"
+                nzErrorTip="Current password is required"
+              >
+                <nz-input-group [nzSuffix]="suffixTemplate">
+                  <input
+                    nz-input
+                    name="currentPassword"
+                    [type]="currentPasswordVisible ? 'text' : 'password'"
+                    id="currentPassword"
+                    formControlName="currentPassword"
+                    placeholder="Current password"
+                  />
+                </nz-input-group>
+                <ng-template #suffixTemplate>
+                  <span
+                    nz-icon
+                    [nzType]="currentPasswordVisible ? 'eye-invisible' : 'eye'"
+                    (click)="currentPasswordVisible = !currentPasswordVisible"
+                  ></span>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label [nzSpan]="24" nzFor="newPassword" nzRequired>
+                New Password
+              </nz-form-label>
+              <nz-form-control
+                [nzSpan]="24"
+                nzErrorTip="New password is required"
+              >
+                <nz-input-group [nzSuffix]="suffixTemplate">
+                  <input
+                    [type]="newPasswordVisible ? 'text' : 'password'"
+                    nz-input
+                    name="newPassword"
+                    type="password"
+                    id="newPassword"
+                    formControlName="newPassword"
+                    placeholder="New password"
+                  />
+                </nz-input-group>
+                <ng-template #suffixTemplate>
+                  <span
+                    nz-icon
+                    [nzType]="newPasswordVisible ? 'eye-invisible' : 'eye'"
+                    (click)="newPasswordVisible = !newPasswordVisible"
+                  ></span>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label
+                [nzSpan]="24"
+                nzFor="confirmNewPassword"
+                nzRequired
+              >
+                Confirm New Password
+              </nz-form-label>
+              <nz-form-control
+                [nzSpan]="24"
+                nzErrorTip="Confirm new password is required"
+              >
+                <nz-input-group [nzSuffix]="suffixTemplate">
+                  <input
+                    nz-input
+                    name="confirmNewPassword"
+                    [type]="confirmNewPasswordVisible ? 'text' : 'password'"
+                    id="confirmNewPassword"
+                    formControlName="confirmNewPassword"
+                    placeholder="Confirm new password"
+                  />
+                </nz-input-group>
+                <ng-template #suffixTemplate>
+                  <span
+                    nz-icon
+                    [nzType]="
+                      confirmNewPasswordVisible ? 'eye-invisible' : 'eye'
+                    "
+                    (click)="
+                      confirmNewPasswordVisible = !confirmNewPasswordVisible
+                    "
+                  ></span>
+                </ng-template>
+              </nz-form-control>
+            </nz-form-item>
+          </form>
+
+          <div nz-row>
+            <div class="w-100 mt-2">
+              <button
+                class="w-10"
+                nzAlign="center"
+                nz-button
+                nzType="primary"
+                (click)="submitChangePasswordForm()"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </nz-tab>
+        <!-- End Change Password View -->
+        <!-- Start Add Photo View -->
+        <nz-tab nzTitle="Change cover photo"> </nz-tab>
+        <!-- End Add Photo View -->
+      </nz-tabset>
+    </nz-card>
+  </div>
+  <!-- <div nz-col nzSpan="16">
+
+  </div> -->
+</div>

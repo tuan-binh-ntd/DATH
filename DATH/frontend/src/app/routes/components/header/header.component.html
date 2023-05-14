@@ -40,9 +40,9 @@
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <div class="d-flex align-center">
           <ul nz-menu>
-            <li nz-menu-item>
-              <nz-avatar [nzSize]="30" class="mb-2"></nz-avatar>
-              <!-- <span>{{ employee.firstName }} {{ employee.lastName }}</span> -->
+            <li nz-menu-item (click)="changeInfo()">
+              <nz-avatar [nzSize]="30" class="mr-1"></nz-avatar>
+              <span>{{ employee?.firstName }} {{ employee?.lastName }}</span>
             </li>
             <nz-divider class="m-0"></nz-divider>
             <li nz-menu-item (click)="logOut()">Log out</li>
