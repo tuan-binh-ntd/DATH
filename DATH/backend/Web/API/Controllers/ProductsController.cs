@@ -47,13 +47,13 @@ namespace API.Controllers
             DynamicParameters param = new();
 
             param.Add("ProductCategoryId", null);
-            param.Add("SpecificationId", string.IsNullOrWhiteSpace(filter.SpecificationIds) ? "\"\"" : filter.SpecificationIds);
+            param.Add("SpecificationId", string.IsNullOrWhiteSpace(filter.SpecificationIds) ? @"""" : filter.SpecificationIds);
             param.Add("Price", filter.Price);
-            param.Add("Keyword", string.IsNullOrWhiteSpace(filter.Keyword) ? "\"\"" : filter.Keyword);
+            param.Add("Keyword", string.IsNullOrWhiteSpace(filter.Keyword) ? @"""" : filter.Keyword);
 
             if (input.PageNum != null && input.PageSize != null)
             {
-                PaginationResult<ProductForViewDto> products = await _dapper.GetAllAndPaginationAsync<ProductForViewDto>(@"
+                PaginationResult<ProductForViewDto> products = await _dapper.GetAllAndPaginationAsync<ProductForViewDto>(@$"
                     select 
 			            Id,
 			            [Name],
@@ -64,9 +64,9 @@ namespace API.Controllers
 		            from Product 
 		            where IsDeleted = 0
 			            and @ProductCategoryId is null or ProductCategoryId = @ProductCategoryId
-			            and @SpecificationId is not null and freetext(SpecificationId, @SpecificationId) 
-			            and @Keyword is not null and freetext([Name], @Keyword)
-			            and @Keyword is null or [Name] like '%' + @Keyword +'%'
+			            and (freetext(SpecificationId, @SpecificationId) or @SpecificationId = '""')
+			            and (freetext([Name], @Keyword) or @Keyword = '""')
+			            or [Name] like '%' + @Keyword +'%'
 			            and @Price is null or (Price >= @Price - 1000000 and Price <= @Price + 1000000)
                     ", input, param);
 
