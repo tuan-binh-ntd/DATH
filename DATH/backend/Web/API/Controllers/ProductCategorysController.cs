@@ -24,6 +24,7 @@ namespace API.Controllers
         private readonly IDapper _dapper;
         private readonly IRepository<Specification, long> _specificationRepo;
         private readonly DataContext _dataContext;
+        private readonly IRepository<SpecificationCategory> _specificationCategoryRepo;
 
         public ProductCategorysController(
             IMapper mapper,
@@ -33,7 +34,8 @@ namespace API.Controllers
             IRepository<Specification, long> specRepo,
             IDapper dapper,
             IRepository<Specification, long> specificationRepo,
-            DataContext dataContext
+            DataContext dataContext,
+            IRepository<SpecificationCategory> specificationCategoryRepo
             )
         {
             _mapper = mapper;
@@ -44,6 +46,7 @@ namespace API.Controllers
             _dapper = dapper;
             _specificationRepo = specificationRepo;
             _dataContext = dataContext;
+            _specificationCategoryRepo = specificationCategoryRepo;
         }
         [AllowAnonymous]
         [HttpGet]
@@ -218,9 +221,12 @@ namespace API.Controllers
                 if (specifications != null)
                 {
                     product.Specifications = await (from s in _specificationRepo.GetAll().AsNoTracking()
+                                                    join sc in _specificationCategoryRepo.GetAll().AsNoTracking() on s.SpecificationCategoryId equals sc.Id
                                                     where specifications.Contains(s.Id.ToString())
                                                     select new SpecificationDto
                                                     {
+                                                        SpecificationCategoryId = sc.Id,
+                                                        SpecificationCategoryCode = sc.Code,
                                                         Id = s.Id,
                                                         Code = s.Code,
                                                         Value = s.Value
