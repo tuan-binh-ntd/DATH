@@ -22,6 +22,7 @@ namespace API.Controllers
         private readonly IRepository<Specification, long> _specificationRepo;
         private readonly DataContext _dataContext;
         private readonly IDapper _dapper;
+        private readonly IRepository<SpecificationCategory> _specificationCategoryRepo;
 
         public ProductsController(
             IMapper mapper,
@@ -29,7 +30,8 @@ namespace API.Controllers
             IPhotoService photoService,
             IRepository<Specification, long> specificationRepo,
             DataContext dataContext,
-            IDapper dapper
+            IDapper dapper,
+            IRepository<SpecificationCategory> specificationCategoryRepo
             )
         {
             _mapper = mapper;
@@ -38,6 +40,7 @@ namespace API.Controllers
             _specificationRepo = specificationRepo;
             _dataContext = dataContext;
             _dapper = dapper;
+            _specificationCategoryRepo = specificationCategoryRepo;
         }
 
         [AllowAnonymous]
@@ -101,9 +104,12 @@ namespace API.Controllers
                 if (specifications != null)
                 {
                     product.Specifications = await (from s in _specificationRepo.GetAll().AsNoTracking()
+                                                    join sc in _specificationCategoryRepo.GetAll().AsNoTracking() on s.SpecificationCategoryId equals sc.Id
                                                     where specifications.Contains(s.Id.ToString())
                                                     select new SpecificationDto
                                                     {
+                                                        SpecificationCategoryId = sc.Id,
+                                                        SpecificationCategoryCode = sc.Code,
                                                         Id = s.Id,
                                                         Code = s.Code,
                                                         Value = s.Value
