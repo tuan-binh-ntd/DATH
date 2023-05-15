@@ -31,5 +31,21 @@ namespace Bussiness.Helper
 
             return data;
         }
+
+        public static PaginationResult<TSource> Paging<TSource>([NotNull] this IQueryable<TSource> query, [NotNull] PaginationInput input)
+        {
+            int totalCount = query.Count();
+
+            query = query.PageBy(input);
+
+            PaginationResult<TSource> data = new()
+            {
+                TotalCount = totalCount,
+                TotalPage = Ceiling((int)input.PageSize!, totalCount),
+                Content = query.ToList()
+            };
+
+            return data;
+        }
     }
 }

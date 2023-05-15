@@ -163,29 +163,36 @@ namespace API.Controllers
         {
             DynamicParameters param = new();
 
-            if (filter != null)
-            {
-                param.Add("ProductCategoryId", id);
-                param.Add("SpecificationId", filter.SpecificationIds);
-                param.Add("Price", filter.Price);
-                param.Add("Keyword", filter.Keyword);
-            }
-
-            List<ProductForViewDto> query = _dapper.GetAll<ProductForViewDto>("GetProduct", param);
-
-            ICollection<ProductForViewDto> list = new List<ProductForViewDto>();
+            param.Add("ProductCategoryId", null);
+            param.Add("SpecificationId", string.IsNullOrWhiteSpace(filter.SpecificationIds) ? "\"\"" : filter.SpecificationIds);
+            param.Add("Price", filter.Price);
+            param.Add("Keyword", string.IsNullOrWhiteSpace(filter.Keyword) ? "\"\"" : filter.Keyword);
 
             if (input.PageNum != null && input.PageSize != null)
             {
-                PaginationResult<ProductForViewDto> products = await _dapper.GetAllAndPaginationAsync<ProductForViewDto>("GetProduct", input, param);
-                list = products.Content!;
-                await HandleProductList(list);
+                PaginationResult<ProductForViewDto> products = await _dapper.GetAllAndPaginationAsync<ProductForViewDto>(@"
+                    select 
+			            Id,
+			            [Name],
+			            Price,
+			            [Description],
+			            ProductCategoryId,
+			            substring(SpecificationId, 2, len(SpecificationId)) SpecificationId
+		            from Product 
+		            where IsDeleted = 0
+			            and @ProductCategoryId is null or ProductCategoryId = @ProductCategoryId
+			            and @SpecificationId is not null and freetext(SpecificationId, @SpecificationId) 
+			            and @Keyword is not null and freetext([Name], @Keyword)
+			            and @Keyword is null or [Name] like '%' + @Keyword +'%'
+			            and @Price is null or (Price >= @Price - 1000000 and Price <= @Price + 1000000)
+                    ", input, param);
 
+                await HandleProductList(products.Content!);
                 return CustomResult(products, HttpStatusCode.OK);
             }
             else
             {
-                list = query;
+                List<ProductForViewDto> list = await _dapper.GetAllAsync<ProductForViewDto>("GetProduct", param);
                 await HandleProductList(list);
                 return CustomResult(list, HttpStatusCode.OK);
             }

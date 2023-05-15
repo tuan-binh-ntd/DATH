@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using Bussiness.Helper;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Bussiness.Services
 {
@@ -35,20 +36,30 @@ namespace Bussiness.Services
             return db.Query<T>(sp, param, commandType: commandType).ToList();
         }
 
-        public async Task<PaginationResult<TSource>> GetAllAndPaginationAsync<TSource>(string sp, [NotNull] PaginationInput input, DynamicParameters param, CommandType commandType = CommandType.StoredProcedure)
+        public async Task<PaginationResult<TSource>> GetAllAndPaginationAsync<TSource>(string sql, [NotNull] PaginationInput input, DynamicParameters param, CommandType commandType = CommandType.Text)
         {
+            if(commandType == CommandType.StoredProcedure)
+            {
+                throw new ArgumentOutOfRangeException("Not support for stored procedures");
+            }
             using IDbConnection db = new SqlConnection(_config.GetConnectionString(_connectionString));
-            var query = await db.QueryAsync<TSource>(sp, param, commandType: commandType);
 
-            int totalCount = query.Count();
+            // count total records with dynamic sql
+            int totalRecodes = await db.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM (" + sql + ") AS CountTable", param);
 
-            query = query!.Skip((int)input.PageSize! * ((int)input.PageNum! - 1)).Take((int)input.PageSize);
+            // paging with dynamic sql
+            var pagedSql = sql + " ORDER BY Id OFFSET (@PageNum - 1)*@PageSize ROWS FETCH NEXT @PageSize ROWS ONLY";
+
+            param.Add("PageNum", input.PageNum);
+            param.Add("PageSize", input.PageSize);
+
+            IEnumerable<TSource> result = await db.QueryAsync<TSource>(pagedSql, param);
 
             PaginationResult<TSource> data = new()
             {
-                TotalCount = totalCount,
-                TotalPage = (int)Math.Ceiling((decimal)totalCount / (int)input.PageSize!),
-                Content = query.ToList()
+                TotalCount = totalRecodes,
+                TotalPage = (int)Math.Ceiling((decimal)totalRecodes / (int)input.PageSize!),
+                Content = result.ToList()
             };
 
             return data;
@@ -73,72 +84,6 @@ namespace Bussiness.Services
             return new SqlConnection(_config.GetConnectionString(_connectionString));
         }
 
-        public T Insert<T>(string sp, DynamicParameters param, CommandType commandType = CommandType.StoredProcedure)
-        {
-            T result;
-            using IDbConnection db = new SqlConnection(_config.GetConnectionString(_connectionString));
-            try
-            {
-                if (db.State == ConnectionState.Closed)
-                    db.Open();
-
-                using var tran = db.BeginTransaction();
-                try
-                {
-                    result = db.Query<T>(sp, param, commandType: commandType, transaction: tran).FirstOrDefault()!;
-                    tran.Commit();
-                }
-                catch (Exception ex)
-                {
-                    tran.Rollback();
-                    throw new Exception(ex.Message);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            finally
-            {
-                if (db.State == ConnectionState.Open)
-                    db.Close();
-            }
-
-            return result!;
-        }
-
-        public T Update<T>(string sp, DynamicParameters param, CommandType commandType = CommandType.StoredProcedure)
-        {
-            T result;
-            using IDbConnection db = new SqlConnection(_config.GetConnectionString(_connectionString));
-            try
-            {
-                if (db.State == ConnectionState.Closed)
-                    db.Open();
-
-                using var tran = db.BeginTransaction();
-                try
-                {
-                    result = db.Query<T>(sp, param, commandType: commandType, transaction: tran).FirstOrDefault()!;
-                    tran.Commit();
-                }
-                catch (Exception ex)
-                {
-                    tran.Rollback();
-                    throw new Exception(ex.Message);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            finally
-            {
-                if (db.State == ConnectionState.Open)
-                    db.Close();
-            }
-
-            return result;
-        }
+        
     }
 }

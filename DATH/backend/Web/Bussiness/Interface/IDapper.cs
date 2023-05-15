@@ -13,8 +13,6 @@ namespace Bussiness.Interface
         Task<T> GetAsync<T>(string sp, DynamicParameters param, CommandType commandType = CommandType.StoredProcedure, CancellationToken cancellationToken = default);
         List<T> GetAll<T>(string sp, DynamicParameters param, CommandType commandType = CommandType.StoredProcedure);
         Task<List<T>> GetAllAsync<T>(string sp, DynamicParameters param, CommandType commandType = CommandType.StoredProcedure, CancellationToken cancellationToken = default);
-        T Insert<T>(string sp, DynamicParameters param, CommandType commandType = CommandType.StoredProcedure);
-        T Update<T>(string sp, DynamicParameters param, CommandType commandType = CommandType.StoredProcedure);
-        Task<PaginationResult<TSource>> GetAllAndPaginationAsync<TSource>(string sp, [NotNull] PaginationInput input, DynamicParameters param, CommandType commandType = CommandType.StoredProcedure);
+        Task<PaginationResult<TSource>> GetAllAndPaginationAsync<TSource>(string sp, [NotNull] PaginationInput input, DynamicParameters param, CommandType commandType = CommandType.Text);
     }
 }
