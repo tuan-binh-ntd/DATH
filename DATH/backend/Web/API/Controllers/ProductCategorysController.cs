@@ -234,6 +234,7 @@ namespace API.Controllers
                                         {
                                             Id = p.Id,
                                             Url = p.Url,
+                                            IsMain = p.IsMain,
                                         }).ToListAsync();
             }
         }

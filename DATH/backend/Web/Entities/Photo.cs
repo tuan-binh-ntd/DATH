@@ -8,6 +8,8 @@ namespace Entities
         public string? Url { get; set; }
         [Required, StringLength(100)]
         public string? PublicId { get; set; }
+        public bool IsMain { get; set; }
+        // Relationship
         public Product? Product { get; set; }
         public long ProductId { get; set; }
     }

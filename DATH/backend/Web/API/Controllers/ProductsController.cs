@@ -117,6 +117,7 @@ namespace API.Controllers
                                         {
                                             Id = p.Id,
                                             Url = p.Url,
+                                            IsMain = p.IsMain,
                                         }).ToListAsync();
             }
         }
@@ -190,8 +191,8 @@ namespace API.Controllers
             return CustomResult(id, HttpStatusCode.OK);
         }
 
-        [HttpPost("{id}/photos")]
-        public async Task<IActionResult> AddPhoto(long id, IFormFile file)
+        [HttpPost("{id}/photos/{isMain}")]
+        public async Task<IActionResult> AddPhoto(long id, bool isMain,IFormFile file)
         {
             Product? product = await _productRepo.GetAsync(id);
             if (product == null) return CustomResult(HttpStatusCode.NoContent);
@@ -203,7 +204,8 @@ namespace API.Controllers
             Photo? photo = new()
             {
                 Url = result.SecureUrl.AbsoluteUri,
-                PublicId = result.PublicId
+                PublicId = result.PublicId,
+                IsMain = isMain
             };
 
             product.Photos = new List<Photo> { photo };

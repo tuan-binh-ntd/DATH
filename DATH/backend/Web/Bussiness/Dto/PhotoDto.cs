@@ -7,5 +7,6 @@ namespace Bussiness.Dto
     {
         [Required, StringLength(500), DataType(DataType.Url)]
         public string? Url { get; set; }
+        public bool IsMain { get; set; }
     }
 }
