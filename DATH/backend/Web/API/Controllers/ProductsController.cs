@@ -128,7 +128,7 @@ namespace API.Controllers
                                                       SpecificationId = p.SpecificationId!.Substring(1),
                                                   };
             ProductForViewDto? data = await query.FirstOrDefaultAsync();
-            if (data != null)
+            if (data != null)   
             {
                 await HandleProduct(data);
                 return CustomResult(data, HttpStatusCode.OK);

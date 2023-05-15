@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
 import { switchMap } from 'rxjs';
 import { ProductCategory } from 'src/app/models/product-category.model';
 import { Product } from 'src/app/models/product.model';
@@ -23,6 +24,8 @@ export class ViewProductDetailComponent {
   listColor: Specification[] = [];
   listCapacity: Specification[] = [];
   data!: Product | null;
+  slideConfig = { slidesToShow: 4, slidesToScroll: 4 };
+  mainImgUrl: string = '';
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
@@ -48,6 +51,7 @@ export class ViewProductDetailComponent {
    await this.productService.get(this.id).toPromise().then(res => {
       if(checkResponseStatus(res)){
         this.data = res?.data;
+        this.mainImgUrl = res?.data.photos![0]?.url;
       }
     })
   }
@@ -81,5 +85,9 @@ export class ViewProductDetailComponent {
 
   toggleSelection(id: string) {
     this.selectedItemId = id;
+  }
+
+  setCurrentImage(url: string){
+    this.mainImgUrl = url;
   }
 }
