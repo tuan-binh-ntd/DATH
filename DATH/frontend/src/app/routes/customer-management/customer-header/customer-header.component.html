@@ -34,8 +34,15 @@
           toolTipTitle="Cart"
           iconClass="fa-solid fa-cart-shopping"
           placement="bottom"
+          nz-dropdown
+          [nzDropdownMenu]="menu" nzPlacement="bottomCenter"
         ></app-button-icon
+        
       ></span>
+
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+       
+      </nz-dropdown-menu>
 
       <span class="mr-2"
         ><app-button-icon

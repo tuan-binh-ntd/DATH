@@ -14,6 +14,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { ViewProductDetailComponent } from './view-product-list/partials/view-product-detail/view-product-detail.component';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
+import { CustomerCartComponent } from './customer-cart/customer-cart.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { SlickCarouselModule } from 'ngx-slick-carousel';
     ViewProductListComponent,
     CustomerChangeInfoComponent,
     ViewProductDetailComponent,
+    CustomerCartComponent,
   ],
   imports: [
     CommonModule,
