@@ -29,10 +29,12 @@
             <label>Capacity</label>
           </dt>
           <dd>
-            <nz-radio-group>
+            <nz-radio-group     
+            [ngModel]="selectedCapacity"
+            (ngModelChange)="onChangeCapacity($event)">
               <label
                 *ngFor="let item of listCapacity"
-                class="mr-2"
+                class="mr-2 cursor-pointer"
                 nz-radio-button
                 [nzValue]="item.value"
                 >{{ item.code }}</label
@@ -41,7 +43,7 @@
           </dd>
         </dl>
       </ng-container>
-      <ng-container *ngIf="listColor.length > 0">
+      <ng-container *ngIf="listColor?.length > 0">
         <dl>
           <dt class="mb-2">
             <span>Colour</span>
@@ -52,13 +54,13 @@
               nz-tooltip
               [nzTooltipTitle]="item?.code"
               [nzSize]="40"
-              [ngClass]="{ 'selected-avatar': selectedItemId === item.id }"
+              [ngClass]="{ 'selected-avatar': selectedColor === item.value }"
               [ngStyle]="{
                 'background-color': item?.value,
                 'box-shadow': '2px 2px #ccc'
               }"
               class="cursor-pointer ml-2"
-              (click)="toggleSelection(item.id)"
+              (click)="onChangeColor(item.value)"
             >
             </nz-avatar>
           </dd>
@@ -71,6 +73,7 @@
         class="w-100 h-50px mb-3"
         nzSize="large"
         nzShape="round"
+        (click)="addToCart()"
       >
         Add to cart
       </button>

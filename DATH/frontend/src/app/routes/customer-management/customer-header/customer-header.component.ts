@@ -16,6 +16,8 @@ import { Customer } from 'src/app/models/customer.model';
 import { AccountService } from 'src/app/services/account.service';
 import { ThemeService } from 'src/app/services/theme.service';
 import { checkResponseStatus, PASSWORD_REGEX } from 'src/app/shared/helper';
+import { Cart } from 'src/app/stores/cart/cart.model';
+import { CartQuery } from 'src/app/stores/cart/cart.query';
 
 @Component({
   selector: 'app-customer-header',
@@ -29,7 +31,9 @@ export class CustomerHeaderComponent implements OnInit {
     private accountService: AccountService,
     private cookerService: CookieService,
     private router: Router,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private cartQuery: CartQuery
+
   ) {}
   isVisible: boolean = false;
   signUpForm!: FormGroup;
@@ -37,7 +41,7 @@ export class CustomerHeaderComponent implements OnInit {
   tabIndex: number = 0;
   customer!: Customer | any;
   isLoggedIn!: boolean | null;
-
+  cartCount$: Observable<number> = this.cartQuery.selectCount()!;
   ngOnInit(): void {
     this.initForm();
     this.getCurrentUser();

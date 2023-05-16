@@ -134,6 +134,7 @@
     "analytics": false,
     "cache": {
       "enabled": false
-    }
+    },
+    "defaultCollection": "@datorama/akita"
   }
 }
