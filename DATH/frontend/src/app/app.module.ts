@@ -14,6 +14,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { AppInitializerProvider } from './services/app-initializer.service';
+import { AkitaNgDevtools } from '@datorama/akita-ngdevtools';
+import { environment } from '../environments/environment';
 registerLocaleData(en);
 
 
@@ -26,6 +28,7 @@ registerLocaleData(en);
     BrowserModule,
     BrowserAnimationsModule,
     SharedModule,
+    environment.production ? [] : AkitaNgDevtools.forRoot(),
   ],
   providers: [
     AppInitializerProvider,

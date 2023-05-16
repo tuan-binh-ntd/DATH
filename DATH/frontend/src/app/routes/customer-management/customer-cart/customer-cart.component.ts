@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Cart } from 'src/app/stores/cart/cart.model';
+import { CartQuery } from 'src/app/stores/cart/cart.query';
 
 @Component({
   selector: 'app-customer-cart',
@@ -6,8 +9,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./customer-cart.component.less']
 })
 export class CustomerCartComponent {
-  data: any;
+  constructor(
+    private cartQuery: CartQuery
+  ){}
+  cartObjects$: Observable<Cart[]> = this.cartQuery.selectAll();
+
   ngOnInit(){
-    this.data = JSON.parse(localStorage.getItem('cart')!);
+  this.cartObjects$.subscribe(res => {
+      res
+    })
   }
 }

@@ -3,12 +3,17 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { switchMap } from 'rxjs';
+import { Cart } from 'src/app/stores/cart/cart.model';
 import { ProductCategory } from 'src/app/models/product-category.model';
 import { Product } from 'src/app/models/product.model';
 import { Specification } from 'src/app/models/specification.model';
 import { ProductCategoryService } from 'src/app/services/product-category.service';
 import { ProductService } from 'src/app/services/product.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
+import { CartQuery } from 'src/app/stores/cart/cart.query';
+import { CartService } from 'src/app/stores/cart/cart.service';
+import { CartStore } from 'src/app/stores/cart/cart.store';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-view-product-detail',
@@ -29,12 +34,23 @@ export class ViewProductDetailComponent {
   slideConfig = { slidesToShow: 4, slidesToScroll: 4 };
   mainImgUrl: string = '';
   //TODO Add cart model
-  cartObject: any;
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private productCategoryService: ProductCategoryService
+    private productCategoryService: ProductCategoryService,
+    private cartService: CartService,
+    private cartQuery: CartQuery,
+    private msg: NzMessageService,
   ) {}
+  cartObject: Cart = {
+    id: '',
+    name: '',
+    specifications: [],
+    photo: '',
+    price: '',
+    quantity: 0,
+  };
+  cartObjects$ = this.cartQuery.selectAll();
   ngOnInit() {
     this.route.paramMap
       .pipe(
@@ -58,6 +74,9 @@ export class ViewProductDetailComponent {
         if (checkResponseStatus(res)) {
           this.data = res?.data;
           this.mainImgUrl = res?.data.photos![0]?.url;
+          this.cartObject.id = res?.data.id;
+          this.cartObject.name = res?.data.name;
+          this.cartObject.photo = this.mainImgUrl;
         }
       });
   }
@@ -66,23 +85,32 @@ export class ViewProductDetailComponent {
     this.listSpecification = this.data?.specifications!;
     if (this.listSpecification && this.listSpecification.length > 0) {
       this.listColor = this.listSpecification.filter(
-        (item: any) => item.code === 'color'
+        (item: any) => item.specificationCategoryCode === 'color'
       );
+      //TODO: List all capacity
       this.listCapacity = this.listSpecification.filter(
-        (item: any) => item.code === 'capacity'
+        (item: any) => item.specificationCategoryCode === 'capacity'
       );
       //Initialize selection
-      this.onChangeColor(this.listColor[0]?.id);
+      this.onChangeColor(this.listColor[0]?.value);
       this.onChangeCapacity(this.listCapacity[0]);
     }
   }
 
-  onChangeColor(id: string) {
-    this.selectedColor = id;
+  onChangeColor(value: string) {
+    this.cartObject.specifications.push({
+      color: value
+    })
+    this.selectedColor = value;
   }
 
   onChangeCapacity(item: Specification) {
-    if (item) this.selectedCapacity = item.value;
+    if (item) {
+      this.cartObject.specifications.push({
+        capacity: item.value
+      })
+    }
+    this.selectedCapacity = item.value;
   }
 
   setCurrentImage(url: string) {
@@ -90,8 +118,15 @@ export class ViewProductDetailComponent {
   }
 
   addToCart() {
-    const carts = JSON.parse(localStorage.getItem('cart')!);
-    carts.push(this.data);
-    localStorage.setItem('cart', JSON.stringify(carts));
+    this.msg.success("Added to cart");
+    this.cartObjects$.subscribe((res) => {
+      if (!res.includes(this.cartObject)){
+        this.cartService.insert(this.cartObject);
+      }
+      else{
+        this.cartService.update(this.cartObject);
+      }
+    });
+
   }
 }
