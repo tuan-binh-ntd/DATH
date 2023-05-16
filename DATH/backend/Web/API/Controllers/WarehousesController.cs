@@ -111,10 +111,11 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, WarehouseInput input)
         {
-            Shop? shop = await _shopRepo.GetAsync((int)input.ShopId!);
 
-            //Warehouse? warehouse = await _warehouseRepo.GetAll().AsNoTracking().Where(w => w.ShopId == input.ShopId).FirstOrDefaultAsync();
-            //if (warehouse != null) return CustomResult("Shop had warehouse", HttpStatusCode.BadRequest);
+            Warehouse? warehouse = await _warehouseRepo.GetAll().AsNoTracking().Where(w => w.Id == id).SingleOrDefaultAsync();
+            if (warehouse != null && warehouse.ShopId == input.ShopId) return CustomResult("Shop had warehouse", HttpStatusCode.BadRequest);
+
+            Shop? shop = await _shopRepo.GetAsync((int)input.ShopId!);
 
             Warehouse? data = await _warehouseRepo.GetAsync(id);
             if (data == null) return CustomResult(HttpStatusCode.NoContent);
@@ -141,7 +142,7 @@ namespace API.Controllers
             if (input.Type == EventType.Export)
             {
                 WarehouseDetail? data = await (from wd in _warehouseDetailRepo.GetAll().AsNoTracking()
-                                               where wd.ProductId == input.ProductId
+                                               where wd.ProductId == input.ProductId && wd.WarehouseId == id
                                                group wd by wd.ProductId into wad
                                                select new WarehouseDetail
                                                {

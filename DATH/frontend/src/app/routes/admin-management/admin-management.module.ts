@@ -35,6 +35,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { WarehouseDetailListComponent } from './warehouse-detail-list/warehouse-detail-list.component';
 import { WarehouseDetailDrawerComponent } from './warehouse-detail-list/partials/warehouse-detail-drawer/warehouse-detail-drawer.component';
 import { EmployeeChangeInfoComponent } from './employee-change-info/employee-change-info.component';
+import { StoresWarehouseListComponent } from './stores-warehouse-list/stores-warehouse-list.component';
+import { StoresWarehouseDrawerComponent } from './stores-warehouse-list/partials/stores-warehouse-drawer/stores-warehouse-drawer.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +67,9 @@ import { EmployeeChangeInfoComponent } from './employee-change-info/employee-cha
     PaymentDrawerComponent,
     WarehouseDetailListComponent,
     WarehouseDetailDrawerComponent,
-    EmployeeChangeInfoComponent
+    EmployeeChangeInfoComponent,
+    StoresWarehouseListComponent,
+    StoresWarehouseDrawerComponent
   ],
   imports: [
     AdminManagementRoutingModule,

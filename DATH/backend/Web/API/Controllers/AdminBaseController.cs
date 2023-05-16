@@ -6,7 +6,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin", Policy = "RequireAdminRole")]
+    [Authorize(Policy = "RequireEmployeeRole")]
     public class AdminBaseController : BaseController
     {
     }

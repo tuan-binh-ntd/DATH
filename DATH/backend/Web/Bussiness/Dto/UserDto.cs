@@ -21,5 +21,6 @@ namespace Bussiness.Dto
         public EmployeeType? EmployeeType { get; set; }
         public DateTime? JoinDate { get; set; }
         public string? Code { get; set; }
+        public int ShopId { get; set; }
     }
 }

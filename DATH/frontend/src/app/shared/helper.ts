@@ -38,3 +38,9 @@ export enum EventType {
   Import = 1,
   Export = 2,
 }
+
+export enum UserType {
+  Admin = 1,
+  Employee = 2,
+  Customer = 3
+}

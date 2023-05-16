@@ -10,18 +10,18 @@ import { WarehouseService } from 'src/app/services/warehouse.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
 
 @Component({
-  selector: 'app-warehouse-detail-drawer',
-  templateUrl: './warehouse-detail-drawer.component.html',
-  styleUrls: ['./warehouse-detail-drawer.component.less'],
+  selector: 'app-stores-warehouse-drawer',
+  templateUrl: './stores-warehouse-drawer.component.html',
+  styleUrls: ['./stores-warehouse-drawer.component.less']
 })
-export class WarehouseDetailDrawerComponent extends DrawerFormBaseComponent {
-  products: Product[] = [];
+export class StoresWarehouseDrawerComponent extends DrawerFormBaseComponent {
   @Input() parentWarehouse: Warehouse = {
     id: null,
     name: null,
     shopName: null,
     shopId: null,
   };
+  products: Product[] = [];
 
   constructor(
     protected override fb: FormBuilder,

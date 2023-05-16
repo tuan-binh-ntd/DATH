@@ -17,4 +17,6 @@ export interface Account {
   code: string | null,
   joinDate: Date | null,
   employeeType: EmployeeType | null,
+  type: number | null,
+  shopId: number | null,
 }
