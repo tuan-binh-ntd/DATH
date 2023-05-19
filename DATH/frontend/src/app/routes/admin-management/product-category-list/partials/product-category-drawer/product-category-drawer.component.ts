@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize } from 'rxjs';
@@ -9,9 +9,11 @@ import { checkResponseStatus } from 'src/app/shared/helper';
 @Component({
   selector: 'app-product-category-drawer',
   templateUrl: './product-category-drawer.component.html',
-  styleUrls: ['./product-category-drawer.component.less']
+  styleUrls: ['./product-category-drawer.component.less'],
 })
 export class ProductCategoryDrawerComponent extends DrawerFormBaseComponent {
+  @Input() productCategoryParents: any[] = [];
+
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,
@@ -38,6 +40,7 @@ export class ProductCategoryDrawerComponent extends DrawerFormBaseComponent {
     this.drawerForm = this.fb.group({
       id: [null],
       name: [null, Validators.required],
+      parentId: [null],
     });
   }
 

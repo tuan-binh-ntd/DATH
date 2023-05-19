@@ -14,6 +14,7 @@ import { PaginationInput } from 'src/app/models/pagination-input';
 })
 export class ProductCategoryListComponent extends ListBaseComponent {
   @ViewChild('drawerFormBase') override drawerFormBase!: ProductCategoryDrawerComponent;
+  productCategoryParents: {id: number, name: string}[] = [];
 
 
   constructor(protected override msg: NzMessageService,
@@ -40,6 +41,12 @@ export class ProductCategoryListComponent extends ListBaseComponent {
           this.paginationParam.totalCount = res.data.totalCount;
         }
       })
+      this.productCategoryService.getAll().pipe(
+        finalize(() => this.isLoadingTable = false)).subscribe((res) => {
+        if (checkResponseStatus(res)) {
+          this.productCategoryParents = res.data;
+        }
+      });
   }
 
   pageNumChanged(event: any): void {

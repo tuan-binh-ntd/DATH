@@ -4,6 +4,7 @@ using Bussiness.Helper;
 using Bussiness.Repository;
 using Bussiness.Services;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -14,14 +15,17 @@ namespace API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IRepository<SpecificationCategory> _specCateRepo;
+        private readonly IRepository<Specification, long> _specificationRepo;
 
         public SpecificationCategorysController(
             IMapper mapper,
-            IRepository<SpecificationCategory> specCateRepo
+            IRepository<SpecificationCategory> specCateRepo,
+            IRepository<Specification, long> specificationRepo
             )
         {
             _mapper = mapper;
             _specCateRepo = specCateRepo;
+            _specificationRepo = specificationRepo;
         }
 
         [HttpGet]
@@ -85,6 +89,30 @@ namespace API.Controllers
         {
             await _specCateRepo.DeleteAsync(id);
             return CustomResult(id, HttpStatusCode.OK);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{code}/specifications")]
+        public async Task<IActionResult> GetColorByCode(string code)
+        {
+            SpecificationCategory? data = await _specCateRepo.GetAll().AsNoTracking().Where(sc => sc.Code!.ToLower().Contains(code.ToLower())).SingleOrDefaultAsync();
+            if (data != null)
+            {
+                IQueryable<GetColorByCodeForViewDto> query = from s in _specificationRepo.GetAll().AsNoTracking()
+                                                             where s.SpecificationCategoryId == data.Id
+                                                             select new GetColorByCodeForViewDto
+                                                             {
+                                                                 Id = s.Id,
+                                                                 Code = s.Code,
+                                                                 Value = s.Value
+                                                             };
+                List<GetColorByCodeForViewDto>? res = await query.ToListAsync();
+                if (res == null) return CustomResult(HttpStatusCode.NoContent);
+
+                return CustomResult(res, HttpStatusCode.OK);
+            }
+
+            return CustomResult(HttpStatusCode.NoContent);
         }
     }
 }

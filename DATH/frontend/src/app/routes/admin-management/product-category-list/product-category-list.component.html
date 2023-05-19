@@ -65,6 +65,7 @@
 
 <app-product-category-drawer
   #drawerFormBase
+  [productCategoryParents]="productCategoryParents"
   (onCreate)="onCreateItem($event)"
   (onUpdate)="onUpdateItem($event)"
   (onDelete)="onDeleteItem($event)"

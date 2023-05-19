@@ -117,7 +117,10 @@ namespace API.Controllers
         [HttpGet("{id}/specifications")]
         public async Task<IActionResult> GetFilterForProductCategory(int id)
         {
-            List<string>? specificationIdList = await _productRepo.GetAll().AsNoTracking().Where(p => p.ProductCategoryId == id).Select(p => p.SpecificationId!.Substring(1)).ToListAsync();
+            ICollection<int>? productCategorys = await _productCateRepo.GetAll().AsNoTracking().Where(pc => pc.ParentId == id).Select(pc => pc.Id).ToListAsync();
+
+
+            List<string>? specificationIdList = await _productRepo.GetAll().AsNoTracking().Where(p => productCategorys.Contains((int)p.ProductCategoryId!)).Select(p => p.SpecificationId!.Substring(1)).ToListAsync();
 
             string specificationIds = string.Join(",", specificationIdList);
 
@@ -165,8 +168,9 @@ namespace API.Controllers
         public async Task<IActionResult> GetProductByCategory(int id, [FromQuery] PaginationInput input, [FromQuery] ProductFilterDto filter)
         {
             DynamicParameters param = new();
+            string? productIdString = string.Join(",", await _productCateRepo.GetAll().AsNoTracking().Where(pc => pc.ParentId == id).Select(pc => pc.Id).ToListAsync());
 
-            param.Add("ProductCategoryId", id);
+            param.Add("ProductCategoryId", productIdString);
             param.Add("SpecificationId", string.IsNullOrWhiteSpace(filter.SpecificationIds) ? @"""" : filter.SpecificationIds);
             param.Add("Price", filter.Price);
             param.Add("Keyword", string.IsNullOrWhiteSpace(filter.Keyword) ? @"""" : filter.Keyword);
@@ -183,7 +187,7 @@ namespace API.Controllers
 			            substring(SpecificationId, 2, len(SpecificationId)) SpecificationId
 		            from Product 
 		            where IsDeleted = 0
-			            and @ProductCategoryId is null or ProductCategoryId = @ProductCategoryId
+			            and @ProductCategoryId is null or ProductCategoryId in (select * from string_split(@ProductCategoryId, ','))
 			            and (freetext(SpecificationId, @SpecificationId) or @SpecificationId = '""')
 			            and (freetext([Name], @Keyword) or @Keyword = '""')
 			            or [Name] like '%' + @Keyword +'%'

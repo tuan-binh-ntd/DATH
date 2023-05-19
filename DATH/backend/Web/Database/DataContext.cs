@@ -117,7 +117,12 @@ namespace Database
                 .WithOne(u => u.Warehouse)
                 .HasForeignKey(ur => ur.WarehouseId)
                 .IsRequired();
-
+            // One to Many Relationship (Specification, Photo)
+            modelBuilder.Entity<Specification>()
+                .HasMany(s => s.Photos)
+                .WithOne(p => p.Specification)
+                .HasForeignKey(p => p.SpecificationId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         // Set SoftDelete

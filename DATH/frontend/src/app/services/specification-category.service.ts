@@ -34,4 +34,8 @@ export class SpecificationCategoryService {
   delete(id: number): Observable<any> {
     return this.http.delete(this.baseUrl + '/' + id);
   }
+
+  getColorByCode(code: string): Observable<ResponseResult<any>> {
+    return this.http.get<ResponseResult<any>>(this.baseUrl + '/' + code + '/specifications');
+  }
 }
