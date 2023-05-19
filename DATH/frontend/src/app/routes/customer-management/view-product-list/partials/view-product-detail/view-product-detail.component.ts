@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { switchMap } from 'rxjs';
+import { Subscription, switchMap, take } from 'rxjs';
 import { Cart } from 'src/app/stores/cart/cart.model';
 import { ProductCategory } from 'src/app/models/product-category.model';
 import { Product } from 'src/app/models/product.model';
@@ -12,8 +12,9 @@ import { ProductService } from 'src/app/services/product.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
 import { CartQuery } from 'src/app/stores/cart/cart.query';
 import { CartService } from 'src/app/stores/cart/cart.service';
-import { CartStore } from 'src/app/stores/cart/cart.store';
+import { CartState, CartStore } from 'src/app/stores/cart/cart.store';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { Subject } from '@microsoft/signalr';
 
 @Component({
   selector: 'app-view-product-detail',
@@ -40,16 +41,17 @@ export class ViewProductDetailComponent {
     private productCategoryService: ProductCategoryService,
     private cartService: CartService,
     private cartQuery: CartQuery,
-    private msg: NzMessageService,
+    private msg: NzMessageService
   ) {}
   cartObject: Cart = {
     id: '',
     name: '',
     specifications: [],
     photo: '',
-    price: '',
+    price: 0,
     quantity: 0,
   };
+  cartObject$!: Subscription;
   cartObjects$ = this.cartQuery.selectAll();
   ngOnInit() {
     this.route.paramMap
@@ -77,6 +79,8 @@ export class ViewProductDetailComponent {
           this.cartObject.id = res?.data.id;
           this.cartObject.name = res?.data.name;
           this.cartObject.photo = this.mainImgUrl;
+          this.cartObject.quantity = 1;
+          this.cartObject.price = res?.data.price;
         }
       });
   }
@@ -98,17 +102,30 @@ export class ViewProductDetailComponent {
   }
 
   onChangeColor(value: string) {
-    this.cartObject.specifications.push({
-      color: value
-    })
+    if (
+      !this.cartObject.specifications.some((item) => {
+        return Object.keys(item).includes('color');
+      })
+    ) {
+      this.cartObject.specifications.push({
+        color: this.listColor.find((item) => item.value === value)?.code,
+      });
+    } else {
+      const index = this.cartObject.specifications.findIndex((item) => {
+        return Object.keys(item).includes('color');
+      });
+      this.cartObject.specifications.splice(index, 1, {
+        color: this.listColor.find((item) => item.value === value)?.code,
+      });
+    }
     this.selectedColor = value;
   }
 
   onChangeCapacity(item: Specification) {
     if (item) {
       this.cartObject.specifications.push({
-        capacity: item.value
-      })
+        capacity: item.value,
+      });
     }
     this.selectedCapacity = item.value;
   }
@@ -118,15 +135,26 @@ export class ViewProductDetailComponent {
   }
 
   addToCart() {
-    this.msg.success("Added to cart");
-    this.cartObjects$.subscribe((res) => {
-      if (!res.includes(this.cartObject)){
-        this.cartService.insert(this.cartObject);
-      }
-      else{
-        this.cartService.update(this.cartObject);
-      }
-    });
+    this.msg.success('Added to cart');
+    this.cartObject$ = this.cartQuery
+      .selectEntity((item) => {
+        const cart = {...item};
+        let price = cart.price / cart.quantity;
+        cart.quantity = 1;
+        cart.price = price;
+        return JSON.stringify(cart) === JSON.stringify(this.cartObject)
+      })
+      .pipe(take(1))
+      .subscribe((res) => {
+        if (res) {
+          var cart = { ...res };
+          cart.quantity++;
+          cart.price = cart.quantity * cart.price;
+          this.cartService.update(res.id, cart);
+        } else {
+          this.cartService.insert(this.cartObject);
+        }
+      });
 
   }
 }

@@ -15,6 +15,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { ViewProductDetailComponent } from './view-product-list/partials/view-product-detail/view-product-detail.component';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { CustomerCartComponent } from './customer-cart/customer-cart.component';
+import { ViewCartDetailComponent } from './view-cart-detail/view-cart-detail.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { CustomerCartComponent } from './customer-cart/customer-cart.component';
     CustomerChangeInfoComponent,
     ViewProductDetailComponent,
     CustomerCartComponent,
+    ViewCartDetailComponent,
   ],
   imports: [
     CommonModule,
