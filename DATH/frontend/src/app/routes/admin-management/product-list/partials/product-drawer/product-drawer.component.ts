@@ -1,5 +1,6 @@
+import { SpecificationCategoryService } from 'src/app/services/specification-category.service';
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { finalize, Observable, Observer } from 'rxjs';
@@ -12,6 +13,7 @@ import { ProductService } from 'src/app/services/product.service';
 import { SpecificationService } from 'src/app/services/specification.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -45,6 +47,9 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
   };
 
   uploadUrl: string = '';
+  colors: any[] = [];
+  colorForm!: FormGroup;
+
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,
@@ -52,6 +57,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     protected productService: ProductService,
     protected productCategoryService: ProductCategoryService,
     protected specificationService: SpecificationService,
+    private specificationCategoryService: SpecificationCategoryService
   ) {
     super(fb, cdr, message);
   }
@@ -59,6 +65,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     this.initForm();
     this.fetchCategories();
     this.fetchSpecification();
+    this.fetchColor();
   }
 
   fetchCategories() {
@@ -77,6 +84,12 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     })
   }
 
+  fetchColor() {
+    this.specificationCategoryService.getColorByCode('color').subscribe(res => {
+      this.colors = res.data;
+    })
+  }
+
   override patchDataToForm(data: any) {
     super.patchDataToForm(data);
     let specificationId: number[] = [];
@@ -85,7 +98,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     }
     this.drawerForm.get('specificationId')?.setValue(specificationId);
     // set action upload image
-    this.uploadUrl = `https://localhost:7114/api/products/${data.id}/photos`;
+    this.uploadUrl = `https://localhost:7114/api/products/${data.id}/photos/true&${this}`;
     // set file list
     if (data.photos !== undefined) {
       this.fileList = (data.photos as Photo[]).map((e) => ({
@@ -118,7 +131,11 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
       description: [null],
       productCategoryId: [null, Validators.required],
       specificationId: [null],
-    })
+    });
+
+    this.colorForm = this.fb.group({
+      colorId: [null, Validators.required],
+    });
   }
 
   override submitForm() {
@@ -186,6 +203,11 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
         observer.complete();
         return;
       }
+      let colorId = this.colorForm?.get('colorId').value;
+      if(colorId === undefined || colorId === null) {
+        this.message.warning('Select a color');
+        observer.complete();
+      }
       observer.next(isJpgOrPng && isLt2M);
       observer.complete();
     });
@@ -198,5 +220,10 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
       }
     });
     return true;
+  }
+
+  updateUploadUrl(){
+    this.uploadUrl = `https://localhost:7114/api/products/${this.data?.id}/photos/true&${this.colorForm?.get('colorId').value}`;
+    console.log(this.uploadUrl)
   }
 }

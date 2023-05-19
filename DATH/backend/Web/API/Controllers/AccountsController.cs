@@ -154,6 +154,7 @@ namespace API.Controllers
                 Employee? employee = await _employeeRepo.GetAll().AsNoTracking().Where(c => c.UserId == user.Id).FirstOrDefaultAsync();
                 res.EmployeeType = employee!.Type;
                 res.Code = employee!.Code;
+                res.ShopId = employee!.ShopId;
                 _mapper.Map(employee, res);
 
                 return CustomResult(res);

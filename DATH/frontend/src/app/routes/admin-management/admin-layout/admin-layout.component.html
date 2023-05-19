@@ -2,6 +2,7 @@
   [isCollapsed]="isCollapsed"
   (emitOnCollapse)="onCollapse($event)"
 ></app-header>
+<!-- Start Admin View -->
 <nz-layout>
   <nz-sider
     nzWidth="256px"
@@ -75,6 +76,10 @@
           <li nz-menu-item [routerLink]="'warehouse-detail'" [nzMatchRouter]="true">
             <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
             <span>Parent Warehouse</span>
+          </li>
+          <li nz-menu-item [routerLink]="'stores-warehouse'" [nzMatchRouter]="true">
+            <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
+            <span>Stores Warehouse</span>
           </li>
         </ul>
       </li>
@@ -159,3 +164,4 @@
     </nz-content>
   </nz-layout>
 </nz-layout>
+<!-- End Employee View -->

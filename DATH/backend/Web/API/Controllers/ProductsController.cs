@@ -66,7 +66,6 @@ namespace API.Controllers
 			            substring(SpecificationId, 2, len(SpecificationId)) SpecificationId
 		            from Product 
 		            where IsDeleted = 0
-			            and @ProductCategoryId is null or ProductCategoryId = @ProductCategoryId
 			            and (freetext(SpecificationId, @SpecificationId) or @SpecificationId = '""')
 			            and (freetext([Name], @Keyword) or @Keyword = '""')
 			            or [Name] like '%' + @Keyword +'%'
@@ -127,6 +126,7 @@ namespace API.Controllers
                                         }).ToListAsync();
             }
         }
+
         [AllowAnonymous]
         [HttpGet("{id}", Name = "Products")]
         public async Task<IActionResult> Get(int id)
@@ -143,7 +143,7 @@ namespace API.Controllers
                                                       SpecificationId = p.SpecificationId!.Substring(1),
                                                   };
             ProductForViewDto? data = await query.FirstOrDefaultAsync();
-            if (data != null)   
+            if (data != null)
             {
                 await HandleProduct(data);
                 return CustomResult(data, HttpStatusCode.OK);
@@ -197,8 +197,8 @@ namespace API.Controllers
             return CustomResult(id, HttpStatusCode.OK);
         }
 
-        [HttpPost("{id}/photos/{isMain}")]
-        public async Task<IActionResult> AddPhoto(long id, bool isMain,IFormFile file)
+        [HttpPost("{id}/photos/{isMain}&{specificationId}")]
+        public async Task<IActionResult> AddPhoto(long id, bool isMain, long specificationId, IFormFile file)
         {
             Product? product = await _productRepo.GetAsync(id);
             if (product == null) return CustomResult(HttpStatusCode.NoContent);
@@ -211,7 +211,8 @@ namespace API.Controllers
             {
                 Url = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId,
-                IsMain = isMain
+                IsMain = isMain,
+                SpecificationId = specificationId
             };
 
             product.Photos = new List<Photo> { photo };
@@ -224,7 +225,8 @@ namespace API.Controllers
             if (await _productRepo.UpdateAsync(product) != null)
             {
                 res.Photos!.Add(_mapper.Map<PhotoDto>(photo));
-                return CustomResult(res, HttpStatusCode.OK);
+                if (isMain) return CustomResult(res, HttpStatusCode.OK);
+                return CustomResult(photo.Url, HttpStatusCode.OK);
             }
             return CustomResult("Problem adding photo", HttpStatusCode.BadRequest);
         }
@@ -252,6 +254,54 @@ namespace API.Controllers
                 return CustomResult(HttpStatusCode.OK);
             }
             return CustomResult("Failed to delete your photo", HttpStatusCode.BadRequest);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}&{specificationId}")]
+        public async Task<IActionResult> GetProductBySpecificationId(long id, long specificationId)
+        {
+            IQueryable<ProductForViewDto> query = from p in _productRepo.GetAll().AsNoTracking()
+                                                  where p.Id == id && p.SpecificationId!.Contains(specificationId.ToString())
+                                                  select new ProductForViewDto()
+                                                  {
+                                                      Id = p.Id,
+                                                      Name = p.Name,
+                                                      Price = p.Price,
+                                                      Description = p.Description,
+                                                      ProductCategoryId = p.ProductCategoryId,
+                                                      SpecificationId = p.SpecificationId!.Substring(1),
+                                                  };
+            ProductForViewDto? data = await query.SingleOrDefaultAsync();
+
+            if (data != null)
+            {
+                // Get specification list for product
+                data.Specifications = await (from s in _specificationRepo.GetAll().AsNoTracking()
+                                             join sc in _specificationCategoryRepo.GetAll().AsNoTracking() on s.SpecificationCategoryId equals sc.Id
+                                             where s.Id == specificationId
+                                             select new SpecificationDto
+                                             {
+                                                 SpecificationCategoryId = sc.Id,
+                                                 SpecificationCategoryCode = sc.Code,
+                                                 Id = s.Id,
+                                                 Code = s.Code,
+                                                 Value = s.Value
+                                             }).ToListAsync();
+
+
+                // Get photo list for product
+                data.Photos = await (from p in _dataContext.Photo.AsNoTracking()
+                                     where p.ProductId == data.Id
+                                     select new PhotoDto
+                                     {
+                                         Id = p.Id,
+                                         Url = p.Url,
+                                         IsMain = p.IsMain,
+                                     }).ToListAsync();
+
+                return CustomResult(data, HttpStatusCode.OK);
+            }
+            return CustomResult(HttpStatusCode.NoContent);
         }
     }
 }

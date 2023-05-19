@@ -8,75 +8,108 @@
   [customFooterTpl]="footerTpl"
   (onSubmit)="submitForm()"
 >
-  <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
-    <div nz-row>
-      <div nz-col nzSpan="24">
-        <div class="clearfix">
-          <nz-upload
-            [nzAction]="uploadUrl"
-            nzListType="picture-card"
-            [(nzFileList)]="fileList"
-            [nzMultiple]="true"
-            [nzDisabled]="!isEdit"
-            [nzPreview]="handlePreview"
-            nzType="drag"
-            [nzBeforeUpload]="beforeUpload"
-            [nzRemove] = "removePhoto"
-          >
-            <div class="w-100">
-              <i class="fa-solid fa-arrow-up-from-bracket"></i>
-              <span>Click or drag to upload</span>
-            </div>
-          </nz-upload>
-          <br>
-          <nz-modal
-            [nzVisible]="previewVisible"
-            [nzContent]="modalContent"
-            [nzFooter]="null"
-            (nzOnCancel)="previewVisible = false"
-          >
-            <ng-template #modalContent>
-              <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
-            </ng-template>
-          </nz-modal>
+  <form nz-form [formGroup]="colorForm" [nzLayout]="'vertical'">
+    <ng-container *ngIf="data?.id">
+      <!-- Start upload image -->
+      <div nz-row>
+        <div nz-col nzSpan="24">
+          <div class="clearfix">
+            <nz-upload
+              [nzAction]="uploadUrl"
+              nzListType="picture-card"
+              [(nzFileList)]="fileList"
+              [nzMultiple]="true"
+              [nzDisabled]="!isEdit"
+              [nzPreview]="handlePreview"
+              nzType="drag"
+              [nzBeforeUpload]="beforeUpload"
+              [nzRemove]="removePhoto"
+            >
+              <div class="w-100">
+                <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                <span>Click or drag to upload</span>
+              </div>
+            </nz-upload>
+            <br />
+            <nz-modal
+              [nzVisible]="previewVisible"
+              [nzContent]="modalContent"
+              [nzFooter]="null"
+              (nzOnCancel)="previewVisible = false"
+            >
+              <ng-template #modalContent>
+                <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+              </ng-template>
+            </nz-modal>
+          </div>
         </div>
       </div>
-    </div>
+      <!-- End upload image -->
 
-        <nz-form-item>
-          <nz-form-label [nzSpan]="24" nzFor="name" nzRequired>
-            <span>Name</span>
-          </nz-form-label>
-          <nz-form-control [nzSpan]="24" nzErrorTip="Name is required">
-            <input
-              nz-input
-              name="Name"
-              type="name"
-              id="name"
-              formControlName="name"
-              placeholder="Input name"
-            />
-          </nz-form-control>
-        </nz-form-item>
+      <!-- Start select color -->
+      <div nz-row>
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-label [nzSpan]="24" nzFor="color" nzRequired>
+              <span>Color</span>
+            </nz-form-label>
+            <nz-form-control [nzSpan]="24">
+              <nz-select
+                nzShowSearch
+                nzAllowClear
+                nzPlaceHolder="Select a color"
+                formControlName="colorId"
+                (ngModelChange)="updateUploadUrl()"
+              >
+                <nz-option
+                  *ngFor="let color of colors"
+                  [nzLabel]="color.code"
+                  [nzValue]="color.id"
+                ></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <!-- End select color -->
+    </ng-container>
+  </form>
 
-        <nz-form-item>
-          <nz-form-label [nzSpan]="24" nzFor="spec" nzRequired>
-            <span>Specification</span>
-          </nz-form-label>
-          <nz-form-control>
-            <nz-select
-              formControlName="specificationId"
-              nzMode="multiple"
-              nzPlaceHolder="Select specification"
-            >
-              <nz-option
-                *ngFor="let option of specifications"
-                [nzLabel]="option.code"
-                [nzValue]="option.id"
-              ></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
+  <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="name" nzRequired>
+        <span>Name</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Name is required">
+        <input
+          nz-input
+          name="Name"
+          type="name"
+          id="name"
+          formControlName="name"
+          placeholder="Input name"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="spec" nzRequired>
+        <span>Specification</span>
+      </nz-form-label>
+      <nz-form-control>
+        <nz-select
+          formControlName="specificationId"
+          nzMode="multiple"
+          nzPlaceHolder="Select specification"
+        >
+          <nz-option
+            *ngFor="let option of specifications"
+            [nzLabel]="option.code"
+            [nzValue]="option.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
 
     <div nz-row nzGutter="16">
       <div nz-col nzSpan="12">

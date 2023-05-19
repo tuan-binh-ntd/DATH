@@ -45,4 +45,8 @@ export class ProductService {
       this.baseUrl + '/' + id + '/photos' + '/' + photoId
     );
   }
+
+  getProductBySpecificationId(id: number, specificationId: number): Observable<Product> {
+    return this.http.get<Product>(this.baseUrl + '/' + id + '&' + specificationId);
+  }
 }

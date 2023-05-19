@@ -16,14 +16,17 @@ namespace API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IRepository<Shop> _shopRepo;
+        private readonly IRepository<Warehouse> _warehouseRepo;
 
         public ShopsController(
             IMapper mapper,
-            IRepository<Shop> shopRepo
+            IRepository<Shop> shopRepo,
+            IRepository<Warehouse> warehouseRepo
             )
         {
             _mapper = mapper;
             _shopRepo = shopRepo;
+            _warehouseRepo = warehouseRepo;
         }
 
         [HttpGet]
@@ -88,6 +91,25 @@ namespace API.Controllers
         {
             await _shopRepo.DeleteAsync(id);
             return CustomResult(id, HttpStatusCode.OK);
+        }
+
+        [HttpGet("{id}/warehouse")]
+        public async Task<IActionResult> GetWarehouse(int id)
+        {
+            IQueryable<GetWarehouseForViewDto> query = from s in _shopRepo.GetAll().AsNoTracking()
+                                                       join w in _warehouseRepo.GetAll().AsNoTracking() on s.Id equals w.ShopId
+                                                       where s.Id == id
+                                                       select new GetWarehouseForViewDto
+                                                       {
+                                                           Id = s.Id,
+                                                           Name = s.Name,
+                                                           Address = s.Address,
+                                                           WarehouseId = w.Id,
+                                                           WarehouseName = w.Name,
+                                                       };
+            GetWarehouseForViewDto? data = await query.SingleOrDefaultAsync();
+            if(data == null) return CustomResult("Not found warehouse" ,HttpStatusCode.NoContent);
+            return CustomResult(data, HttpStatusCode.OK);
         }
     }
 }

@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { Shop } from '../models/shop.model';
 import { PaginationResult } from '../models/pagination-result';
 import { ResponseResult } from '../models/response';
+import { Warehouse } from '../models/warehouse.model';
 
 @Injectable({
   providedIn: 'root'
@@ -33,5 +34,9 @@ export class ShopService {
 
   delete(id: number): Observable<any>{
     return this.http.delete(this.baseUrl + '/' + id);
+  }
+
+  getWarehouse(shopId: number): Observable<ResponseResult<Shop>> {
+    return this.http.get<ResponseResult<Shop>>(this.baseUrl + '/' + shopId + '/warehouse');
   }
 }

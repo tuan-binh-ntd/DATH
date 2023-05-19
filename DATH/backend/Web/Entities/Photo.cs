@@ -12,5 +12,7 @@ namespace Entities
         // Relationship
         public Product? Product { get; set; }
         public long ProductId { get; set; }
+        public Specification? Specification { get; set; }
+        public long? SpecificationId { get; set; }
     }
 }

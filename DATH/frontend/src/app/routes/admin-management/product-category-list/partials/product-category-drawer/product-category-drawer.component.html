@@ -25,6 +25,26 @@
       </nz-form-control>
     </nz-form-item>
 
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="parent">
+        <span>Parent</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select a parent"
+          formControlName="parentId"
+        >
+          <nz-option
+            *ngFor="let product of productCategoryParents"
+            [nzLabel]="product.name"
+            [nzValue]="product.id"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
   </form>
 </app-drawer-form-base>
 
