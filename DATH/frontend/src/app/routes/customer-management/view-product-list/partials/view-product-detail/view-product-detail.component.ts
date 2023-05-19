@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Subscription, switchMap, take } from 'rxjs';
 import { Cart } from 'src/app/stores/cart/cart.model';
@@ -15,6 +15,7 @@ import { CartService } from 'src/app/stores/cart/cart.service';
 import { CartState, CartStore } from 'src/app/stores/cart/cart.store';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Subject } from '@microsoft/signalr';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: 'app-view-product-detail',
@@ -41,10 +42,12 @@ export class ViewProductDetailComponent {
     private productCategoryService: ProductCategoryService,
     private cartService: CartService,
     private cartQuery: CartQuery,
-    private msg: NzMessageService
+    private msg: NzMessageService,
+    private router: Router,
+    
+
   ) {}
   cartObject: Cart = {
-    id: '',
     name: '',
     specifications: [],
     photo: '',
@@ -54,6 +57,7 @@ export class ViewProductDetailComponent {
   cartObject$!: Subscription;
   cartObjects$ = this.cartQuery.selectAll();
   ngOnInit() {
+ 
     this.route.paramMap
       .pipe(
         switchMap(async (params) => {
@@ -76,7 +80,6 @@ export class ViewProductDetailComponent {
         if (checkResponseStatus(res)) {
           this.data = res?.data;
           this.mainImgUrl = res?.data.photos![0]?.url;
-          this.cartObject.id = res?.data.id;
           this.cartObject.name = res?.data.name;
           this.cartObject.photo = this.mainImgUrl;
           this.cartObject.quantity = 1;
@@ -114,10 +117,13 @@ export class ViewProductDetailComponent {
       const index = this.cartObject.specifications.findIndex((item) => {
         return Object.keys(item).includes('color');
       });
-      this.cartObject.specifications.splice(index, 1, {
-        color: this.listColor.find((item) => item.value === value)?.code,
-      });
-    }
+      const obj = {
+        color: this.listColor.find((item) => item.value === value)?.code
+      }
+      const arr = [... this.cartObject.specifications];
+      arr.splice(index, 1, obj);
+      this.cartObject.specifications = [...arr];
+      };
     this.selectedColor = value;
   }
 
@@ -139,9 +145,9 @@ export class ViewProductDetailComponent {
     this.cartObject$ = this.cartQuery
       .selectEntity((item) => {
         const cart = {...item};
-        let price = cart.price / cart.quantity;
         cart.quantity = 1;
-        cart.price = price;
+        cart.price = this.cartObject.price;
+        delete cart.id;
         return JSON.stringify(cart) === JSON.stringify(this.cartObject)
       })
       .pipe(take(1))
@@ -149,12 +155,13 @@ export class ViewProductDetailComponent {
         if (res) {
           var cart = { ...res };
           cart.quantity++;
-          cart.price = cart.quantity * cart.price;
+          cart.price = cart.quantity * this.cartObject.price;
           this.cartService.update(res.id, cart);
         } else {
-          this.cartService.insert(this.cartObject);
+          const obj = {id: Guid.create().toString(), ...this.cartObject};
+          this.cartService.insert(obj);
         }
       });
-
+        this.router.navigateByUrl(`/cart`).then(() => window.location.reload());
   }
 }

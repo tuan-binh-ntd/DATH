@@ -1,6 +1,6 @@
 
 export interface Cart {
-  id: string | null,
+  id?: string | null,
   name: string | null,
   photo: string | null,
   specifications: any[],

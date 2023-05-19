@@ -16,11 +16,10 @@ export class CustomerCartComponent {
     private cartService: CartService,
     private router: Router
   ){}
-  cartObjects$: Observable<Cart[]> = this.cartQuery.selectAll();
+  cartObjects$: Observable<Cart[]>
   objectKeys = Object.keys;
   ngOnInit(){
-  this.cartObjects$.subscribe(res => {
-    })
+    this.cartObjects$  = this.cartQuery.selectAll();
   }
 
   goToProduct(id: string){

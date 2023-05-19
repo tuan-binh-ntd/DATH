@@ -6,7 +6,9 @@ import { CartState, CartStore } from "./cart.store";
 export class CartService {
   constructor(private cartStore: CartStore) {}
   insert(cart: Cart){
+    this.cartStore.setLoading(true);
     this.cartStore.add(cart);
+    this.cartStore.setLoading(false);
   }
   update(id: string, cart: Partial<CartState>) {
     this.cartStore.update(id, cart);
