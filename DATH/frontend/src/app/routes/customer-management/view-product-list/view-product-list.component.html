@@ -31,7 +31,7 @@
         <span><i class="fa-solid fa-search mr-2 text-muted"></i></span>
       </ng-template>
 
-      <nz-collapse *ngIf="listColor.length > 0">
+      <nz-collapse *ngIf="listColor?.length > 0">
         <nz-collapse-panel nzHeader="Colour">
           <div nz-row nzGutter="16">
             <div nz-col nzSan="8" *ngFor="let item of listColor" class="mb-2">
@@ -51,7 +51,7 @@
         </nz-collapse-panel>
       </nz-collapse>
 
-      <nz-collapse *ngIf="listCapacity.length > 0">
+      <nz-collapse *ngIf="listCapacity?.length > 0">
         <nz-collapse-panel nzHeader="Capacity">
           <nz-checkbox-wrapper style="width: 100%">
             <div nz-row nzGutter="16">

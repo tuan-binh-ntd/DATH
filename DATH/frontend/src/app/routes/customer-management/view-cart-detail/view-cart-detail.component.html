@@ -1,0 +1,68 @@
+<app-page-grid>
+  <div nz-row nzGutter="16">
+    <div nz-col nzSpan="16">
+        <nz-table
+        #rowSelectionTable
+        [nzData]="listOfData"
+        [nzShowPagination]="false"
+        [nzFrontPagination]="false"
+      >
+      <thead>
+        <tr>
+          <th
+            *ngFor="let column of listOfColumn"
+            [nzWidth]="column.width"
+            [nzSortOrder]="column.sortOrder"
+            [ngClass]="column.class"
+            [nzSortDirections]="column.sortDirections"
+            (nzSortOrderChange)="onSort($event, column)"
+          >
+            {{ column.name }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of cartObjects$ | async">
+          <tr >
+           <td>
+            <img
+            nz-image
+            width="100px"
+            height="100px"
+            [nzSrc]="item.photo"
+            alt=""
+          />
+           </td>
+           <td>
+            <h3 class="font-weight-bold ">{{item.name}}</h3>
+            <br>
+            <span>
+                <nz-list-item-meta-description *ngFor="let ele of item.specifications">
+                    <div *ngFor="let obj of ele | keyvalue" >
+                      <span class="d-flex">{{ obj.key.toString() | titlecase }}: &nbsp; <p class="mb-0">{{ obj.value }}</p></span>
+                    </div>
+                  </nz-list-item-meta-description>
+            </span>
+           </td>
+           <td>
+            <span class="font-weight-bold">{{item.price | number}}</span>
+           </td>
+           <td class="d-flex">
+            <nz-input-number nzBorderless [(ngModel)]="item.quantity"></nz-input-number>
+            <span
+            ><app-button-icon
+              toolTipTitle="Delete"
+              iconClass="fa-regular fa-trash"
+              placement="top"
+              (click)="deleteRecord()"
+            ></app-button-icon
+          ></span>
+           </td>
+          </tr>
+        </ng-container>
+      </tbody>
+      </nz-table>
+    </div>
+    <div nz-col nzSpan="8"></div>
+    </div>
+ </app-page-grid>

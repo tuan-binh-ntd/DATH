@@ -23,6 +23,7 @@
     "@datorama/akita": "^7.1.1",
     "@microsoft/signalr": "^7.0.5",
     "bluebird": "^3.7.2",
+    "guid-typescript": "^1.0.9",
     "ng-zorro-antd": "^15.0.3",
     "ngx-cookie-service": "^15.0.0",
     "ngx-infinite-scroll": "^15.0.0",

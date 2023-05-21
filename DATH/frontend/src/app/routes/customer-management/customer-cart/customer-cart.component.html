@@ -1,17 +1,23 @@
-  <div class="p-2">
-    <h3>Your cart</h3>
-    <nz-list nzItemLayout="vertical" style="width: 250px;">
-      <nz-list-item *ngFor="let item of cartObjects$ | async">
-        <nz-list-item-meta>
-          <nz-list-item-meta-avatar
-            [nzSrc]="item.photo!"
-          ></nz-list-item-meta-avatar>
-          <nz-list-item-meta-title>
-           {{ item.name }}
-          </nz-list-item-meta-title>
-          <nz-list-item-meta-title>
-          </nz-list-item-meta-title>
-        </nz-list-item-meta>
-      </nz-list-item>
-    </nz-list>
-  </div>
+<div class="p-2">
+  <h3>Your cart</h3>
+  <nz-list style="width: 350px" >
+    <nz-list-item *ngFor="let item of cartObjects$ | async" (click)="goToProduct(item.id)">
+      <nz-list-item-extra>
+        <nz-badge [nzCount]="item.quantity">
+        <img width="80px" class="cart-img" alt="logo" [src]="item.photo!" />
+        </nz-badge>
+      </nz-list-item-extra>
+      <nz-list-item-meta>
+        <nz-list-item-meta-title >
+          <span class="text-truncate">{{ item.name }}</span>
+          <span class="float-right">{{ item.price | number }}</span>
+        </nz-list-item-meta-title>
+        <nz-list-item-meta-description *ngFor="let ele of item.specifications">
+          <div *ngFor="let obj of ele | keyvalue" >
+            <span class="d-flex">{{ obj.key.toString() | titlecase }}: &nbsp; <p class="mb-0">{{ obj.value }}</p></span>
+          </div>
+        </nz-list-item-meta-description>
+      </nz-list-item-meta>
+    </nz-list-item>
+  </nz-list>
+</div>
