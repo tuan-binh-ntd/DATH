@@ -4,6 +4,7 @@ using Bussiness.Helper;
 using Bussiness.Repository;
 using Bussiness.Services;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -23,7 +24,7 @@ namespace API.Controllers
             _paymentRepo = paymentRepo;
             _mapper = mapper;
         }
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
@@ -59,7 +60,7 @@ namespace API.Controllers
         {
             Payment? data = new();
             _mapper.Map(input, data);
-            await _paymentRepo.InsertAsync(data);
+            await _paymentRepo.InsertAsync(data);   
 
             PaymentForViewDto? res = new();
             _mapper.Map(data, res);

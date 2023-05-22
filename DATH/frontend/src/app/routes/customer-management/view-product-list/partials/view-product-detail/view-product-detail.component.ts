@@ -162,6 +162,6 @@ export class ViewProductDetailComponent {
           this.cartService.insert(obj);
         }
       });
-        this.router.navigateByUrl(`/cart`).then(() => window.location.reload());
+        this.router.navigateByUrl(`/cart`);
   }
 }

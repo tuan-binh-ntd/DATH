@@ -14,6 +14,10 @@ export class CartService {
     this.cartStore.update(id, cart);
   }  
 
+  delete(id: string){
+    this.cartStore.remove(id);
+  } 
+
   removeAll(){
     this.cartStore.remove();
   }

@@ -34,7 +34,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
   formatterPrice = (value: number): string => value !== null ? `${value}đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
   parserPrice = (value: string): string => value.replace(/\đ\s?|(,*)/g, '');
   fileList: NzUploadFile[] = [];
-
+ 
   previewImage: string | undefined = '';
   previewVisible = false;
 

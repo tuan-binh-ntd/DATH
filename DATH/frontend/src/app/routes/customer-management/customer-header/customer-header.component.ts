@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -32,8 +32,8 @@ export class CustomerHeaderComponent implements OnInit {
     private cookerService: CookieService,
     private router: Router,
     private themeService: ThemeService,
-    private cartQuery: CartQuery
-
+    private cartQuery: CartQuery,
+    private cdr: ChangeDetectorRef
   ) {}
   isVisible: boolean = false;
   signUpForm!: FormGroup;
@@ -210,5 +210,9 @@ export class CustomerHeaderComponent implements OnInit {
 
   changeTheme(){
     this.themeService.toggleTheme();
+  }
+
+  goToCart(){
+    this.router.navigateByUrl(`/cart`);
   }
 }

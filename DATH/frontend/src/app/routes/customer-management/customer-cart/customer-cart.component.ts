@@ -20,6 +20,8 @@ export class CustomerCartComponent {
   objectKeys = Object.keys;
   ngOnInit(){
     this.cartObjects$  = this.cartQuery.selectAll();
+    this.cartObjects$.subscribe(item => {
+    })
   }
 
   goToProduct(id: string){

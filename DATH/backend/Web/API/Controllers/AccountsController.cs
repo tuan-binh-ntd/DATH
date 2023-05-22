@@ -143,7 +143,7 @@ namespace API.Controllers
                 Type = user.Type,
                 Username = user.UserName,
                 Token = await _tokenService.CreateToken(user)
-            };
+            };   
 
             if(user.Type == UserType.Admin) return CustomResult(res, HttpStatusCode.OK);
 

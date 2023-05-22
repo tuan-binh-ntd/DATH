@@ -48,10 +48,20 @@
         ></span>
       </nz-badge>
 
-      <nz-dropdown-menu #cart="nzDropdownMenu">
+      <nz-dropdown-menu #cart="nzDropdownMenu" nzNoAnimation>
         <ul nz-menu>
           <li>
             <app-customer-cart></app-customer-cart>
+          </li>
+          <li>
+            <button
+            class="w-100"
+            nz-button
+            nzType="default"
+            (click)="goToCart()"
+          >
+            See all
+          </button>
           </li>
         </ul>
       </nz-dropdown-menu>
