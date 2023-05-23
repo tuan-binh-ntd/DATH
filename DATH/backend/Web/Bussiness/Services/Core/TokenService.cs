@@ -1,4 +1,4 @@
-﻿using Bussiness.Interface;
+﻿using Bussiness.Interface.Core;
 using Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -7,7 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Bussiness.Service
+namespace Bussiness.Services.Core
 {
     public class TokenService : ITokenService
     {

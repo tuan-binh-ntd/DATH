@@ -1,9 +1,6 @@
 using Bussiness.Extensions;
 using Bussiness.Helper;
-using Bussiness.Interface;
 using Bussiness.Repository;
-using Bussiness.Service;
-using Bussiness.Services;
 using Database;
 using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,7 +12,30 @@ using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using API.SignalRHub;
-
+using Bussiness.Services.Core;
+using Bussiness.Interface.Core;
+using Bussiness.Interface.ProductInterface;
+using Bussiness.Services.ProductService;
+using Bussiness.Interface.ProductCategoryInterface;
+using Bussiness.Services.ProductCategoryService;
+using Bussiness.Interface.CustomerInterface;
+using Bussiness.Interface.EmployeeInterface;
+using Bussiness.Services.EmployeeService;
+using Bussiness.Services.CustomerService;
+using Bussiness.Interface.PaymentInterface;
+using Bussiness.Services.PaymentService;
+using Bussiness.Interface.PromotionInterface;
+using Bussiness.Services.PromotionService;
+using Bussiness.Interface.ShippingInterface;
+using Bussiness.Services.ShippingService;
+using Bussiness.Interface.ShopInterface;
+using Bussiness.Services.ShopService;
+using Bussiness.Services.SpecificationCategoryService;
+using Bussiness.Interface.SpecificationInterface;
+using Bussiness.Services.SpecificationService;
+using Bussiness.Interface.SpecificationCategoryInterface;
+using Bussiness.Interface.WarehouseInterface;
+using Bussiness.Services.WarehouseService;
 // Set path of project for APP_BASE_DIRECTORY
 Environment.SetEnvironmentVariable("APP_BASE_DIRECTORY", Directory.GetCurrentDirectory());
 
@@ -37,6 +57,17 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddSingleton<ISession, SessionWrapper>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<IDapper, Dapperr>();
+builder.Services.AddScoped<IProductAppService, ProductAppService>();
+builder.Services.AddScoped<IProductCategoryAppService, ProductCategoryAppService>();
+builder.Services.AddScoped<ICustomerAppService, CustomerAppService>();
+builder.Services.AddScoped<IEmployeeAppService, EmployeeAppService>();
+builder.Services.AddScoped<IPaymentAppService, PaymentAppService>();
+builder.Services.AddScoped<IPromotionAppService, PromotionAppService>();
+builder.Services.AddScoped<IShippingAppService, ShippingAppService>();
+builder.Services.AddScoped<IShopAppService, ShopAppService>();
+builder.Services.AddScoped<ISpecificationCategoryAppService, SpecificationCategoryAppService>();
+builder.Services.AddScoped<ISpecificationAppService, SpecificationAppService>();
+builder.Services.AddScoped<IWarehouseAppService, WarehouseAppService>();
 // End  Declaration DI
 
 // Set up connection SQL Server

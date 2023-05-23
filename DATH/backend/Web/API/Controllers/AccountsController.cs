@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
-using Bussiness.Interface;
+using Bussiness.Interface.Core;
 using Bussiness.Repository;
 using CoreApiResponse;
 using Entities;

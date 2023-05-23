@@ -1,90 +1,56 @@
-﻿using AutoMapper;
-using Bussiness.Dto;
-using Bussiness.Helper;
-using Bussiness.Repository;
-using Bussiness.Services;
-using Entities;
+﻿using Bussiness.Dto;
+using Bussiness.Interface.ShippingInterface;
+using Bussiness.Services.Core;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace API.Controllers
 {
     public class ShippingsController : AdminBaseController
     {
-        private readonly IMapper _mapper;
-        private readonly IRepository<Shipping> _shippingRepo;
+        private readonly IShippingAppService _shippingAppService;
 
         public ShippingsController(
-            IMapper mapper,
-            IRepository<Shipping> shippingRepo
+            IShippingAppService shippingAppService
             )
         {
-            _mapper = mapper;
-            _shippingRepo = shippingRepo;
+            _shippingAppService = shippingAppService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
-            IQueryable<ShippingForViewDto> query = from s in _shippingRepo.GetAll().AsNoTracking()
-                                               select new ShippingForViewDto()
-                                               {
-                                                   Id = s.Id,
-                                                   Name = s.Name,
-                                                   Cost = s.Cost,
-                                               };
-
-            if (input.PageNum != null && input.PageSize != null) return CustomResult(await query.Pagination(input), HttpStatusCode.OK);
-            else return CustomResult(await query.ToListAsync(), HttpStatusCode.OK);
+            object res = await _shippingAppService.GetShippings(input);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            IQueryable<ShippingForViewDto> query = from s in _shippingRepo.GetAll().AsNoTracking()
-                                               where s.Id == id
-                                               select new ShippingForViewDto()
-                                               {
-                                                   Id = id,
-                                                   Name = s.Name,
-                                                   Cost = s.Cost
-                                               };
-            ShippingForViewDto? data = await query.FirstOrDefaultAsync();
-            if (data == null) return CustomResult(null, HttpStatusCode.NoContent);
-
-            return CustomResult(data, HttpStatusCode.OK);
+            ShippingForViewDto? res = await _shippingAppService.GetShipping(id);
+            if (res is null) return CustomResult(HttpStatusCode.NoContent);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(ShippingInput input)
         {
-            Shipping data = new();
-            _mapper.Map(input, data);
-
-            await _shippingRepo.InsertAsync(data);
-            ShippingForViewDto? res = new();
-            _mapper.Map(data, res);
+            ShippingForViewDto? res = await _shippingAppService.CreateOrUpdate(null, input);
             return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ShippingInput input)
         {
-            Shipping? data = await _shippingRepo.GetAsync(id);
-            if (data == null) return CustomResult(HttpStatusCode.NoContent);
-            _mapper.Map(input, data);
-
-            await _shippingRepo.UpdateAsync(data);
-            ShippingForViewDto? res = new();
-            _mapper.Map(data, res);
+            ShippingForViewDto? res = await _shippingAppService.CreateOrUpdate(id, input);
+            if (res is null) return CustomResult(HttpStatusCode.NoContent);
             return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _shippingRepo.DeleteAsync(id);
+            await _shippingAppService.Delete(id);
             return CustomResult(id, HttpStatusCode.OK);
         }
     }

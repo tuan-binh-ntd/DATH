@@ -1,6 +1,6 @@
 ﻿using Entities;
-    
-namespace Bussiness.Interface
+
+namespace Bussiness.Interface.Core
 {
     public interface ITokenService
     {

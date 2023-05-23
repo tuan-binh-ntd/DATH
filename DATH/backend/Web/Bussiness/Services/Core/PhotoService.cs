@@ -1,11 +1,11 @@
 ﻿using Bussiness.Helper;
-using Bussiness.Interface;
+using Bussiness.Interface.Core;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace Bussiness.Services
+namespace Bussiness.Services.Core
 {
     public class PhotoService : IPhotoService
     {
