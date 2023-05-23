@@ -3,4 +3,5 @@ export interface Photo {
   url: string | null,
   publicId: string | null,
   productId: number | null,
+  isMain: boolean;
 }

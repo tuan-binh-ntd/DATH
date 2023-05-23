@@ -51,7 +51,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
             return this.productService.addPhoto(this.drawerForm.value.id, false, file, "")
             .toPromise().then((res: any) => {
               if(checkResponseStatus(res)){
-                resolve(res.data[0].fileUrl);
+                resolve(res.data.photos[0]?.url);
               }
             })
             .catch((err: any) => {
@@ -127,12 +127,15 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
    
     // set file list
     if (data.photos !== undefined) {
-      this.fileList = (data.photos as Photo[]).map((e) => ({
+      this.fileList = (data.photos as Photo[])
+      .filter((e) => e.isMain) // Filter the array to include only elements where IsMain is true
+      .map((e) => ({
         uid: `${e.id}`,
         name: 'image.png',
         status: 'done',
-        url: `${e.url}`
-      }))
+        url: `${e.url}`,
+        isMain: e.isMain
+      }));
     }
   }
 
