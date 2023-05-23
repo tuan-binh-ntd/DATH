@@ -210,7 +210,6 @@ namespace Bussiness.Services.ProductService
                     select 
 			            Id,
 			            [Name],
-			            [Name],a
 			            Price,
 			            [Description],
 			            ProductCategoryId,
