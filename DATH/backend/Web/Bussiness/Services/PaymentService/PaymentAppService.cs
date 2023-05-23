@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
 using Bussiness.Helper;
+using Bussiness.Interface.Core;
 using Bussiness.Interface.PaymentInterface;
 using Bussiness.Repository;
 using Bussiness.Services.Core;
 using Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bussiness.Services.PaymentService
@@ -12,14 +14,17 @@ namespace Bussiness.Services.PaymentService
     public class PaymentAppService : BaseService, IPaymentAppService
     {
         private readonly IRepository<Payment> _paymentRepo;
+        private readonly IPhotoService _photoService;
 
         public PaymentAppService(
             IRepository<Payment> paymentRepo,
-            IMapper mapper
+            IMapper mapper,
+            IPhotoService photoService
             )
         {
             ObjectMapper = mapper;
             _paymentRepo = paymentRepo;
+            _photoService = photoService;
         }
 
         #region CreateOrUpdate
@@ -87,5 +92,50 @@ namespace Bussiness.Services.PaymentService
             else return await query.ToListAsync();
         }
         #endregion
+
+        #region AddPhoto
+        public async Task<object> AddPhoto(int id, IFormFile file)
+        {
+            var result = await _photoService.AddPhotoAsync(file);
+
+            if (result.Error != null) return result.Error.Message;
+
+            Payment? payment = await _paymentRepo.GetAsync(id);
+
+            payment!.Url = result.SecureUrl.AbsoluteUri;
+            payment!.PublicId = result.PublicId;
+
+            if(await _paymentRepo.UpdateAsync(payment) != null)
+            {
+                PaymentForViewDto res = new();
+
+                ObjectMapper!.Map(payment, res);
+                return res;
+            }
+            return "Problem adding photo";
+        }
+        #endregion
+
+        #region DeletePhoto
+        public async Task<object> DeletePhoto(int id)
+        {
+            Payment? payment = await _paymentRepo.GetAll().Where(p => p.Id == id).SingleOrDefaultAsync();
+
+            var result = await _photoService.DeletePhotoAsync(payment!.PublicId!);
+            if (result.Error != null) return result.Error.Message;
+            payment.Url = null;
+            payment.PublicId = null;
+
+            if (await _paymentRepo.UpdateAsync(payment) != null)
+            {
+                PaymentForViewDto res = new();
+
+                ObjectMapper!.Map(payment, res);
+                return res;
+            }
+            return "Failed to delete your photo";
+        }
+        #endregion
+
     }
 }

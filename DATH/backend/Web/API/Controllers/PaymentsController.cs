@@ -1,12 +1,7 @@
-﻿using AutoMapper;
-using Bussiness.Dto;
-using Bussiness.Helper;
+﻿using Bussiness.Dto;
 using Bussiness.Interface.PaymentInterface;
-using Bussiness.Repository;
 using Bussiness.Services.Core;
-using Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace API.Controllers
@@ -33,7 +28,7 @@ namespace API.Controllers
         public async Task<IActionResult> Get(int id)
         {
             PaymentForViewDto? res = await _paymentAppService.GetPayment(id);
-            if(res is null) return CustomResult(HttpStatusCode.NoContent);
+            if (res is null) return CustomResult(HttpStatusCode.NoContent);
             return CustomResult(res, HttpStatusCode.OK);
         }
 
@@ -58,6 +53,22 @@ namespace API.Controllers
         {
             await _paymentAppService.Delete(id);
             return CustomResult(id, HttpStatusCode.OK);
+        }
+
+        [HttpPost("{id}/photos")]
+        public async Task<IActionResult> AddPhoto(int id, IFormFile file)
+        {
+            object res = await _paymentAppService.AddPhoto(id, file);
+            if (res is string) return CustomResult(res.ToString(), HttpStatusCode.BadRequest);
+            return CustomResult(res, HttpStatusCode.OK);
+        }
+
+        [HttpDelete("{id}/photos")]
+        public async Task<IActionResult> RemovePhoto(int id)
+        {
+            object res = await _paymentAppService.DeletePhoto(id);
+            if (res is string) return CustomResult(res.ToString(), HttpStatusCode.BadRequest);
+            return CustomResult(res, HttpStatusCode.OK);
         }
     }
 }

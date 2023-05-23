@@ -76,7 +76,7 @@ namespace API.Controllers
             }
             else
             {
-                return CustomResult(HttpStatusCode.OK);
+                return CustomResult(res, HttpStatusCode.OK);
             }
         }
 
