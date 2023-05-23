@@ -1,7 +1,7 @@
 ﻿using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 
-namespace Bussiness.Interface
+namespace Bussiness.Interface.Core
 {
     public interface IPhotoService
     {

@@ -1,4 +1,4 @@
-﻿namespace Bussiness.Services
+﻿namespace Bussiness.Services.Core
 {
     public class PaginationInput
     {

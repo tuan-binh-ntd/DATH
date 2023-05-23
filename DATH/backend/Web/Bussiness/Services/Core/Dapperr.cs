@@ -1,5 +1,4 @@
-﻿using Bussiness.Interface;
-using Dapper;
+﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data.Common;
@@ -7,8 +6,9 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using Bussiness.Helper;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Bussiness.Interface.Core;
 
-namespace Bussiness.Services
+namespace Bussiness.Services.Core
 {
     public class Dapperr : IDapper
     {
@@ -38,7 +38,7 @@ namespace Bussiness.Services
 
         public async Task<PaginationResult<TSource>> GetAllAndPaginationAsync<TSource>(string sql, [NotNull] PaginationInput input, DynamicParameters param, CommandType commandType = CommandType.Text)
         {
-            if(commandType == CommandType.StoredProcedure)
+            if (commandType == CommandType.StoredProcedure)
             {
                 throw new ArgumentOutOfRangeException("Not support for stored procedures");
             }
@@ -84,6 +84,6 @@ namespace Bussiness.Services
             return new SqlConnection(_config.GetConnectionString(_connectionString));
         }
 
-        
+
     }
 }

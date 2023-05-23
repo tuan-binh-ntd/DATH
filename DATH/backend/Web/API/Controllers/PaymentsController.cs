@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
 using Bussiness.Helper;
+using Bussiness.Interface.PaymentInterface;
 using Bussiness.Repository;
-using Bussiness.Services;
+using Bussiness.Services.Core;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,77 +13,50 @@ namespace API.Controllers
 {
     public class PaymentsController : AdminBaseController
     {
-        private readonly IRepository<Payment> _paymentRepo;
-        private readonly IMapper _mapper;
+        private readonly IPaymentAppService _paymentAppService;
 
         public PaymentsController(
-            IRepository<Payment> paymentRepo,
-            IMapper mapper
+            IPaymentAppService paymentAppService
             )
         {
-            _paymentRepo = paymentRepo;
-            _mapper = mapper;
+            _paymentAppService = paymentAppService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
-            IQueryable<PaymentForViewDto> query = from p in _paymentRepo.GetAll().AsNoTracking()
-                                                        select new PaymentForViewDto()
-                                                        {
-                                                            Id = p.Id,
-                                                            Name = p.Name,
-                                                        };
-
-            if (input.PageNum != null && input.PageSize != null) return CustomResult(await query.Pagination(input), HttpStatusCode.OK);
-            else return CustomResult(await query.ToListAsync(), HttpStatusCode.OK);
+            object res = await _paymentAppService.GetPayments(input);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(long id)
+        public async Task<IActionResult> Get(int id)
         {
-            IQueryable<PaymentForViewDto> query = from p in _paymentRepo.GetAll().AsNoTracking()
-                                                        where p.Id == id
-                                                        select new PaymentForViewDto()
-                                                        {
-                                                            Id = p.Id,
-                                                            Name = p.Name,
-                                                        };
-            PaymentForViewDto? data = await query.SingleOrDefaultAsync();
-            if (data == null) return CustomResult(HttpStatusCode.NoContent);
-
-            return CustomResult(data, HttpStatusCode.OK);
+            PaymentForViewDto? res = await _paymentAppService.GetPayment(id);
+            if(res is null) return CustomResult(HttpStatusCode.NoContent);
+            return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(PaymentInput input)
         {
-            Payment? data = new();
-            _mapper.Map(input, data);
-            await _paymentRepo.InsertAsync(data);
-
-            PaymentForViewDto? res = new();
-            _mapper.Map(data, res);
+            PaymentForViewDto? res = await _paymentAppService.CreateOrUpdate(null, input);
+            if (res is null) return CustomResult(HttpStatusCode.NoContent);
             return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, PaymentInput input)
         {
-            Payment? payment = await _paymentRepo.GetAsync(id);
-            if (payment == null) return CustomResult(HttpStatusCode.NoContent);
-            _mapper.Map(input, payment);
-
-            await _paymentRepo.UpdateAsync(payment);
-            PaymentForViewDto? res = new();
-            _mapper.Map(payment, res);
+            PaymentForViewDto? res = await _paymentAppService.CreateOrUpdate(id, input);
+            if (res is null) return CustomResult(HttpStatusCode.NoContent);
             return CustomResult(res, HttpStatusCode.OK);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _paymentRepo.DeleteAsync(id);
+            await _paymentAppService.Delete(id);
             return CustomResult(id, HttpStatusCode.OK);
         }
     }

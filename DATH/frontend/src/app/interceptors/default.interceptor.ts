@@ -40,7 +40,7 @@ export class DefaultInterceptor implements HttpInterceptor {
             this.router.navigateByUrl('passport/login');
           }
           return throwError(
-            () => new Error(error.error.message ?? 'Something went wrong')
+            () => new Error(error.error?.message ?? 'Something went wrong')
           );
           // Return an observable with a user-facing error message.
         })
