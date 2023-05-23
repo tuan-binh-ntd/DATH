@@ -1,9 +1,9 @@
 import { SpecificationCategoryService } from 'src/app/services/specification-category.service';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
-import { finalize, Observable, Observer } from 'rxjs';
+import { finalize, Observable, Observer, subscribeOn } from 'rxjs';
 import { Photo } from 'src/app/models/photo.model';
 import { ProductCategory } from 'src/app/models/product-category.model';
 import { Specification } from 'src/app/models/specification.model';
@@ -12,8 +12,8 @@ import { ProductCategoryService } from 'src/app/services/product-category.servic
 import { ProductService } from 'src/app/services/product.service';
 import { SpecificationService } from 'src/app/services/specification.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
+import Quill from 'quill';
+import { ImageHandler } from 'ngx-quill-upload';
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -21,6 +21,7 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
     reader.onload = () => resolve(reader.result);
     reader.onerror = error => reject(error);
   });
+  Quill.register('modules/imageHandler', ImageHandler);
 
 @Component({
   selector: 'app-product-drawer',
@@ -28,16 +29,42 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   styleUrls: ['./product-drawer.component.less']
 })
 export class ProductDrawerComponent extends DrawerFormBaseComponent {
+  @ViewChild('editor') editor!: ElementRef;
+
   productCategories: ProductCategory[] = [];
   specifications: Specification[] = [];
-  public Editor = ClassicEditor;
-  formatterPrice = (value: number): string => value !== null ? `${value}đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
-  parserPrice = (value: string): string => value.replace(/\đ\s?|(,*)/g, '');
   fileList: NzUploadFile[] = [];
- 
   previewImage: string | undefined = '';
   previewVisible = false;
+  uploadUrl: string = '';
+  colors: any[] = [];
+  colorForm!: FormGroup;
+  editorOptions = {
+    imageHandler: {
+      upload: (file: any) => {
+        return new Promise((resolve, reject) => {
+          if (
+            file.type === 'image/jpeg' ||
+            file.type === 'image/png' ||
+            file.type === 'image/jpg'
+          ){
+            return this.productService.addPhoto(this.drawerForm.value.id, false, file, "")
+            .toPromise().then((res: any) => {
+              if(checkResponseStatus(res)){
+                resolve(res.data[0].fileUrl);
+              }
+            })
+            .catch((err: any) => {
+             return reject('Upload Failed');
+            });
+          }
+          else {
+            return reject('Unsupported type image');
+          }
 
+        })}
+    }
+  }
   handlePreview = async (file: NzUploadFile): Promise<void> => {
     if (!file.url && !file['preview']) {
       file['preview'] = await getBase64(file.originFileObj!);
@@ -45,11 +72,8 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     this.previewImage = file.url || file['preview'];
     this.previewVisible = true;
   };
-
-  uploadUrl: string = '';
-  colors: any[] = [];
-  colorForm!: FormGroup;
-
+  formatterPrice = (value: number): string => value !== null ? `${value}đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+  parserPrice = (value: string): string => value.replace(/\đ\s?|(,*)/g, '');
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,
@@ -66,7 +90,8 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     this.fetchCategories();
     this.fetchSpecification();
     this.fetchColor();
-  }
+   
+}
 
   fetchCategories() {
     this.productCategoryService.getAll().subscribe(res => {
@@ -99,6 +124,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     this.drawerForm.get('specificationId')?.setValue(specificationId);
     // set action upload image
     this.uploadUrl = `https://localhost:7114/api/products/${data.id}/photos/true&${this}`;
+   
     // set file list
     if (data.photos !== undefined) {
       this.fileList = (data.photos as Photo[]).map((e) => ({
