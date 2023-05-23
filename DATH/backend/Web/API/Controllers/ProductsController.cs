@@ -59,7 +59,7 @@ namespace API.Controllers
         }
 
         [HttpPost("{id}/photos/{isMain}")]
-        public async Task<IActionResult> AddPhoto(long id, bool isMain, [FromQuery] long specificationId, IFormFile file)
+        public async Task<IActionResult> AddPhoto(long id, bool isMain, [FromQuery] long? specificationId, IFormFile file)
         {
             object? res = await _productAppService.AddPhoto(id, isMain, specificationId, file);
             if (res == null)

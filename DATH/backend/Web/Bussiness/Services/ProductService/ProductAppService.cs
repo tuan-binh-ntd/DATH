@@ -42,7 +42,7 @@ namespace Bussiness.Services.ProductService
         }
 
         #region AddPhoto
-        public async Task<object?> AddPhoto(long id, bool isMain, long specificationId, IFormFile file)
+        public async Task<object?> AddPhoto(long id, bool isMain, long? specificationId, IFormFile file)
         {
             Product? product = await _productRepo.GetAsync(id);
             if (product == null) return null;
@@ -69,8 +69,7 @@ namespace Bussiness.Services.ProductService
             if (await _productRepo.UpdateAsync(product) != null)
             {
                 res.Photos!.Add(ObjectMapper!.Map<PhotoDto>(photo));
-                if (isMain) return res;
-                return photo.Url;
+                return res;
             }
             return "Problem adding photo";
         }

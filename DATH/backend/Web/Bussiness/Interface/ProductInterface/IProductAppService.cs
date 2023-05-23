@@ -10,7 +10,7 @@ namespace Bussiness.Interface.ProductInterface
         Task<ProductForViewDto?> GetProduct(long id);
         Task<ProductForViewDto?> CreateOrUpdate(long? id, ProductInput input);
         Task<long> Delete(long id);
-        Task<object?> AddPhoto(long id, bool isMain, long specificationId, IFormFile file);
+        Task<object?> AddPhoto(long id, bool isMain, long? specificationId, IFormFile file);
         Task<object?> RemovePhoto(long id, int photoId);
         Task<ProductForViewDto?> GetProductBySpecificationId(long id, long specificationId);
     }
