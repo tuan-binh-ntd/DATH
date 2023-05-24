@@ -5,6 +5,7 @@ using Bussiness.Interface.ShopInterface;
 using Bussiness.Repository;
 using Bussiness.Services.Core;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -23,7 +24,7 @@ namespace API.Controllers
         {
             _shopAppService = shopAppService;
         }
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {

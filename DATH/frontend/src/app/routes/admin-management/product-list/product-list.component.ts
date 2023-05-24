@@ -35,15 +35,7 @@ export class ProductListComponent extends ListBaseComponent {
       sortOrder: null,
       sortDirections: ['ascend', 'descend', null],
       class: 'text-left',
-    },
-    {
-      name: 'Description',
-      width: 'auto',
-      sortKey: 'description',
-      sortOrder: null,
-      sortDirections: ['ascend', 'descend', null],
-      class: 'text-left',
-    },
+    }
   ];
 
 

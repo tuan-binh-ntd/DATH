@@ -31,12 +31,12 @@ import { WarehouseListComponent } from './warehouse-list/warehouse-list.componen
 import { WarehouseDrawerComponent } from './warehouse-list/partials/warehouse-drawer/warehouse-drawer.component';
 import { PaymentListComponent } from './payment-list/payment-list.component';
 import { PaymentDrawerComponent } from './payment-list/partials/payment-drawer/payment-drawer.component';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { WarehouseDetailListComponent } from './warehouse-detail-list/warehouse-detail-list.component';
 import { WarehouseDetailDrawerComponent } from './warehouse-detail-list/partials/warehouse-detail-drawer/warehouse-detail-drawer.component';
 import { EmployeeChangeInfoComponent } from './employee-change-info/employee-change-info.component';
 import { StoresWarehouseListComponent } from './stores-warehouse-list/stores-warehouse-list.component';
 import { StoresWarehouseDrawerComponent } from './stores-warehouse-list/partials/stores-warehouse-drawer/stores-warehouse-drawer.component';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   declarations: [
@@ -72,12 +72,12 @@ import { StoresWarehouseDrawerComponent } from './stores-warehouse-list/partials
     StoresWarehouseDrawerComponent
   ],
   imports: [
+    QuillModule.forRoot(),
     AdminManagementRoutingModule,
   CommonModule,
     ComponentsModule,
     SharedModule,
     OverlayModule,
-    CKEditorModule
   ]
 })
 export class AdminManagementModule { }

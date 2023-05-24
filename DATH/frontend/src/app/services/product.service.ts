@@ -40,6 +40,14 @@ export class ProductService {
     return this.http.delete(this.baseUrl + '/' + id);
   }
 
+  addPhoto(id: string, isMain: boolean,  file: File, specificationId : string,){
+    const frmData = new FormData();
+    frmData.append('File', file);
+    return this.http.post(
+      this.baseUrl + '/' + id + '/photos' + '/' + isMain + '/' + specificationId
+    , frmData);
+  }
+
   removePhoto(id: number, photoId: number): Observable<any> {
     return this.http.delete(
       this.baseUrl + '/' + id + '/photos' + '/' + photoId
