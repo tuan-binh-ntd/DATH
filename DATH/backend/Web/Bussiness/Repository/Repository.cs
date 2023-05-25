@@ -109,6 +109,22 @@ namespace Bussiness.Repository
                 return long.Parse(_session.GetString("UserId")!);
             }
         }
+
+        public async Task AddRangeAsync(ICollection<TEntity> entity, CancellationToken cancellationToken = default)
+        {
+            ICollection<TEntity> datas = new List<TEntity>();
+            foreach(TEntity item in entity)
+            {
+                EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(item);
+                if (entry.Entity is IHasCreatorUserId creatorUserId)
+                {
+                    creatorUserId.CreatorUserId = GetCurrentUserId();
+                }
+                datas.Add(entry.Entity);
+            }
+            await _dbContext.Set<TEntity>().AddRangeAsync(datas, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity<int>
@@ -212,6 +228,22 @@ namespace Bussiness.Repository
             {
                 return long.Parse(_session.GetString("UserId")!);
             }
+        }
+
+        public async Task AddRangeAsync(ICollection<TEntity> entity, CancellationToken cancellationToken = default)
+        {
+            ICollection<TEntity> datas = new List<TEntity>();
+            foreach (TEntity item in entity)
+            {
+                EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(item);
+                if (entry.Entity is IHasCreatorUserId creatorUserId)
+                {
+                    creatorUserId.CreatorUserId = GetCurrentUserId();
+                }
+                datas.Add(entry.Entity);
+            }
+            await _dbContext.Set<TEntity>().AddRangeAsync(datas, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

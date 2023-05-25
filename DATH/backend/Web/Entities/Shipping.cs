@@ -10,5 +10,8 @@ namespace Entities
         public string? Name { get; set; }
         [Column(TypeName = "decimal(19, 5)")]
         public decimal Cost { get; set; }
+
+        // Relationship
+        public ICollection<Order>? Orders { get; set; }
     }
 }

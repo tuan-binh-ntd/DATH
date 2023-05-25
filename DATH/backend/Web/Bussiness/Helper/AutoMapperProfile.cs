@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.Interface.OrderInterface.Dto;
 using Entities;
 
 namespace Bussiness.Helper
@@ -97,6 +98,16 @@ namespace Bussiness.Helper
             //Declare Mapper WarehouseDetail
             CreateMap<WarehouseDetail, AddProductToWarehouseInput>().ReverseMap();
             //End Declare Mapper WarehouseDetail
+
+            //Declare Mapper Order
+            CreateMap<Order, OrderInput>().ReverseMap();
+            CreateMap<Order, OrderForViewDto>().ReverseMap();
+            //End Declare Mapper Order
+
+            //Declare Mapper OrderDetail
+            CreateMap<OrderDetail, OrderDetailInput>().ReverseMap();
+            CreateMap<OrderDetail, OrderDetailForViewDto>().ReverseMap();
+            //End Declare Mapper OrderDetail
         }
     }
 }

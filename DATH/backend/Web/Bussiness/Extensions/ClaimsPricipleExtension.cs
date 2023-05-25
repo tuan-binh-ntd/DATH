@@ -11,7 +11,7 @@ namespace Bussiness.Extensions
 
         public static long? GetUserId(this ClaimsPrincipal user)
         {
-            return user != null ? long.Parse(user?.FindFirst(ClaimTypes.NameIdentifier)?.Value!) : null;
+            return user != null ? user.FindFirst(ClaimTypes.NameIdentifier) != null ? long.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value!) : null : null;
         }
     }
 }

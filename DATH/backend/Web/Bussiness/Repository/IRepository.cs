@@ -16,6 +16,8 @@ namespace Bussiness.Repository
         Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
         // Soft delete entity
         Task DeleteAsync(TPrimaryKey id, CancellationToken cancellationToken = default);
+
+        Task AddRangeAsync(ICollection<TEntity> entity, CancellationToken cancellationToken = default);
     }
 
     public interface IRepository<TEntity> : IRepository<TEntity, int> where TEntity : class, IEntity<int>

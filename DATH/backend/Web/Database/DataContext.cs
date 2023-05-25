@@ -117,12 +117,61 @@ namespace Database
                 .WithOne(u => u.Warehouse)
                 .HasForeignKey(ur => ur.WarehouseId)
                 .IsRequired();
+
             // One to Many Relationship (Specification, Photo)
             modelBuilder.Entity<Specification>()
                 .HasMany(s => s.Photos)
                 .WithOne(p => p.Specification)
                 .HasForeignKey(p => p.SpecificationId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Many to Many Relationship (Product, OrderDetail, Order)
+            modelBuilder.Entity<Product>()
+                .HasMany(s => s.OrderDetails)
+                .WithOne(od => od.Product)
+                .HasForeignKey(od => od.ProductId)
+                .IsRequired();
+
+            modelBuilder.Entity<Order>()
+                .HasMany(o => o.OrderDetails)
+                .WithOne(od => od.Order)
+                .HasForeignKey(od => od.OrderId)
+                .IsRequired();
+
+            // One to Many Relationship (Promotion, Order)
+            modelBuilder.Entity<Promotion>()
+                .HasMany(p => p.Orders)
+                .WithOne(o => o.Promotion)
+                .HasForeignKey(o => o.PromotionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // One to Many Relationship (Shipping, Order)
+            modelBuilder.Entity<Shipping>()
+                .HasMany(p => p.Orders)
+                .WithOne(o => o.Shipping)
+                .HasForeignKey(o => o.ShippingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // One to Many Relationship (Shop, Order)
+            modelBuilder.Entity<Shop>()
+                .HasMany(p => p.Orders)
+                .WithOne(o => o.Shop)
+                .HasForeignKey(o => o.ShopId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // One to Many Relationship (Installment, OrderDetail)
+            modelBuilder.Entity<Installment>()
+                .HasMany(i => i.OrderDetails)
+                .WithOne(od => od.Installment)
+                .HasForeignKey(od => od.InstallmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // One to Many Relationship (OrderDetail, InstallmentSchedule)
+            modelBuilder.Entity<OrderDetail>()
+                .HasMany(od => od.InstallmentSchedules)
+                .WithOne(ic => ic.OrderDetail)
+                .HasForeignKey(ic => ic.OrderDetailId)
+                .IsRequired();
         }
 
         // Set SoftDelete

@@ -36,6 +36,9 @@ using Bussiness.Services.SpecificationService;
 using Bussiness.Interface.SpecificationCategoryInterface;
 using Bussiness.Interface.WarehouseInterface;
 using Bussiness.Services.WarehouseService;
+using Bussiness.Interface.OrderInterface;
+using Bussiness.Services.OrderService;
+
 // Set path of project for APP_BASE_DIRECTORY
 Environment.SetEnvironmentVariable("APP_BASE_DIRECTORY", Directory.GetCurrentDirectory());
 
@@ -68,6 +71,7 @@ builder.Services.AddScoped<IShopAppService, ShopAppService>();
 builder.Services.AddScoped<ISpecificationCategoryAppService, SpecificationCategoryAppService>();
 builder.Services.AddScoped<ISpecificationAppService, SpecificationAppService>();
 builder.Services.AddScoped<IWarehouseAppService, WarehouseAppService>();
+builder.Services.AddScoped<IOrderAppService, OrderAppService>();
 // End  Declaration DI
 
 // Set up connection SQL Server
