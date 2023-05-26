@@ -8,6 +8,32 @@
   (onSubmit)="submitForm()"
 >
   <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
+    <div class="clearfix" *ngIf="data?.id">
+      <nz-upload
+        [nzAction]="uploadUrl"
+        nzListType="picture-card"
+        [(nzFileList)]="fileList"
+        [nzShowButton]="fileList.length == 0"
+        [nzPreview]="handlePreview"
+        [nzBeforeUpload]="beforeUpload"
+        [nzRemove]="removePhoto"
+      >
+        <div>
+          <span nz-icon nzType="plus"></span>
+          <div style="margin-top: 8px">Upload</div>
+        </div>
+      </nz-upload>
+      <nz-modal
+        [nzVisible]="previewVisible"
+        [nzContent]="modalContent"
+        [nzFooter]="null"
+        (nzOnCancel)="previewVisible = false"
+      >
+        <ng-template #modalContent>
+          <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+        </ng-template>
+      </nz-modal>
+    </div>
 
     <nz-form-item>
       <nz-form-label [nzSpan]="24" nzFor="name" nzRequired>
@@ -24,7 +50,6 @@
         />
       </nz-form-control>
     </nz-form-item>
-
   </form>
 </app-drawer-form-base>
 
@@ -37,13 +62,13 @@
     (onClick)="closeDrawer()"
   ></app-button-base>
   <app-button-base
-  class="float-right"
-  text="Save"
-  buttonClass="btn-success mr-2"
-  iconClass="fa-solid fa-floppy-disk"
-  *ngIf="isEdit"
-  (onClick)="submitForm()"
-></app-button-base>
+    class="float-right"
+    text="Save"
+    buttonClass="btn-success mr-2"
+    iconClass="fa-solid fa-floppy-disk"
+    *ngIf="isEdit"
+    (onClick)="submitForm()"
+  ></app-button-base>
   <app-button-base
     class="float-right"
     text="Back"

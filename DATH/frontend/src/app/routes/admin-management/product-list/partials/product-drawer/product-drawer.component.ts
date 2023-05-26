@@ -1,5 +1,10 @@
 import { SpecificationCategoryService } from 'src/app/services/specification-category.service';
-import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
@@ -19,14 +24,14 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
+    reader.onerror = (error) => reject(error);
   });
-  Quill.register('modules/imageHandler', ImageHandler);
+Quill.register('modules/imageHandler', ImageHandler);
 
 @Component({
   selector: 'app-product-drawer',
   templateUrl: './product-drawer.component.html',
-  styleUrls: ['./product-drawer.component.less']
+  styleUrls: ['./product-drawer.component.less'],
 })
 export class ProductDrawerComponent extends DrawerFormBaseComponent {
   @ViewChild('editor') editor!: ElementRef;
@@ -47,24 +52,25 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
             file.type === 'image/jpeg' ||
             file.type === 'image/png' ||
             file.type === 'image/jpg'
-          ){
-            return this.productService.addPhoto(this.drawerForm.value.id, false, file, "")
-            .toPromise().then((res: any) => {
-              if(checkResponseStatus(res)){
-                resolve(res.data.photos[0]?.url);
-              }
-            })
-            .catch((err: any) => {
-             return reject('Upload Failed');
-            });
-          }
-          else {
+          ) {
+            return this.productService
+              .addPhoto(this.drawerForm.value.id, false, file, '')
+              .toPromise()
+              .then((res: any) => {
+                if (checkResponseStatus(res)) {
+                  resolve(res.data.photos[0]?.url);
+                }
+              })
+              .catch((err: any) => {
+                return reject('Upload Failed');
+              });
+          } else {
             return reject('Unsupported type image');
           }
-
-        })}
-    }
-  }
+        });
+      },
+    },
+  };
   handlePreview = async (file: NzUploadFile): Promise<void> => {
     if (!file.url && !file['preview']) {
       file['preview'] = await getBase64(file.originFileObj!);
@@ -72,7 +78,8 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     this.previewImage = file.url || file['preview'];
     this.previewVisible = true;
   };
-  formatterPrice = (value: number): string => value !== null ? `${value}đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
+  formatterPrice = (value: number): string =>
+    value !== null ? `${value}đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
   parserPrice = (value: string): string => value.replace(/\đ\s?|(,*)/g, '');
   constructor(
     protected override fb: FormBuilder,
@@ -90,52 +97,55 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     this.fetchCategories();
     this.fetchSpecification();
     this.fetchColor();
-   
-}
+  }
 
   fetchCategories() {
-    this.productCategoryService.getAll().subscribe(res => {
+    this.productCategoryService.getAll().subscribe((res) => {
       if (checkResponseStatus(res)) {
         this.productCategories = res.data;
       }
-    })
+    });
   }
 
   fetchSpecification() {
-    this.specificationService.getAll().subscribe(res => {
+    this.specificationService.getAll().subscribe((res) => {
       if (checkResponseStatus(res)) {
         this.specifications = res.data;
       }
-    })
+    });
   }
 
   fetchColor() {
-    this.specificationCategoryService.getColorByCode('color').subscribe(res => {
-      this.colors = res.data;
-    })
+    this.specificationCategoryService
+      .getColorByCode('color')
+      .subscribe((res) => {
+        this.colors = res.data;
+      });
   }
 
   override patchDataToForm(data: any) {
     super.patchDataToForm(data);
     let specificationId: number[] = [];
     if (this.isString(data?.specificationId)) {
-      specificationId = (data?.specificationId.split(',') as string[]).map(e => +e);
+      specificationId = (data?.specificationId.split(',') as string[]).map(
+        (e) => +e
+      );
     }
     this.drawerForm.get('specificationId')?.setValue(specificationId);
     // set action upload image
     this.uploadUrl = `https://localhost:7114/api/products/${data.id}/photos/true&${this}`;
-   
+
     // set file list
     if (data.photos !== undefined) {
       this.fileList = (data.photos as Photo[])
-      .filter((e) => e.isMain) // Filter the array to include only elements where IsMain is true
-      .map((e) => ({
-        uid: `${e.id}`,
-        name: 'image.png',
-        status: 'done',
-        url: `${e.url}`,
-        isMain: e.isMain
-      }));
+        .filter((e) => e.isMain) // Filter the array to include only elements where IsMain is true
+        .map((e) => ({
+          uid: `${e.id}`,
+          name: 'image.png',
+          status: 'done',
+          url: `${e.url}`,
+          isMain: e.isMain,
+        }));
     }
   }
 
@@ -172,55 +182,64 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     if (this.drawerForm.valid) {
       this.isLoading = true;
       if (this.mode === 'create') {
-        this.productService.create({
-          ...this.drawerForm.getRawValue(),
-          specificationId: this.drawerForm.get('specificationId')?.value.join(',')
-        }).pipe(
-          finalize(() => this.isLoading = false)
-        ).subscribe(res => {
-          if (checkResponseStatus(res)) {
-            this.message.success('Create successfully');
-            this.changeToDetail();
-            this.onCreate.emit(res.data);
-          }
-        })
-      }
-      else {
-        this.productService.update(this.drawerForm.value.id, {
-          ...this.drawerForm.getRawValue(),
-          specificationId: this.drawerForm.get('specificationId')?.value.join(',')
-        })
-          .pipe(
-            finalize(() => this.isLoading = false)).subscribe(res => {
-              if (checkResponseStatus(res)) {
-                this.message.success('Update successfully');
-                this.changeToDetail();
-                this.onUpdate.emit(res.data);
-              }
-            })
+        this.productService
+          .create({
+            ...this.drawerForm.getRawValue(),
+            specificationId: this.drawerForm
+              .get('specificationId')
+              ?.value.join(','),
+          })
+          .pipe(finalize(() => (this.isLoading = false)))
+          .subscribe((res) => {
+            if (checkResponseStatus(res)) {
+              this.message.success('Create successfully');
+              this.changeToDetail();
+              this.onCreate.emit(res.data);
+            }
+          });
+      } else {
+        this.productService
+          .update(this.drawerForm.value.id, {
+            ...this.drawerForm.getRawValue(),
+            specificationId: this.drawerForm
+              .get('specificationId')
+              ?.value.join(','),
+          })
+          .pipe(finalize(() => (this.isLoading = false)))
+          .subscribe((res) => {
+            if (checkResponseStatus(res)) {
+              this.message.success('Update successfully');
+              this.changeToDetail();
+              this.onUpdate.emit(res.data);
+            }
+          });
       }
     }
   }
 
   deleteItem() {
-    this.productService
-      .delete(this.drawerForm.value.id)
-      .subscribe((res) => {
-        if (checkResponseStatus(res)) {
-          this.message.success('Delete successfully');
-          this.closeDrawer();
-          this.onDelete.emit(res.data);
-        }
-      });
+    this.productService.delete(this.drawerForm.value.id).subscribe((res) => {
+      if (checkResponseStatus(res)) {
+        this.message.success('Delete successfully');
+        this.closeDrawer();
+        this.onDelete.emit(res.data);
+      }
+    });
   }
 
   isString(value: any): value is string {
-    return typeof value === "string";
+    return typeof value === 'string';
   }
 
-  beforeUpload = (file: NzUploadFile, _fileList: NzUploadFile[]): Observable<boolean> =>
+  beforeUpload = (
+    file: NzUploadFile,
+    _fileList: NzUploadFile[]
+  ): Observable<boolean> =>
     new Observable((observer: Observer<boolean>) => {
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/webp';
+      const isJpgOrPng =
+        file.type === 'image/jpeg' ||
+        file.type === 'image/png' ||
+        file.type === 'image/webp';
       if (!isJpgOrPng) {
         this.message.error('You can only upload JPG file!');
         observer.complete();
@@ -233,7 +252,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
         return;
       }
       let colorId = this.colorForm?.get('colorId').value;
-      if(colorId === undefined || colorId === null) {
+      if (colorId === undefined || colorId === null) {
         this.message.warning('Select a color');
         observer.complete();
       }
@@ -242,17 +261,21 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     });
 
   removePhoto = (file: NzUploadFile): boolean => {
-    this.productService.removePhoto(this.data.id, +file.uid).subscribe(res => {
-      if (checkResponseStatus(res)) {
-        this.message.success('Remove successfully');
-        this.changeToDetail();
-      }
-    });
+    this.productService
+      .removePhoto(this.data.id, +file.uid)
+      .subscribe((res) => {
+        if (checkResponseStatus(res)) {
+          this.message.success('Remove successfully');
+          this.changeToDetail();
+        }
+      });
     return true;
-  }
+  };
 
-  updateUploadUrl(){
-    this.uploadUrl = `https://localhost:7114/api/products/${this.data?.id}/photos/true&${this.colorForm?.get('colorId').value}`;
-    console.log(this.uploadUrl)
+  updateUploadUrl() {
+    this.uploadUrl = `https://localhost:7114/api/products/${
+      this.data?.id
+    }/photos/true&${this.colorForm?.get('colorId').value}`;
+    console.log(this.uploadUrl);
   }
 }
