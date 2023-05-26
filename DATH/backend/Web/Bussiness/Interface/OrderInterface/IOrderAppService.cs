@@ -5,8 +5,10 @@ namespace Bussiness.Interface.OrderInterface
 {
     public interface IOrderAppService
     {
-        Task<object> GetOrders(PaginationInput input);
-        Task<object> CreateOrder(OrderInput input);
+        Task<object> GetOrdersForAdmin(PaginationInput input);
+        Task<object> GetOrdersForShop(int shopId, PaginationInput input);
+        Task<OrderForViewDto> CreateOrder(OrderInput input);
         Task<object> UpdateOrder();
+        Task<object> ForwardToTheStore(long id, ForwardToTheStoreInput input);
     }
 }

@@ -2,6 +2,7 @@
 using Bussiness.Dto;
 using Bussiness.Helper;
 using Bussiness.Interface.WarehouseInterface;
+using Bussiness.Interface.WarehouseInterface.Dto;
 using Bussiness.Repository;
 using Bussiness.Services.Core;
 using Entities;
@@ -16,13 +17,15 @@ namespace Bussiness.Services.WarehouseService
         private readonly IRepository<Shop> _shopRepo;
         private readonly IRepository<WarehouseDetail, long> _warehouseDetailRepo;
         private readonly IRepository<Product, long> _productRepo;
+        private readonly IRepository<Order, long> _orderRepo;
 
         public WarehouseAppService(
             IRepository<Warehouse> warehouseRepo,
             IRepository<Shop> shopRepo,
             IMapper mapper,
             IRepository<WarehouseDetail, long> warehouseDetailRepo,
-            IRepository<Product, long> productRepo
+            IRepository<Product, long> productRepo,
+            IRepository<Order, long> orderRepo
             )
         {
             ObjectMapper = mapper;
@@ -30,6 +33,7 @@ namespace Bussiness.Services.WarehouseService
             _shopRepo = shopRepo;
             _warehouseDetailRepo = warehouseDetailRepo;
             _productRepo = productRepo;
+            _orderRepo = orderRepo;
         }
 
         #region AddProductToParentWarehouse
@@ -121,6 +125,39 @@ namespace Bussiness.Services.WarehouseService
         public async Task Delete(int id)
         {
             await _warehouseRepo.DeleteAsync(id);
+        }
+        #endregion
+
+        #region ExportToOrder
+        public async Task<ICollection<WarehouseForViewDto>> ExportToOrder(ExportToOrderInput input)
+        {
+            Order? order = await _orderRepo.GetAll().AsNoTracking().Where(o => o.Code == input.OrderCode).SingleOrDefaultAsync();
+            int warehouseId = await _warehouseRepo.GetAll().AsNoTracking().Where(w => w.ShopId == (int)order!.ShopId!).Select(w => w.Id).SingleOrDefaultAsync();
+
+            ICollection<WarehouseDetail> warehouseDetails = new List<WarehouseDetail>();
+            foreach(ExportToOrderDetailInput item in input.ExportToOrderDetailInputs!)
+            {
+                WarehouseDetail warehouseDetail = new()
+                {
+                    ObjectName = input.OrderCode,
+                    ActualDate = DateTime.Now,
+                    Type = EventType.Export,
+                    ProductId = item.ProductId,
+                    Color = item.Color,
+                    WarehouseId = warehouseId
+                };
+                warehouseDetails.Add(warehouseDetail);
+            }
+
+            await _warehouseDetailRepo.AddRangeAsync(warehouseDetails);
+
+            ICollection<WarehouseForViewDto> res = new List<WarehouseForViewDto>();
+
+            foreach(WarehouseDetail item in warehouseDetails)
+            {
+                res.Add(ObjectMapper!.Map<WarehouseForViewDto>(item));
+            }
+            return res;
         }
         #endregion
 

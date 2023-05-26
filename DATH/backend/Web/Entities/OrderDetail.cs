@@ -9,7 +9,7 @@ namespace Entities
         [Required]
         public int Quantity { get; set; }
         [Required, StringLength(100)]
-        public string? Color { get; set; }
+        public string? SpecificationId { get; set; }
 
         // Relationship
         public long OrderId { get; set; }

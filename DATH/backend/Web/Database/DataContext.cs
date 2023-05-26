@@ -172,6 +172,11 @@ namespace Database
                 .WithOne(ic => ic.OrderDetail)
                 .HasForeignKey(ic => ic.OrderDetailId)
                 .IsRequired();
+
+            // Set unique constraint for code col in order table
+            //modelBuilder.Entity<Order>()
+            //    .HasIndex(o => o.Code)
+            //    .IsUnique();
         }
 
         // Set SoftDelete

@@ -1,9 +1,11 @@
 ﻿using Bussiness.Interface.OrderInterface;
 using Bussiness.Interface.OrderInterface.Dto;
+using Bussiness.Services.Core;
 using CoreApiResponse;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace API.Controllers
 {
@@ -25,7 +27,31 @@ namespace API.Controllers
         public async Task<IActionResult> Create(OrderInput input)
         {
             object res = await _orderAppService.CreateOrder(input);
-            return CustomResult(res, System.Net.HttpStatusCode.OK);
+            return CustomResult(res, HttpStatusCode.OK);
+        }
+
+        [Authorize(Policy = "RequireAdminRole")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> ForwardToTheStore(long id, ForwardToTheStoreInput input)
+        {
+            object res = await _orderAppService.ForwardToTheStore(id, input);
+            return CustomResult(res, HttpStatusCode.OK);
+        }
+
+        [Authorize(Policy = "RequireAdminRole")]
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] PaginationInput input)
+        {
+            object res = await _orderAppService.GetOrdersForAdmin(input);
+            return CustomResult(res, HttpStatusCode.OK);
+        }
+
+        [Authorize(Policy = "RequireEmployeeRole")]
+        [HttpGet("{shopId}")]
+        public async Task<IActionResult> Get(int shopId, [FromQuery] PaginationInput input)
+        {
+            object res = await _orderAppService.GetOrdersForShop(shopId, input);
+            return CustomResult(res, HttpStatusCode.OK);
         }
     }
 }

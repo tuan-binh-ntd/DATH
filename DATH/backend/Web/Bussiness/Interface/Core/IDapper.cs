@@ -20,5 +20,6 @@ namespace Bussiness.Interface.Core
         Task<List<T>> GetAllAsync<T>(string sp, DynamicParameters param, CommandType commandType = CommandType.StoredProcedure, CancellationToken cancellationToken = default);
         // Paging sql command
         Task<PaginationResult<TSource>> GetAllAndPaginationAsync<TSource>(string sp, [NotNull] PaginationInput input, DynamicParameters param, CommandType commandType = CommandType.Text);
+        Task<T> ExecuteScalarAsync<T>(string query, DynamicParameters? param = null, CommandType commandType = CommandType.Text);
     }
 }

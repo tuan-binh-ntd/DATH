@@ -37,6 +37,8 @@ import { EmployeeChangeInfoComponent } from './employee-change-info/employee-cha
 import { StoresWarehouseListComponent } from './stores-warehouse-list/stores-warehouse-list.component';
 import { StoresWarehouseDrawerComponent } from './stores-warehouse-list/partials/stores-warehouse-drawer/stores-warehouse-drawer.component';
 import { QuillModule } from 'ngx-quill';
+import { OrderForAdminListComponent } from './order-for-admin-list/order-for-admin-list.component';
+import { OrderForShopListComponent } from './order-for-shop-list/order-for-shop-list.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +71,9 @@ import { QuillModule } from 'ngx-quill';
     WarehouseDetailDrawerComponent,
     EmployeeChangeInfoComponent,
     StoresWarehouseListComponent,
-    StoresWarehouseDrawerComponent
+    StoresWarehouseDrawerComponent,
+    OrderForAdminListComponent,
+    OrderForShopListComponent
   ],
   imports: [
     QuillModule.forRoot(),
