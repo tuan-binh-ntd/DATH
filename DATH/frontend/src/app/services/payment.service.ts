@@ -33,4 +33,10 @@ export class PaymentService {
   delete(id: number): Observable<any> {
     return this.http.delete(this.baseUrl + '/' + id);
   }
+
+  removePhoto(id: number): Observable<any> {
+    return this.http.delete(
+      this.baseUrl + '/' + id + '/photos'
+    );
+  }
 }

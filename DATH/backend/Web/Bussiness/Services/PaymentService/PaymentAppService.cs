@@ -70,6 +70,8 @@ namespace Bussiness.Services.PaymentService
                                                   {
                                                       Id = p.Id,
                                                       Name = p.Name,
+                                                      Url = p.Url,
+                                                      PublicId = p.PublicId,
                                                   };
             PaymentForViewDto? data = await query.SingleOrDefaultAsync();
             if (data == null) return null;
@@ -86,6 +88,8 @@ namespace Bussiness.Services.PaymentService
                                                   {
                                                       Id = p.Id,
                                                       Name = p.Name,
+                                                      Url = p.Url,
+                                                      PublicId = p.PublicId,
                                                   };
 
             if (input.PageNum != null && input.PageSize != null) return await query.Pagination(input);
