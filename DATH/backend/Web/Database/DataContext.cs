@@ -177,6 +177,13 @@ namespace Database
             //modelBuilder.Entity<Order>()
             //    .HasIndex(o => o.Code)
             //    .IsUnique();
+
+            // One to Many Relationship (Payment, Order)
+            modelBuilder.Entity<Payment>()
+                .HasMany(p => p.Orders)
+                .WithOne(o => o.Payment)
+                .HasForeignKey(o => o.PaymentId)
+                .IsRequired();
         }
 
         // Set SoftDelete

@@ -10,5 +10,8 @@ namespace Entities
         public string? Url { get; set; }
         [StringLength(100)]
         public string? PublicId { get; set; }
+
+        // Relationship
+        public ICollection<Order>? Orders { get; set; }
     }
 }

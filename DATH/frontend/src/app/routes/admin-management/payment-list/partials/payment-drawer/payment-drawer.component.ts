@@ -22,7 +22,7 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   styleUrls: ['./payment-drawer.component.less'],
 })
 export class PaymentDrawerComponent extends DrawerFormBaseComponent {
-  uploadUrl: string = environment.baseUrl + 'payments';
+  uploadUrl: string = '';
   fileList: NzUploadFile[] = [];
   previewImage: string | undefined = '';
   previewVisible = false;
@@ -101,8 +101,8 @@ export class PaymentDrawerComponent extends DrawerFormBaseComponent {
 
   override patchDataToForm(data: any) {
     super.patchDataToForm(data);
-    this.uploadUrl += `/${data?.id}/photos`;
-    if(this.isEdit) {
+    this.uploadUrl = `${environment.baseUrl + 'payments'}/${data?.id}/photos`;
+    if (data.url != null) {
       this.fileList = [
         {
           uid: `${data.id}`,
