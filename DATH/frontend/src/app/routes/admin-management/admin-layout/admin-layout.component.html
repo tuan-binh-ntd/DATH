@@ -54,7 +54,9 @@
       </li>
 
       <li nz-menu-item [routerLink]="'payment'" [nzMatchRouter]="true">
-        <span><i class="fa-solid fa-money-check-dollar mr-2 text-muted"></i></span>
+        <span
+          ><i class="fa-solid fa-money-check-dollar mr-2 text-muted"></i
+        ></span>
         <span>Payment</span>
       </li>
 
@@ -73,11 +75,19 @@
             <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
             <span>Warehouse</span>
           </li>
-          <li nz-menu-item [routerLink]="'warehouse-detail'" [nzMatchRouter]="true">
+          <li
+            nz-menu-item
+            [routerLink]="'warehouse-detail'"
+            [nzMatchRouter]="true"
+          >
             <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
             <span>Parent Warehouse</span>
           </li>
-          <li nz-menu-item [routerLink]="'stores-warehouse'" [nzMatchRouter]="true">
+          <li
+            nz-menu-item
+            [routerLink]="'stores-warehouse'"
+            [nzMatchRouter]="true"
+          >
             <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
             <span>Stores Warehouse</span>
           </li>
@@ -90,13 +100,13 @@
           <span>Order Management</span>
         </ng-template>
         <ul>
-          <!-- <li nz-menu-item>
-              <span><i class="fa-solid fa-shop  mr-2 text-muted"></i></span>
-              <span>Shop</span>
-            </li> -->
-          <li nz-menu-item>
+          <li nz-menu-item [routerLink]="'order'" [nzMatchRouter]="true">
+            <span><i class="fa-solid fa-shop mr-2 text-muted"></i></span>
+            <span>Order</span>
+          </li>
+          <li nz-menu-item [routerLink]="'stores-order'" [nzMatchRouter]="true">
             <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
-            <span>Warehouse</span>
+            <span>Stores Order</span>
           </li>
         </ul>
       </li>
@@ -131,7 +141,11 @@
         <span>Account Management</span>
       </li>
 
-      <li nz-menu-item [routerLink]="'register-employee'" [nzMatchRouter]="true">
+      <li
+        nz-menu-item
+        [routerLink]="'register-employee'"
+        [nzMatchRouter]="true"
+      >
         <i class="fa-solid fa-users mr-2 text-muted"></i>
         <span>Employee Management</span>
       </li>

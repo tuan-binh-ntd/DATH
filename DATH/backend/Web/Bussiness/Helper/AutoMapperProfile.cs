@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
 using Bussiness.Interface.OrderInterface.Dto;
+using Bussiness.Interface.WarehouseInterface.Dto;
 using Entities;
 
 namespace Bussiness.Helper

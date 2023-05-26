@@ -9,7 +9,7 @@ namespace Bussiness.Interface.OrderInterface.Dto
         [Required]
         public int Quantity { get; set; }
         [Required]
-        public string? Color { get; set; }
+        public string? SpecificationId { get; set; }
         public long ProductId { get; set; }
         public int? InstallmentId { get; set; }
     }

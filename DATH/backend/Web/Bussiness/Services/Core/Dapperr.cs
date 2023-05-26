@@ -4,8 +4,6 @@ using Microsoft.Extensions.Configuration;
 using System.Data.Common;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using Bussiness.Helper;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Bussiness.Interface.Core;
 
 namespace Bussiness.Services.Core
@@ -22,6 +20,13 @@ namespace Bussiness.Services.Core
         public static void Dispose()
         {
 
+        }
+
+        public async Task<T> ExecuteScalarAsync<T>(string query, DynamicParameters? param = null, CommandType commandType = CommandType.Text)
+        {
+            using IDbConnection db = new SqlConnection(_config.GetConnectionString(_connectionString));
+            T res = await db.ExecuteScalarAsync<T>(query, param);
+            return res;
         }
 
         public T Get<T>(string sp, DynamicParameters param, CommandType commandType = CommandType.Text)
@@ -83,7 +88,5 @@ namespace Bussiness.Services.Core
         {
             return new SqlConnection(_config.GetConnectionString(_connectionString));
         }
-
-
     }
 }

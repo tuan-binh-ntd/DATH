@@ -1,4 +1,5 @@
 ﻿using Bussiness.Dto;
+using Bussiness.Interface.WarehouseInterface.Dto;
 using Bussiness.Services.Core;
 
 namespace Bussiness.Interface.WarehouseInterface
@@ -11,5 +12,6 @@ namespace Bussiness.Interface.WarehouseInterface
         Task Delete(int id);
         Task<object> GetProductsForWarehouse(int id, PaginationInput input);
         Task<object> AddProductToParentWarehouse(int id, AddProductToWarehouseInput input);
+        Task<ICollection<WarehouseForViewDto>> ExportToOrder(ExportToOrderInput input);
     }
 }

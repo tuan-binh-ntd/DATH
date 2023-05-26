@@ -246,4 +246,6 @@ app.MapHub<ChatHub>("hubs/chat");
 
 app.MapHub<NotifyHub>("hubs/notify");
 
+app.MapHub<NotifyHub>("hubs/order");
+
 await app.RunAsync();

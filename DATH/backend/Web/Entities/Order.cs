@@ -1,4 +1,5 @@
 ﻿using Entities.Enum.Order;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace Entities
@@ -18,6 +19,8 @@ namespace Entities
         public DateTime? ActualDate { get; set; }
         public decimal Cost { get; set; }
         public decimal Discount { get; set; } = 0;
+        [StringLength(100), Required]
+        public string? Email { get; set; }
 
         // Relationship
         public int? PromotionId { get; set; }

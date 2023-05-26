@@ -15,6 +15,8 @@ import { PaymentListComponent } from './payment-list/payment-list.component';
 import { WarehouseDetailListComponent } from './warehouse-detail-list/warehouse-detail-list.component';
 import { EmployeeChangeInfoComponent } from './employee-change-info/employee-change-info.component';
 import { StoresWarehouseListComponent } from './stores-warehouse-list/stores-warehouse-list.component';
+import { OrderForAdminListComponent } from './order-for-admin-list/order-for-admin-list.component';
+import { OrderForShopListComponent } from './order-for-shop-list/order-for-shop-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -117,7 +119,21 @@ const routes: Routes = [
     path: 'stores-warehouse',
     component: StoresWarehouseListComponent,
     data: {
-      breadcrumb: 'Home / Change Information'
+      breadcrumb: 'Home / Stores Warehouse'
+    },
+  },
+  {
+    path: 'order',
+    component: OrderForAdminListComponent,
+    data: {
+      breadcrumb: 'Home / Order'
+    },
+  },
+  {
+    path: 'stores-order',
+    component: OrderForShopListComponent,
+    data: {
+      breadcrumb: 'Home / Stores Order'
     },
   },
 ];
