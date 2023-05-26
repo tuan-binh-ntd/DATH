@@ -116,6 +116,7 @@ namespace Bussiness.Services.OrderService
                                                      EstimateDate = o.EstimateDate,
                                                      Cost = o.Cost,
                                                      Discount = o.Discount,
+                                                     CreateDate = (DateTime)o.CreationTime!
                                                  };
             OrderForViewDto? res = await query.SingleOrDefaultAsync();
 
@@ -171,7 +172,7 @@ namespace Bussiness.Services.OrderService
                                                          EstimateDate = o.EstimateDate,
                                                          Cost = o.Cost,
                                                          Discount = o.Discount,
-
+                                                         CreateDate = (DateTime)o.CreationTime!
                                                      };
 
                 if (input.PageNum != null && input.PageSize != null)
@@ -203,6 +204,7 @@ namespace Bussiness.Services.OrderService
                                                          EstimateDate = o.EstimateDate,
                                                          Cost = o.Cost,
                                                          Discount = o.Discount,
+                                                         CreateDate = (DateTime)o.CreationTime!
                                                      };
 
                 if (input.PageNum != null && input.PageSize != null)
