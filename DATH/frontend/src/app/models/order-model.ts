@@ -8,6 +8,7 @@ export interface Order {
   code: string
   status: number
   phone: string
+  email: string
   estimateDate: string | null
   actualDate: string | null
   cost: number

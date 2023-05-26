@@ -189,6 +189,7 @@ export class ViewCartDetailComponent {
       }
       this.orderService.create(payload).subscribe(res => {
         if(checkResponseStatus(res)){
+          // this.cartService.removeAll();
           this.router.navigateByUrl(`order/${res.data.code}`)
         }
       })
