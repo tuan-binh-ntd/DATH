@@ -193,7 +193,7 @@
       </nz-card>
     </div>
     <div nz-col nzSpan="7">
-      <nz-card nzTitle="Sumary"  class="mb-4">
+      <nz-card nzTitle="Sumary" class="mb-4">
         <div class="align-child-space-between">
           <span
             >Subtotal &nbsp;
@@ -216,19 +216,26 @@
         </div>
       </nz-card>
       <nz-card nzTitle="Payment" class="text-center">
-        <nz-radio-group formControlName="payment"  nz-row nzGutter="16" class="mb-2">
-            <label
-              nz-col
-              nzSan="12"
-              *ngFor="let item of listPayment"
-              nz-radio-button
-              [nzValue]="item.name"
-            >
-              <nz-avatar [nzShape]="'square'" [nzSrc]="item.url"></nz-avatar>
-            </label>
-          </nz-radio-group>
-          <br>
-          <img nz-image nzSrc="../../../../assets/images/payment.jpg" width="300" height="300" >
+        <div  nz-row nzGutter="16" class="mb-2">
+          <img
+            [src]="item.url"
+            *ngFor="let item of listPayment"
+            nz-col
+            nzSpan="8"
+            height="50"
+            [ngClass]="{ 'selected-payment': selectedPayment === item.id }"
+            class="cursor-pointer"
+            nz-tooltip [nzTooltipTitle]="item.name"
+            (click)="onChangePayment(item.id)"
+          >
+        </div>
+        <br />
+        <img
+          nz-image
+          nzSrc="../../../../assets/images/payment.jpg"
+          width="300"
+          height="300"
+        />
       </nz-card>
       <button
         nz-button

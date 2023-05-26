@@ -28,6 +28,7 @@ export class ViewCartDetailComponent {
   deliveryCost: number = 250000;
   subTotalCost: number = 0;
   listCart: Cart[] = [];
+  selectedPayment: number = 0;
   listOfColumn: any[] = [
     {
       name: 'Image',
@@ -114,6 +115,7 @@ export class ViewCartDetailComponent {
       phone:  [null, [Validators.required, Validators.pattern(PHONE_REGEX)]],
       discount: [0],
       promotionId: [null, ],
+      paymentId: [null, Validators.required],
       status: [OrderStatus.Pending],
       formal: [null],
       shopId: [null],
@@ -154,6 +156,13 @@ export class ViewCartDetailComponent {
       break;
       case 'delivery': this.deliveryCost = 250000; break;
     }
+  }
+
+  onChangePayment(id: number){
+    if(id){
+      this.selectedPayment = id;
+      this.infoForm.get('paymentId')?.setValue(id);
+    } 
   }
 
   validateForm() {
