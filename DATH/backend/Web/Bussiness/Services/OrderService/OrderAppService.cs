@@ -193,7 +193,8 @@ namespace Bussiness.Services.OrderService
 
             string prefix = "TC";
 
-            long orderCount = await _dapper.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM ORDER");
+            long orderCount = await _dapper.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM [Order]");
+            orderCount++;
 
             return $"{prefix}{now}{orderCount:D6}";
         }
