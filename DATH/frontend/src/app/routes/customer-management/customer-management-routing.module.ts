@@ -6,6 +6,7 @@ import { CustomerChangeInfoComponent } from './customer-change-info/customer-cha
 import { CustomerHomeComponent } from './customer-home/customer-home.component';
 import { CustomerLayoutComponent } from './customer-layout/customer-layout.component';
 import { ViewCartDetailComponent } from './view-cart-detail/view-cart-detail.component';
+import { ViewCheckOrderComponent } from './view-check-order/view-check-order.component';
 import { ViewProductDetailComponent } from './view-product-list/partials/view-product-detail/view-product-detail.component';
 import { ViewProductListComponent } from './view-product-list/view-product-list.component';
 
@@ -32,6 +33,10 @@ const routes: Routes = [
   {
     path: 'cart',
     component: ViewCartDetailComponent,
+  },
+  {
+    path: 'order/:code',
+    component: ViewCheckOrderComponent,
   },
   {
     path: '**',

@@ -53,7 +53,7 @@
           <li>
             <app-customer-cart></app-customer-cart>
           </li>
-          <li>
+          <li *ngIf="(cartCount$ | async) > 0">
             <button
             class="w-100"
             nz-button

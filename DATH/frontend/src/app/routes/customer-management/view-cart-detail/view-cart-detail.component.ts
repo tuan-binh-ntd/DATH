@@ -3,11 +3,15 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { debounceTime, distinctUntilChanged, fromEvent, Observable, Subscription, switchMap, take } from 'rxjs';
+import { OrderStatus } from 'src/app/enums/order-status.enum';
+import { Order } from 'src/app/models/order-model';
 import { Payment } from 'src/app/models/payment.model';
+import { Product } from 'src/app/models/product.model';
 import { Shop } from 'src/app/models/shop.model';
+import { OrderService } from 'src/app/services/order.service';
 import { PaymentService } from 'src/app/services/payment.service';
 import { ShopService } from 'src/app/services/shop.service';
-import { checkResponseStatus } from 'src/app/shared/helper';
+import { checkResponseStatus, EMAIL_REGEX, PHONE_REGEX } from 'src/app/shared/helper';
 import { Cart } from 'src/app/stores/cart/cart.model';
 import { CartQuery } from 'src/app/stores/cart/cart.query';
 import { CartService } from 'src/app/stores/cart/cart.service';
@@ -23,7 +27,7 @@ export class ViewCartDetailComponent {
   cartObjects$  = this.cartQuery.selectAll();
   deliveryCost: number = 250000;
   subTotalCost: number = 0;
-
+  listCart: Cart[] = [];
   listOfColumn: any[] = [
     {
       name: 'Image',
@@ -69,7 +73,8 @@ export class ViewCartDetailComponent {
     private msg: NzMessageService,
     private fb: FormBuilder,
     private shopService: ShopService,
-    private paymentService: PaymentService){};
+    private paymentService: PaymentService,
+    private orderService: OrderService){};
 
 
   ngOnInit(){
@@ -78,8 +83,9 @@ export class ViewCartDetailComponent {
     this.fetchPayments();
    this.cartObjects$.subscribe(res => {
     this.subTotalCost = 0;
+    this.listCart = res;
     res.forEach(item => {
-      this.subTotalCost += item.price;
+      this.subTotalCost += item.cost;
     })
    })
   }
@@ -102,16 +108,15 @@ export class ViewCartDetailComponent {
 
   initForm(){
     this.infoForm = this.fb.group({
-      firstName: [null, Validators.required],
-      lastName: [null, Validators.required],
-      email: [null, Validators.required],
-      phone: [null, Validators.required],
-      birthday: [null, Validators.required],
-      gender: [null, Validators.required],
-      idNumber: [null, Validators.required],
-      formal: [null, Validators.required],
-      shop: [null],
-      address: [null],
+      customerName: [null, Validators.required],
+      address: [null, Validators.required],
+      email: [null, [Validators.required, Validators.pattern(EMAIL_REGEX)]],
+      phone:  [null, [Validators.required, Validators.pattern(PHONE_REGEX)]],
+      discount: [0],
+      promotionId: [null, ],
+      status: [OrderStatus.Pending],
+      formal: [null],
+      shopId: [null],
     });
     this.infoForm.get('formal')?.setValue('store');
   }
@@ -124,10 +129,10 @@ export class ViewCartDetailComponent {
       cart.pipe(take(1)).subscribe(res => {
         if(res){
           const item = {...res};
-          const defaultPrice = item.price / item.quantity;
+          const defaultPrice = item.cost / item.quantity;
           this.cartService.update(id, {
             quantity: value,
-            price: defaultPrice * value,
+            cost: defaultPrice * value,
           })
         }
       })
@@ -142,10 +147,6 @@ export class ViewCartDetailComponent {
     this.router.navigateByUrl(`product-detail/${id}`);
   }
 
-  onCheckOut(){
-   
-  }
-
   onChangeFormal(ev: string){
     switch(ev){
       case 'store': this.deliveryCost = 0; 
@@ -153,5 +154,36 @@ export class ViewCartDetailComponent {
       break;
       case 'delivery': this.deliveryCost = 250000; break;
     }
+  }
+
+  validateForm() {
+    for (const i in this.infoForm.controls) {
+      this.infoForm.controls[i].markAsDirty();
+      this.infoForm.controls[i].updateValueAndValidity();
+    }
+  }
+
+
+  onCheckOut(){
+    this.validateForm();
+    if(this.infoForm.valid){
+      this.listCart = this.listCart.map(item => {
+        return {
+          ...item,
+          specificationId: item.specifications.map(item => item.id).join(',')
+        }
+      })  
+      const payload: Order = {
+        ...this.infoForm.value,
+        cost: this.subTotalCost + this.deliveryCost,
+        orderDetailInputs: this.listCart
+      }
+      this.orderService.create(payload).subscribe(res => {
+        if(checkResponseStatus(res)){
+          this.router.navigateByUrl(`order/${res.data.code}`)
+        }
+      })
+    }
+
   }
 }

@@ -1,6 +1,7 @@
 ﻿using Bussiness.Dto;
 using Bussiness.Interface.PaymentInterface;
 using Bussiness.Services.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -16,7 +17,7 @@ namespace API.Controllers
         {
             _paymentAppService = paymentAppService;
         }
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {
