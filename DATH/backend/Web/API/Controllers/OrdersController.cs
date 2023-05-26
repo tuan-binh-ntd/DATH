@@ -46,11 +46,20 @@ namespace API.Controllers
             return CustomResult(res, HttpStatusCode.OK);
         }
 
-        [Authorize(Policy = "RequireEmployeeRole")]
-        [HttpGet("{shopId}")]
-        public async Task<IActionResult> Get(int shopId, [FromQuery] PaginationInput input)
+        //[Authorize(Policy = "RequireEmployeeRole")]
+        //[HttpGet("{shopId}")]
+        //public async Task<IActionResult> Get(int shopId, [FromQuery] PaginationInput input)
+        //{
+        //    object res = await _orderAppService.GetOrdersForShop(shopId, input);
+        //    return CustomResult(res, HttpStatusCode.OK);
+        //}
+
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(long id)
         {
-            object res = await _orderAppService.GetOrdersForShop(shopId, input);
+            OrderForViewDto? res = await _orderAppService.GetOrder(id);
+            if (res is null) return CustomResult(null, HttpStatusCode.NoContent);
             return CustomResult(res, HttpStatusCode.OK);
         }
     }

@@ -30,6 +30,7 @@ namespace Bussiness.Services.OrderService
             _dapper = dapper;
         }
 
+        #region CreateOrder
         public async Task<OrderForViewDto> CreateOrder(OrderInput input)
         {
             Order order = ObjectMapper!.Map<Order>(input);
@@ -63,7 +64,9 @@ namespace Bussiness.Services.OrderService
 
             return res;
         }
+        #endregion
 
+        #region ForwardToTheStore
         public async Task<object> ForwardToTheStore(long id, ForwardToTheStoreInput input)
         {
             Order? order = await _orderRepo.GetAsync(id);
@@ -72,24 +75,55 @@ namespace Bussiness.Services.OrderService
             await _orderRepo.UpdateAsync(order);
             return ObjectMapper!.Map<OrderForViewDto>(order);
         }
+        #endregion
 
+        #region GetOrdersForAdmin
         public async Task<object> GetOrdersForAdmin(PaginationInput input)
         {
 
             object res = await GetOrders(null, input);
             return res;
         }
+        #endregion
 
+        #region GetOrdersForShop
         public async Task<object> GetOrdersForShop(int shopId, PaginationInput input)
         {
             object res = await GetOrders(shopId, input);
             return res;
         }
+        #endregion
 
         public Task<object> UpdateOrder()
         {
             throw new NotImplementedException();
         }
+
+        #region GetOrder
+        public async Task<OrderForViewDto?> GetOrder(long id)
+        {
+            IQueryable<OrderForViewDto> query = from o in _orderRepo.GetAll()
+                                                 where o.Id == id
+                                                 select new OrderForViewDto
+                                                 {
+                                                     Id = o.Id,
+                                                     CustomerName = o.CustomerName,
+                                                     Address = o.Address,
+                                                     Phone = o.Phone,
+                                                     Code = o.Code,
+                                                     Status = o.Status,
+                                                     ActualDate = o.ActualDate,
+                                                     EstimateDate = o.EstimateDate,
+                                                     Cost = o.Cost,
+                                                     Discount = o.Discount,
+                                                 };
+            OrderForViewDto? res = await query.SingleOrDefaultAsync();
+
+            await HandleOrder(res!);
+
+            return res;
+        }
+        #endregion
 
         #region Private method
 
@@ -137,6 +171,7 @@ namespace Bussiness.Services.OrderService
                                                          EstimateDate = o.EstimateDate,
                                                          Cost = o.Cost,
                                                          Discount = o.Discount,
+
                                                      };
 
                 if (input.PageNum != null && input.PageSize != null)

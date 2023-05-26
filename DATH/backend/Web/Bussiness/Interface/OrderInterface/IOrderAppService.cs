@@ -10,5 +10,6 @@ namespace Bussiness.Interface.OrderInterface
         Task<OrderForViewDto> CreateOrder(OrderInput input);
         Task<object> UpdateOrder();
         Task<object> ForwardToTheStore(long id, ForwardToTheStoreInput input);
+        Task<OrderForViewDto?> GetOrder(long id);
     }
 }
