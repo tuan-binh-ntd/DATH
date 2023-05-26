@@ -17,6 +17,7 @@ namespace Bussiness.Interface.OrderInterface.Dto
         public decimal Cost { get; set; }
         public decimal Discount { get; set; } = 0;
         public int? PromotionId { get; set; }
+        public int PaymentId { get; set; }
         public ICollection<OrderDetailInput>? OrderDetailInputs { get; set; }
     }
 }

@@ -31,5 +31,7 @@ namespace Entities
         public ICollection<OrderDetail>? OrderDetails { get; set; }
         public int? ShopId { get; set; }
         public Shop? Shop { get; set; }
+        public int PaymentId { get; set; }
+        public Payment? Payment { get; set; }
     }
 }
