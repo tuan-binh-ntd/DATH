@@ -16,4 +16,13 @@ export class OrderService {
     return this.http.post(this.baseUrl, payload);
   }
 
+  getById(id: number): Observable<any>{
+    return this.http.get(this.baseUrl + id);
+  }
+
+
+  getByCode(code: string): Observable<any>{
+    return this.http.get(this.baseUrl + '/by-code/' + code);
+  }
+
 }

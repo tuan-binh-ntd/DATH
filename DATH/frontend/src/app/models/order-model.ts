@@ -10,6 +10,7 @@ export interface Order {
   phone: string
   email: string
   estimateDate: string | null
+  createDate: string | null
   actualDate: string | null
   cost: number
   discount: number | null

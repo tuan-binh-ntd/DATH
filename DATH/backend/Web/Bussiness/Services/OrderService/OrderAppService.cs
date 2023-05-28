@@ -99,7 +99,7 @@ namespace Bussiness.Services.OrderService
             throw new NotImplementedException();
         }
 
-        #region GetOrder
+        #region GetOrder by Id 
         public async Task<OrderForViewDto?> GetOrder(long id)
         {
             IQueryable<OrderForViewDto> query = from o in _orderRepo.GetAll()
@@ -118,6 +118,33 @@ namespace Bussiness.Services.OrderService
                                                      Discount = o.Discount,
                                                      CreateDate = (DateTime)o.CreationTime!
                                                  };
+            OrderForViewDto? res = await query.SingleOrDefaultAsync();
+
+            await HandleOrder(res!);
+
+            return res;
+        }
+        #endregion
+
+        #region GetOrder by Code
+        public async Task<OrderForViewDto?> GetOrder(string code)
+        {
+            IQueryable<OrderForViewDto> query = from o in _orderRepo.GetAll()
+                                                where o.Code == code
+                                                select new OrderForViewDto
+                                                {
+                                                    Id = o.Id,
+                                                    CustomerName = o.CustomerName,
+                                                    Address = o.Address,
+                                                    Phone = o.Phone,
+                                                    Code = o.Code,
+                                                    Status = o.Status,
+                                                    ActualDate = o.ActualDate,
+                                                    EstimateDate = o.EstimateDate,
+                                                    Cost = o.Cost,
+                                                    Discount = o.Discount,
+                                                    CreateDate = (DateTime)o.CreationTime!
+                                                };
             OrderForViewDto? res = await query.SingleOrDefaultAsync();
 
             await HandleOrder(res!);

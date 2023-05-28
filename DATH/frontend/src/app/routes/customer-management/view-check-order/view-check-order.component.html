@@ -1,42 +1,41 @@
 <app-page-grid>
   <div nz-row nzGutter="16">
-    <div nz-col nzSpan="24" class="text-center">
-        <h1>Order detail</h1>
-        <div class="align-child-space-between ">
-            <label>Code</label>
-            <span class="font-weight-bold">{{data.code}}</span>
-        </div>
-        <div class="align-child-space-between ">
-            <label>Status</label>
-            <ng-container *ngSwitch="data.status">
-                <span class="font-weight-bold" *ngSwitchCase="orderStatus['Pending']">Pending</span>
-                <span class="font-weight-bold" *ngSwitchCase="orderStatus['Rejected']">Rejected</span>
-                <span class="font-weight-bold" *ngSwitchCase="orderStatus['Preparing']">Preparing</span>
-                <span class="font-weight-bold" *ngSwitchCase="orderStatus['Delivering']">Delivering</span>
-                <span class="font-weight-bold" *ngSwitchCase="orderStatus['Received']">Received</span>
-            </ng-container>
-        </div>
-        <div class="align-child-space-between ">
-            <label>Customer name</label>
-            <span class="font-weight-bold">{{data.customerName}}</span>
-        </div>
-        <div class="align-child-space-between ">
-            <label>Phone</label>
-            <span class="font-weight-bold">{{data.phone}}</span>
-        </div>
-        <div class="align-child-space-between ">
-            <label>Email</label>
-            <span class="font-weight-bold">{{data.email}}</span>
-        </div>
-        <div class="align-child-space-between ">
-            <label>Payment method</label>
-            <span class="font-weight-bold">{{data.email}}</span>
-        </div>
-        <nz-divider class="m-0"></nz-divider>
-        <nz-card nzTitle="Product">
-            <app-customer-cart></app-customer-cart>
+    <div nz-col nzSpan="7"></div>
+    <div nz-col nzSpan="10" class="text-center">
+        <nz-card nzTitle="#{{data?.code}}">
+              <div class="align-child-space-between ">
+                  <label>Status</label>
+                  <ng-container *ngSwitch="data?.status">
+                      <span class="font-weight-bold" *ngSwitchCase="orderStatus['Pending']">Pending</span>
+                      <span class="font-weight-bold" *ngSwitchCase="orderStatus['Rejected']">Rejected</span>
+                      <span class="font-weight-bold" *ngSwitchCase="orderStatus['Preparing']">Preparing</span>
+                      <span class="font-weight-bold" *ngSwitchCase="orderStatus['Delivering']">Delivering</span>
+                      <span class="font-weight-bold" *ngSwitchCase="orderStatus['Received']">Received</span>
+                  </ng-container>
+              </div>
+              <div class="align-child-space-between ">
+                  <label>Customer name</label>
+                  <span class="font-weight-bold">{{data?.customerName}}</span>
+              </div>
+              <div class="align-child-space-between ">
+                  <label>Phone</label>
+                  <span class="font-weight-bold">{{data?.phone}}</span>
+              </div>
+              <div class="align-child-space-between ">
+                  <label>Email</label>
+                  <span class="font-weight-bold">{{data?.email}}</span>
+              </div>
+              <div class="align-child-space-between ">
+                  <label>Create date</label>
+                  <span class="font-weight-bold">{{data?.createDate | date: 'dd/mm/yyyy'}}</span>
+              </div>
+              <nz-divider class="m-0"></nz-divider>
+              <nz-card nzTitle="Product">
+                  <app-customer-cart></app-customer-cart>
+              </nz-card>
+              
         </nz-card>
-        
     </div>
+    <div nz-col nzSpan="7"></div>
   </div>
 </app-page-grid>

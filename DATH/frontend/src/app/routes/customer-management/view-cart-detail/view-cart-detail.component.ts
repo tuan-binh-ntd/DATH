@@ -185,6 +185,7 @@ export class ViewCartDetailComponent {
       const payload: Order = {
         ...this.infoForm.value,
         cost: this.subTotalCost + this.deliveryCost,
+        createDate: Date.now(),
         orderDetailInputs: this.listCart
       }
       this.orderService.create(payload).subscribe(res => {

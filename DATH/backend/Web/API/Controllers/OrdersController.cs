@@ -62,5 +62,14 @@ namespace API.Controllers
             if (res is null) return CustomResult(null, HttpStatusCode.NoContent);
             return CustomResult(res, HttpStatusCode.OK);
         }
+
+        [AllowAnonymous]
+        [HttpGet("by-code/{code}")]
+        public async Task<IActionResult> Get(string code)
+        {
+            OrderForViewDto? res = await _orderAppService.GetOrder(code);
+            if (res is null) return CustomResult(null, HttpStatusCode.NoContent);
+            return CustomResult(res, HttpStatusCode.OK);
+        }
     }
 }
