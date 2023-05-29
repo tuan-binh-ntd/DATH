@@ -1,5 +1,6 @@
 ﻿using Bussiness.Dto;
 using Bussiness.Interface.WarehouseInterface;
+using Bussiness.Interface.WarehouseInterface.Dto;
 using Bussiness.Services.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

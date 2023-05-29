@@ -39,6 +39,7 @@ namespace Bussiness.Services.OrderService
             Order order = ObjectMapper!.Map<Order>(input);
             order.Code = await GenerateOrderCode();
             order.Status = OrderStatus.Pending;
+            order.IsExport = false;
 
             long orderId = await _orderRepo.InsertAndGetIdAsync(order);
 

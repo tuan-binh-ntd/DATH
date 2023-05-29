@@ -21,7 +21,7 @@ namespace Entities
         public decimal Discount { get; set; } = 0;
         [StringLength(100), Required]
         public string? Email { get; set; }
-
+        public bool IsExport { get; set; }
         // Relationship
         public int? PromotionId { get; set; }
         public Promotion? Promotion { get; set; }

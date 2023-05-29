@@ -1,5 +1,7 @@
 ﻿using Bussiness.Interface.OrderInterface;
 using Bussiness.Interface.OrderInterface.Dto;
+using Bussiness.Interface.WarehouseInterface;
+using Bussiness.Interface.WarehouseInterface.Dto;
 using Bussiness.Services.Core;
 using CoreApiResponse;
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +15,15 @@ namespace API.Controllers
     public class OrdersController : BaseController
     {
         private readonly IOrderAppService _orderAppService;
+        private readonly IWarehouseAppService _warehouseAppService;
 
         public OrdersController(
-            IOrderAppService orderAppService
+            IOrderAppService orderAppService,
+            IWarehouseAppService warehouseAppService
             )
         {
             _orderAppService = orderAppService;
+            _warehouseAppService = warehouseAppService;
         }
 
         [AllowAnonymous]
@@ -52,6 +57,21 @@ namespace API.Controllers
             OrderForViewDto? res = await _orderAppService.GetOrder(id);
             if (res is null) return CustomResult(null, HttpStatusCode.NoContent);
             return CustomResult(res, HttpStatusCode.OK);
+        }
+
+        [Authorize(Policy = "RequireAdminRole")]
+        [HttpPost("{id}/warehouse")]
+        public async Task<IActionResult> ExportToOrder(ExportToOrderInput input)
+        {
+            object res = await _warehouseAppService.ExportToOrder(input);
+            if (res is string)
+            {
+                return CustomResult(res, HttpStatusCode.BadRequest);
+            }
+            else
+            {
+                return CustomResult(res, HttpStatusCode.OK);
+            }
         }
     }
 }

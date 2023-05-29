@@ -12,6 +12,6 @@ namespace Bussiness.Interface.WarehouseInterface
         Task Delete(int id);
         Task<object> GetProductsForWarehouse(int id, PaginationInput input);
         Task<object> AddProductToParentWarehouse(int id, AddProductToWarehouseInput input);
-        Task<ICollection<WarehouseForViewDto>> ExportToOrder(ExportToOrderInput input);
+        Task<object> ExportToOrder(ExportToOrderInput input);
     }
 }

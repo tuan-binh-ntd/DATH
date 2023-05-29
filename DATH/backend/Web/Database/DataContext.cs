@@ -174,9 +174,9 @@ namespace Database
                 .IsRequired();
 
             // Set unique constraint for code col in order table
-            //modelBuilder.Entity<Order>()
-            //    .HasIndex(o => o.Code)
-            //    .IsUnique();
+            modelBuilder.Entity<Order>()
+                .HasIndex(o => o.Code)
+                .IsUnique();
 
             // One to Many Relationship (Payment, Order)
             modelBuilder.Entity<Payment>()
