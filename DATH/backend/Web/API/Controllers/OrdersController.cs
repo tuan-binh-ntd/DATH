@@ -3,7 +3,6 @@ using Bussiness.Interface.OrderInterface.Dto;
 using Bussiness.Services.Core;
 using CoreApiResponse;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -45,14 +44,6 @@ namespace API.Controllers
             object res = await _orderAppService.GetOrdersForAdmin(input);
             return CustomResult(res, HttpStatusCode.OK);
         }
-
-        //[Authorize(Policy = "RequireEmployeeRole")]
-        //[HttpGet("{shopId}")]
-        //public async Task<IActionResult> Get(int shopId, [FromQuery] PaginationInput input)
-        //{
-        //    object res = await _orderAppService.GetOrdersForShop(shopId, input);
-        //    return CustomResult(res, HttpStatusCode.OK);
-        //}
 
         [AllowAnonymous]
         [HttpGet("{id}")]

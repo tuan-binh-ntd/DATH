@@ -16,18 +16,21 @@ namespace Bussiness.Services.OrderService
         private readonly IRepository<Order, long> _orderRepo;
         private readonly IRepository<OrderDetail, long> _orderDetailRepo;
         private readonly IDapper _dapper;
+        private readonly IRepository<Payment> _paymentRepo;
 
         public OrderAppService(
             IMapper mapper,
             IRepository<Order, long> orderRepo,
             IRepository<OrderDetail, long> orderDetailRepo,
-            IDapper dapper
+            IDapper dapper,
+            IRepository<Payment> paymentRepo
             )
         {
             ObjectMapper = mapper;
             _orderRepo = orderRepo;
             _orderDetailRepo = orderDetailRepo;
             _dapper = dapper;
+            _paymentRepo = paymentRepo;
         }
 
         #region CreateOrder
@@ -73,7 +76,9 @@ namespace Bussiness.Services.OrderService
             order!.ShopId = input.ShopId;
 
             await _orderRepo.UpdateAsync(order);
-            return ObjectMapper!.Map<OrderForViewDto>(order);
+            OrderForViewDto? res = ObjectMapper!.Map<OrderForViewDto>(order);
+            await HandleOrder(res);
+            return res;
         }
         #endregion
 
@@ -94,29 +99,33 @@ namespace Bussiness.Services.OrderService
         }
         #endregion
 
+        #region UpdateOrder
         public Task<object> UpdateOrder()
         {
             throw new NotImplementedException();
         }
+        #endregion
 
         #region GetOrder
         public async Task<OrderForViewDto?> GetOrder(long id)
         {
-            IQueryable<OrderForViewDto> query = from o in _orderRepo.GetAll()
-                                                 where o.Id == id
-                                                 select new OrderForViewDto
-                                                 {
-                                                     Id = o.Id,
-                                                     CustomerName = o.CustomerName,
-                                                     Address = o.Address,
-                                                     Phone = o.Phone,
-                                                     Code = o.Code,
-                                                     Status = o.Status,
-                                                     ActualDate = o.ActualDate,
-                                                     EstimateDate = o.EstimateDate,
-                                                     Cost = o.Cost,
-                                                     Discount = o.Discount,
-                                                     CreateDate = (DateTime)o.CreationTime!
+            IQueryable<OrderForViewDto> query = from o in _orderRepo.GetAll().AsNoTracking()
+                                                join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
+                                                where o.Id == id
+                                                select new OrderForViewDto
+                                                {
+                                                    Id = o.Id,
+                                                    CustomerName = o.CustomerName,
+                                                    Address = o.Address,
+                                                    Phone = o.Phone,
+                                                    Code = o.Code,
+                                                    Status = o.Status,
+                                                    ActualDate = o.ActualDate,
+                                                    EstimateDate = o.EstimateDate,
+                                                    Cost = o.Cost,
+                                                    Discount = o.Discount,
+                                                    CreateDate = (DateTime)o.CreationTime!,
+                                                    Payment = p.Name
                                                  };
             OrderForViewDto? res = await query.SingleOrDefaultAsync();
 
@@ -156,10 +165,12 @@ namespace Bussiness.Services.OrderService
         #region GetOrders
         private async Task<object> GetOrders(int? shopId, PaginationInput input)
         {
-            if(shopId is null)
+            if (shopId is null)
             {
-                IQueryable<OrderForViewDto> orders = from o in _orderRepo.GetAll()
+                IQueryable<OrderForViewDto> orders = from o in _orderRepo.GetAll().AsNoTracking()
+                                                     join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
                                                      where o.ShopId == null
+                                                     orderby o.CreationTime descending
                                                      select new OrderForViewDto
                                                      {
                                                          Id = o.Id,
@@ -172,7 +183,8 @@ namespace Bussiness.Services.OrderService
                                                          EstimateDate = o.EstimateDate,
                                                          Cost = o.Cost,
                                                          Discount = o.Discount,
-                                                         CreateDate = (DateTime)o.CreationTime!
+                                                         CreateDate = (DateTime)o.CreationTime!,
+                                                         Payment = p.Name
                                                      };
 
                 if (input.PageNum != null && input.PageSize != null)
@@ -190,8 +202,10 @@ namespace Bussiness.Services.OrderService
             }
             else
             {
-                IQueryable<OrderForViewDto> orders = from o in _orderRepo.GetAll()
+                IQueryable<OrderForViewDto> orders = from o in _orderRepo.GetAll().AsNoTracking()
+                                                     join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
                                                      where o.ShopId == shopId
+                                                     orderby o.CreationTime descending
                                                      select new OrderForViewDto
                                                      {
                                                          Id = o.Id,
@@ -204,7 +218,8 @@ namespace Bussiness.Services.OrderService
                                                          EstimateDate = o.EstimateDate,
                                                          Cost = o.Cost,
                                                          Discount = o.Discount,
-                                                         CreateDate = (DateTime)o.CreationTime!
+                                                         CreateDate = (DateTime)o.CreationTime!,
+                                                         Payment = p.Name
                                                      };
 
                 if (input.PageNum != null && input.PageSize != null)
@@ -228,7 +243,7 @@ namespace Bussiness.Services.OrderService
         {
             string now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
 
-            string prefix = "TC";
+            string prefix = "TS";
 
             long orderCount = await _dapper.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM [Order]");
             orderCount++;

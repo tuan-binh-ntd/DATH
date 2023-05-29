@@ -1,13 +1,9 @@
-﻿using AutoMapper;
-using Bussiness.Dto;
-using Bussiness.Helper;
+﻿using Bussiness.Dto;
+using Bussiness.Interface.OrderInterface;
 using Bussiness.Interface.ShopInterface;
-using Bussiness.Repository;
 using Bussiness.Services.Core;
-using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace API.Controllers
@@ -17,12 +13,15 @@ namespace API.Controllers
     public class ShopsController : AdminBaseController
     {
         private readonly IShopAppService _shopAppService;
+        private readonly IOrderAppService _orderAppService;
 
         public ShopsController(
-            IShopAppService shopAppService
+            IShopAppService shopAppService,
+            IOrderAppService orderAppService
             )
         {
             _shopAppService = shopAppService;
+            _orderAppService = orderAppService;
         }
         [AllowAnonymous]
         [HttpGet]
@@ -67,6 +66,13 @@ namespace API.Controllers
         {
             GetWarehouseForViewDto? res = await _shopAppService.GetWarehouse(id);
             if (res is null) return CustomResult("Not found warehouse", HttpStatusCode.NoContent);
+            return CustomResult(res, HttpStatusCode.OK);
+        }
+
+        [HttpGet("{id}/orders")]
+        public async Task<IActionResult> Get(int id, [FromQuery] PaginationInput input)
+        {
+            object res = await _orderAppService.GetOrdersForShop(id, input);
             return CustomResult(res, HttpStatusCode.OK);
         }
     }
