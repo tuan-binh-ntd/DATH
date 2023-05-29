@@ -7,12 +7,14 @@ import { NgZorroAntdModule } from '../routes/ng-zorro-antd/ng-zorro-antd.module'
 import { EmployeeTypePipe } from './employee-type.pipe';
 import { MoneyFormatterPipe } from './money-formatter.pipe';
 import { EventTypeFormatterPipe } from './event-type-formatter.pipe';
+import { OrderStatusFormatterPipe } from './order-status-formatter.pipe';
 
 @NgModule({
   declarations: [
     EmployeeTypePipe,
     MoneyFormatterPipe,
-    EventTypeFormatterPipe
+    EventTypeFormatterPipe,
+    OrderStatusFormatterPipe
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,8 @@ import { EventTypeFormatterPipe } from './event-type-formatter.pipe';
     NgZorroAntdModule,
     EmployeeTypePipe,
     MoneyFormatterPipe,
-    EventTypeFormatterPipe
+    EventTypeFormatterPipe,
+    OrderStatusFormatterPipe
   ]
 })
 export class SharedModule { }
