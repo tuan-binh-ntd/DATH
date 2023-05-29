@@ -39,4 +39,12 @@ export class ShopService {
   getWarehouse(shopId: number): Observable<ResponseResult<Shop>> {
     return this.http.get<ResponseResult<Shop>>(this.baseUrl + '/' + shopId + '/warehouse');
   }
+
+  getOrderForAdmin(pageNum?: number, pageSize?: number): Observable<ResponseResult<any>> {
+    return this.http.get<ResponseResult<any>>(environment.baseUrl + 'orders' + '?pageNum=' + pageNum + '&pageSize=' + pageSize)
+  }
+
+  getOrderForStores(shopId: number, pageNum?: number, pageSize?: number): Observable<ResponseResult<any>> {
+    return this.http.get<ResponseResult<any>>(this.baseUrl + '/' + shopId + '/orders'+  '?pageNum=' + pageNum + '&pageSize=' + pageSize)
+  }
 }

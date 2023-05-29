@@ -19,6 +19,7 @@ import { SpecificationService } from 'src/app/services/specification.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
 import Quill from 'quill';
 import { ImageHandler } from 'ngx-quill-upload';
+
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -26,6 +27,7 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
+
 Quill.register('modules/imageHandler', ImageHandler);
 
 @Component({
@@ -35,15 +37,19 @@ Quill.register('modules/imageHandler', ImageHandler);
 })
 export class ProductDrawerComponent extends DrawerFormBaseComponent {
   @ViewChild('editor') editor!: ElementRef;
-
   productCategories: ProductCategory[] = [];
   specifications: Specification[] = [];
+  // Upload photo properties
   fileList: NzUploadFile[] = [];
   previewImage: string | undefined = '';
   previewVisible = false;
   uploadUrl: string = '';
+
+  // Set color when upload photo
   colors: any[] = [];
   colorForm!: FormGroup;
+
+  // Setup quill for upload photo
   editorOptions = {
     imageHandler: {
       upload: (file: any) => {
@@ -71,6 +77,8 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
       },
     },
   };
+
+  // preview photo
   handlePreview = async (file: NzUploadFile): Promise<void> => {
     if (!file.url && !file['preview']) {
       file['preview'] = await getBase64(file.originFileObj!);
@@ -78,9 +86,12 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     this.previewImage = file.url || file['preview'];
     this.previewVisible = true;
   };
+
+  // formatter functions
   formatterPrice = (value: number): string =>
     value !== null ? `${value}đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
   parserPrice = (value: string): string => value.replace(/\đ\s?|(,*)/g, '');
+
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,
@@ -92,6 +103,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
   ) {
     super(fb, cdr, message);
   }
+
   override ngOnInit(): void {
     this.initForm();
     this.fetchCategories();
@@ -125,6 +137,8 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
 
   override patchDataToForm(data: any) {
     super.patchDataToForm(data);
+
+    // patch specification property in form
     let specificationId: number[] = [];
     if (this.isString(data?.specificationId)) {
       specificationId = (data?.specificationId.split(',') as string[]).map(
@@ -132,6 +146,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
       );
     }
     this.drawerForm.get('specificationId')?.setValue(specificationId);
+
     // set action upload image
     this.uploadUrl = `https://localhost:7114/api/products/${data.id}/photos/true&${this}`;
 
@@ -227,6 +242,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     });
   }
 
+  // check is string
   isString(value: any): value is string {
     return typeof value === 'string';
   }
@@ -251,11 +267,14 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
         observer.complete();
         return;
       }
+
+      // Check require colorId when upload photo
       let colorId = this.colorForm?.get('colorId').value;
       if (colorId === undefined || colorId === null) {
         this.message.warning('Select a color');
         observer.complete();
       }
+
       observer.next(isJpgOrPng && isLt2M);
       observer.complete();
     });

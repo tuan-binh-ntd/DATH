@@ -17,7 +17,7 @@ namespace Bussiness.Helper
             CreateMap<RegisterDto, Employee>().ReverseMap();
 
 
-            CreateMap<Employee, UserDto>().ReverseMap();
+            CreateMap<Employee, UserDto>().ForMember(dest => dest.EmployeeType, opt => opt.MapFrom(src => src.Type)).ForMember(dest => dest.Type, act => act.Ignore()).ReverseMap();
             //End Declare Mapper AppUser
 
             //Declare Mapper Shop

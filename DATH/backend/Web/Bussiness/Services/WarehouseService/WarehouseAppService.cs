@@ -6,6 +6,7 @@ using Bussiness.Interface.WarehouseInterface.Dto;
 using Bussiness.Repository;
 using Bussiness.Services.Core;
 using Entities;
+using Entities.Enum.Order;
 using Entities.Enum.Warehouse;
 using Microsoft.EntityFrameworkCore;
 
@@ -55,7 +56,7 @@ namespace Bussiness.Services.WarehouseService
                     return "The product is not in warehouse";
                 }
                 else if (data!.Quantity < input.Quantity)
-                {   
+                {
                     return "Not enough quantity";
                 }
             }
@@ -129,13 +130,29 @@ namespace Bussiness.Services.WarehouseService
         #endregion
 
         #region ExportToOrder
-        public async Task<ICollection<WarehouseForViewDto>> ExportToOrder(ExportToOrderInput input)
+        public async Task<object> ExportToOrder(ExportToOrderInput input)
         {
+            // Get order
             Order? order = await _orderRepo.GetAll().AsNoTracking().Where(o => o.Code == input.OrderCode).SingleOrDefaultAsync();
+            // Get WarehouseId by ShopId in Order
             int warehouseId = await _warehouseRepo.GetAll().AsNoTracking().Where(w => w.ShopId == (int)order!.ShopId!).Select(w => w.Id).SingleOrDefaultAsync();
 
+
+            // Check product in stock
+            foreach (ExportToOrderDetailInput item in input.ExportToOrderDetailInputs!)
+            {
+                string error = await CheckProductInStock(warehouseId, item.ProductId, item.Quantity);
+                if (error != "Export successfully")
+                {
+                    return error;
+                }
+            }
+
+            // Init WarehouseDetail list
             ICollection<WarehouseDetail> warehouseDetails = new List<WarehouseDetail>();
-            foreach(ExportToOrderDetailInput item in input.ExportToOrderDetailInputs!)
+
+            // Add product prepare to export for order 
+            foreach (ExportToOrderDetailInput item in input.ExportToOrderDetailInputs!)
             {
                 WarehouseDetail warehouseDetail = new()
                 {
@@ -148,12 +165,18 @@ namespace Bussiness.Services.WarehouseService
                 };
                 warehouseDetails.Add(warehouseDetail);
             }
-
+            // Insert data
             await _warehouseDetailRepo.AddRangeAsync(warehouseDetails);
 
+            // Update order that have been exported and change status
+            order!.IsExport = true;
+            order.Status = OrderStatus.Prepared;
+            await _orderRepo.UpdateAsync(order);
+
+            // Return for view
             ICollection<WarehouseForViewDto> res = new List<WarehouseForViewDto>();
 
-            foreach(WarehouseDetail item in warehouseDetails)
+            foreach (WarehouseDetail item in warehouseDetails)
             {
                 res.Add(ObjectMapper!.Map<WarehouseForViewDto>(item));
             }
@@ -240,6 +263,31 @@ namespace Bussiness.Services.WarehouseService
                                                                           ActualDate = wd.ActualDate,
                                                                       };
             return query;
+        }
+
+        private async Task<string> CheckProductInStock(int warehouseId, long productId, int quantity)
+        {
+            WarehouseDetail? data = await (from wd in _warehouseDetailRepo.GetAll().AsNoTracking()
+                                           where wd.ProductId == productId && wd.WarehouseId == warehouseId
+                                           group wd by wd.ProductId into wad
+                                           select new WarehouseDetail
+                                           {
+                                               ProductId = wad.Key,
+                                               Quantity = wad.Sum(wad => wad.Quantity)
+                                           }).Include(wad => wad.Product).FirstOrDefaultAsync();
+
+            if (data == null)
+            {
+                return "The product is not in warehouse";
+            }
+            else if (data!.Quantity < quantity)
+            {
+                return "Not enough quantity";
+            }
+            else
+            {
+                return "Export successfully";
+            }
         }
         #endregion
     }

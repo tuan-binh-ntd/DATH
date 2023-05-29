@@ -156,7 +156,6 @@ namespace API.Controllers
                 res.Code = employee!.Code;
                 res.ShopId = employee!.ShopId;
                 _mapper.Map(employee, res);
-
                 return CustomResult(res);
             }
             _mapper.Map(customer, res);
@@ -205,6 +204,22 @@ namespace API.Controllers
             if (!result.Succeeded) return CustomResult("Password incorrect", result.Errors, HttpStatusCode.BadRequest);
 
             return CustomResult(new { user.UserName }, HttpStatusCode.OK);
+        }
+
+        [HttpDelete("{id}/photos")]
+        public async Task<IActionResult> RemovePhoto(long id)
+        {
+            AppUser? user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null) return CustomResult(HttpStatusCode.NotFound);
+
+            var result = await _photoService.DeletePhotoAsync(user.PublicId!);
+
+            if (result.Error != null) return CustomResult(result.Error.Message, HttpStatusCode.BadRequest);
+            user.PublicId = null;
+            user.AvatarUrl = null;
+            await _userManager.UpdateAsync(user);
+
+            return CustomResult(HttpStatusCode.OK);
         }
     }
 }

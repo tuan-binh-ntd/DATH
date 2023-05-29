@@ -21,6 +21,7 @@ namespace Bussiness.Interface.OrderInterface.Dto
         public decimal Discount { get; set; } = 0;
         public int? PromotionId { get; set; }
         public DateTime CreateDate { get; set; }
+        public string? Payment { get; set; }
         public ICollection<OrderDetailForViewDto>? OrderDetails { get; set; }
     }
 }

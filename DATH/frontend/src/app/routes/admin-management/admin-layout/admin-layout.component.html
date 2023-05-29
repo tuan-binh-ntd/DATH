@@ -2,7 +2,6 @@
   [isCollapsed]="isCollapsed"
   (emitOnCollapse)="onCollapse($event)"
 ></app-header>
-<!-- Start Admin View -->
 <nz-layout>
   <nz-sider
     nzWidth="256px"
@@ -11,78 +10,188 @@
     [(nzCollapsed)]="isCollapsed"
     [nzTrigger]="null"
   >
-    <div class="logo">
-      <!-- <nz-header class="h-50px">
-          <h1 class="text-center">Tech Shop</h1>
-        </nz-header> -->
-    </div>
+  <ng-container *ngIf="isAdmin then adminView else employeeView"></ng-container>
+  </nz-sider>
+  <nz-layout>
+    <nz-content>
+      <router-outlet></router-outlet>
+    </nz-content>
+  </nz-layout>
+</nz-layout>
+<!-- Start Admin View -->
+<ng-template #adminView>
+  <div class="logo">
+    <!-- <nz-header class="h-50px">
+        <h1 class="text-center">Tech Shop</h1>
+      </nz-header> -->
+  </div>
+  <ul nz-menu nzMode="inline">
+    <li nz-menu-item [routerLink]="'dashboard'" [nzMatchRouter]="true">
+      <span><i class="fa-solid fa-chart-line mr-2 text-muted"></i></span>
+      <span>Dashboard</span>
+    </li>
+
+    <li nz-submenu [nzTitle]="product">
+      <ng-template #product>
+        <i class="fa-brands fa-product-hunt mr-2 text-muted"></i>
+        <span>Product Management</span>
+      </ng-template>
+      <ul>
+        <li nz-menu-item [routerLink]="'product'" [nzMatchRouter]="true">
+          <span><i class="fa-solid fa-box mr-2 text-muted"></i></span>
+          <span>Product</span>
+        </li>
+        <li
+          nz-menu-item
+          [routerLink]="'product-category'"
+          [nzMatchRouter]="true"
+        >
+          <span><i class="fa-solid fa-toolbox mr-2 text-muted"></i></span>
+          <span>Product Category</span>
+        </li>
+      </ul>
+    </li>
+
+    <li nz-menu-item [routerLink]="'shop'" [nzMatchRouter]="true">
+      <span><i class="fa-solid fa-shop mr-2 text-muted"></i></span>
+      <span>Shop</span>
+    </li>
+
+    <li nz-menu-item [routerLink]="'shipping'" [nzMatchRouter]="true">
+      <span><i class="fa-solid fa-truck-fast mr-2 text-muted"></i></span>
+      <span>Shipping</span>
+    </li>
+
+    <li nz-menu-item [routerLink]="'payment'" [nzMatchRouter]="true">
+      <span
+        ><i class="fa-solid fa-money-check-dollar mr-2 text-muted"></i
+      ></span>
+      <span>Payment</span>
+    </li>
+
+    <li nz-menu-item [routerLink]="'promotion'" [nzMatchRouter]="true">
+      <span><i class="fa-solid fa-coins mr-2 text-muted"></i></span>
+      <span>Promotion</span>
+    </li>
+
+    <li nz-submenu [nzTitle]="warehouse">
+      <ng-template #warehouse>
+        <i class="fa-solid fa-warehouse mr-2 text-muted"></i>
+        <span>Warehouse Management</span>
+      </ng-template>
+      <ul>
+        <li nz-menu-item [routerLink]="'warehouse'" [nzMatchRouter]="true">
+          <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
+          <span>Warehouse</span>
+        </li>
+        <li
+          nz-menu-item
+          [routerLink]="'warehouse-detail'"
+          [nzMatchRouter]="true"
+        >
+          <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
+          <span>Parent Warehouse</span>
+        </li>
+        <!-- <li
+          nz-menu-item
+          [routerLink]="'stores-warehouse'"
+          [nzMatchRouter]="true"
+        >
+          <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
+          <span>Stores Warehouse</span>
+        </li> -->
+      </ul>
+    </li>
+
+    <li nz-submenu [nzTitle]="order">
+      <ng-template #order>
+        <i class="fa-solid fa-file-invoice mr-2 text-muted"></i>
+        <span>Order Management</span>
+      </ng-template>
+      <ul>
+        <li nz-menu-item [routerLink]="'order'" [nzMatchRouter]="true">
+          <span><i class="fa-solid fa-shop mr-2 text-muted"></i></span>
+          <span>Order</span>
+        </li>
+        <!-- <li nz-menu-item [routerLink]="'stores-order'" [nzMatchRouter]="true">
+          <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
+          <span>Stores Order</span>
+        </li> -->
+      </ul>
+    </li>
+
+    <li nz-submenu [nzTitle]="specification">
+      <ng-template #specification>
+        <i class="fa-solid fa-gear mr-2 text-muted"></i>
+        <span>Specification Management</span>
+      </ng-template>
+      <ul>
+        <li nz-menu-item [routerLink]="'specification'" [nzMatchRouter]="true">
+          <span><i class="fa-solid fa-box-archive mr-2 text-muted"></i></span>
+          <span>Specification</span>
+        </li>
+        <li
+          nz-menu-item
+          [routerLink]="'specification-category'"
+          [nzMatchRouter]="true"
+        >
+          <span><i class="fa-solid fa-toolbox mr-2 text-muted"></i></span>
+          <span>Specification Category</span>
+        </li>
+      </ul>
+    </li>
+
+    <li nz-menu-item [nzMatchRouter]="true">
+      <i class="fa-solid fa-users mr-2 text-muted"></i>
+      <span>Account Management</span>
+    </li>
+
+    <li nz-menu-item [routerLink]="'register-employee'" [nzMatchRouter]="true">
+      <i class="fa-solid fa-users mr-2 text-muted"></i>
+      <span>Employee Management</span>
+    </li>
+
+    <li nz-menu-item [nzMatchRouter]="true">
+      <span
+        ><i class="fa-regular fa-star-half-stroke mr-2 text-muted"></i
+      ></span>
+      <span>Rating</span>
+    </li>
+
+    <li nz-menu-item [routerLink]="'installment'" [nzMatchRouter]="true">
+      <span
+        ><i class="fa-regular fa-money-check-dollar mr-2 text-muted"></i
+      ></span>
+      <span>Installment</span>
+    </li>
+
+    <li nz-menu-item [nzMatchRouter]="true">
+      <span
+        ><i class="fa-regular fa-star-half-stroke mr-2 text-muted"></i
+      ></span>
+      <span>Statistic</span>
+    </li>
+  </ul>
+</ng-template>
+
+<!-- End Admin View -->
+
+<!-- Start Employee View -->
+<ng-template #employeeView>
+  <nz-sider
+    nzWidth="256px"
+    id="sider"
+    nzCollapsible
+    [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null"
+  >
     <ul nz-menu nzMode="inline">
-      <li nz-menu-item [routerLink]="'dashboard'" [nzMatchRouter]="true">
-        <span><i class="fa-solid fa-chart-line mr-2 text-muted"></i></span>
-        <span>Dashboard</span>
-      </li>
-
-      <li nz-submenu [nzTitle]="product">
-        <ng-template #product>
-          <i class="fa-brands fa-product-hunt mr-2 text-muted"></i>
-          <span>Product Management</span>
-        </ng-template>
-        <ul>
-          <li nz-menu-item [routerLink]="'product'" [nzMatchRouter]="true">
-            <span><i class="fa-solid fa-box mr-2 text-muted"></i></span>
-            <span>Product</span>
-          </li>
-          <li
-            nz-menu-item
-            [routerLink]="'product-category'"
-            [nzMatchRouter]="true"
-          >
-            <span><i class="fa-solid fa-toolbox mr-2 text-muted"></i></span>
-            <span>Product Category</span>
-          </li>
-        </ul>
-      </li>
-
-      <li nz-menu-item [routerLink]="'shop'" [nzMatchRouter]="true">
-        <span><i class="fa-solid fa-shop mr-2 text-muted"></i></span>
-        <span>Shop</span>
-      </li>
-
-      <li nz-menu-item [routerLink]="'shipping'" [nzMatchRouter]="true">
-        <span><i class="fa-solid fa-truck-fast mr-2 text-muted"></i></span>
-        <span>Shipping</span>
-      </li>
-
-      <li nz-menu-item [routerLink]="'payment'" [nzMatchRouter]="true">
-        <span
-          ><i class="fa-solid fa-money-check-dollar mr-2 text-muted"></i
-        ></span>
-        <span>Payment</span>
-      </li>
-
-      <li nz-menu-item [routerLink]="'promotion'" [nzMatchRouter]="true">
-        <span><i class="fa-solid fa-coins mr-2 text-muted"></i></span>
-        <span>Promotion</span>
-      </li>
-
       <li nz-submenu [nzTitle]="warehouse">
         <ng-template #warehouse>
           <i class="fa-solid fa-warehouse mr-2 text-muted"></i>
           <span>Warehouse Management</span>
         </ng-template>
         <ul>
-          <li nz-menu-item [routerLink]="'warehouse'" [nzMatchRouter]="true">
-            <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
-            <span>Warehouse</span>
-          </li>
-          <li
-            nz-menu-item
-            [routerLink]="'warehouse-detail'"
-            [nzMatchRouter]="true"
-          >
-            <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
-            <span>Parent Warehouse</span>
-          </li>
           <li
             nz-menu-item
             [routerLink]="'stores-warehouse'"
@@ -100,82 +209,14 @@
           <span>Order Management</span>
         </ng-template>
         <ul>
-          <li nz-menu-item [routerLink]="'order'" [nzMatchRouter]="true">
-            <span><i class="fa-solid fa-shop mr-2 text-muted"></i></span>
-            <span>Order</span>
-          </li>
           <li nz-menu-item [routerLink]="'stores-order'" [nzMatchRouter]="true">
             <span><i class="fa-solid fa-warehouse mr-2 text-muted"></i></span>
             <span>Stores Order</span>
           </li>
         </ul>
       </li>
-
-      <li nz-submenu [nzTitle]="specification">
-        <ng-template #specification>
-          <i class="fa-solid fa-gear mr-2 text-muted"></i>
-          <span>Specification Management</span>
-        </ng-template>
-        <ul>
-          <li
-            nz-menu-item
-            [routerLink]="'specification'"
-            [nzMatchRouter]="true"
-          >
-            <span><i class="fa-solid fa-box-archive mr-2 text-muted"></i></span>
-            <span>Specification</span>
-          </li>
-          <li
-            nz-menu-item
-            [routerLink]="'specification-category'"
-            [nzMatchRouter]="true"
-          >
-            <span><i class="fa-solid fa-toolbox mr-2 text-muted"></i></span>
-            <span>Specification Category</span>
-          </li>
-        </ul>
-      </li>
-
-      <li nz-menu-item [nzMatchRouter]="true">
-        <i class="fa-solid fa-users mr-2 text-muted"></i>
-        <span>Account Management</span>
-      </li>
-
-      <li
-        nz-menu-item
-        [routerLink]="'register-employee'"
-        [nzMatchRouter]="true"
-      >
-        <i class="fa-solid fa-users mr-2 text-muted"></i>
-        <span>Employee Management</span>
-      </li>
-
-      <li nz-menu-item [nzMatchRouter]="true">
-        <span
-          ><i class="fa-regular fa-star-half-stroke mr-2 text-muted"></i
-        ></span>
-        <span>Rating</span>
-      </li>
-
-      <li nz-menu-item [routerLink]="'installment'" [nzMatchRouter]="true">
-        <span
-          ><i class="fa-regular fa-money-check-dollar mr-2 text-muted"></i
-        ></span>
-        <span>Installment</span>
-      </li>
-
-      <li nz-menu-item [nzMatchRouter]="true">
-        <span
-          ><i class="fa-regular fa-star-half-stroke mr-2 text-muted"></i
-        ></span>
-        <span>Statistic</span>
-      </li>
     </ul>
   </nz-sider>
-  <nz-layout>
-    <nz-content>
-      <router-outlet></router-outlet>
-    </nz-content>
-  </nz-layout>
-</nz-layout>
+</ng-template>
+
 <!-- End Employee View -->
