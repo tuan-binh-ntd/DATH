@@ -1,5 +1,10 @@
 <app-page-grid>
   <h2>Order Management</h2>
+  <nz-tabset nzType="card">
+    <nz-tab *ngFor="let tab of tabs" [nzTitle]="tab">
+
+    </nz-tab>
+  </nz-tabset>
   <nz-list nzGrid>
     <div nz-row [nzGutter]="16">
       <div nz-col [nzSpan]="8" *ngFor="let item of orders">

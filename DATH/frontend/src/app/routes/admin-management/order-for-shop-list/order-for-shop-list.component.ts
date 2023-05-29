@@ -16,6 +16,13 @@ export class OrderForShopListComponent {
     totalPage: 0,
     totalCount: 0,
   };
+  tabs: string[] = [
+    'Pending',
+    'Rejected',
+    'Preparing',
+    'Delivering',
+    'Received',
+  ];
 
   orders: any[] = [];
   person: Account = JSON.parse(localStorage.getItem('user')!);
