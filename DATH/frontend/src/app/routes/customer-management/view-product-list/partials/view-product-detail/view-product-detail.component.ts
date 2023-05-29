@@ -51,8 +51,9 @@ export class ViewProductDetailComponent {
     name: '',
     specifications: [],
     photo: '',
-    price: 0,
+    cost: 0,
     quantity: 0,
+    productId: '',
   };
   cartObject$!: Subscription;
   cartObjects$ = this.cartQuery.selectAll();
@@ -83,7 +84,8 @@ export class ViewProductDetailComponent {
           this.cartObject.name = res?.data.name;
           this.cartObject.photo = this.mainImgUrl;
           this.cartObject.quantity = 1;
-          this.cartObject.price = res?.data.price;
+          this.cartObject.cost = res?.data.price;
+          this.cartObject.productId = res?.data.id;
         }
       });
   }
@@ -110,15 +112,19 @@ export class ViewProductDetailComponent {
         return Object.keys(item).includes('color');
       })
     ) {
+      const color = this.listColor.find((item) => item.value === value);
       this.cartObject.specifications.push({
-        color: this.listColor.find((item) => item.value === value)?.code,
+        id: color?.id,
+        color: color?.code,
       });
     } else {
       const index = this.cartObject.specifications.findIndex((item) => {
         return Object.keys(item).includes('color');
       });
+      const color = this.listColor.find((item) => item.value === value);
       const obj = {
-        color: this.listColor.find((item) => item.value === value)?.code
+        id: color?.id,
+        color: color?.code
       }
       const arr = [... this.cartObject.specifications];
       arr.splice(index, 1, obj);
@@ -130,6 +136,7 @@ export class ViewProductDetailComponent {
   onChangeCapacity(item: Specification) {
     if (item) {
       this.cartObject.specifications.push({
+        id: item.id,
         capacity: item.value,
       });
     }
@@ -146,7 +153,7 @@ export class ViewProductDetailComponent {
       .selectEntity((item) => {
         const cart = {...item};
         cart.quantity = 1;
-        cart.price = this.cartObject.price;
+        cart.price = this.cartObject.cost;
         delete cart.id;
         return JSON.stringify(cart) === JSON.stringify(this.cartObject)
       })
@@ -155,7 +162,7 @@ export class ViewProductDetailComponent {
         if (res) {
           var cart = { ...res };
           cart.quantity++;
-          cart.price = cart.quantity * this.cartObject.price;
+          cart.cost = cart.quantity * this.cartObject.cost;
           this.cartService.update(res.id, cart);
         } else {
           const obj = {id: Guid.create().toString(), ...this.cartObject};

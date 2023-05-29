@@ -16,6 +16,7 @@ import { ViewProductDetailComponent } from './view-product-list/partials/view-pr
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { CustomerCartComponent } from './customer-cart/customer-cart.component';
 import { ViewCartDetailComponent } from './view-cart-detail/view-cart-detail.component';
+import { ViewCheckOrderComponent } from './view-check-order/view-check-order.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { ViewCartDetailComponent } from './view-cart-detail/view-cart-detail.com
     ViewProductDetailComponent,
     CustomerCartComponent,
     ViewCartDetailComponent,
+    ViewCheckOrderComponent,
   ],
   imports: [
     CommonModule,

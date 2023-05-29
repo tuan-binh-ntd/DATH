@@ -10,7 +10,7 @@ import { UserType } from 'src/app/shared/helper';
 export class AdminLayoutComponent implements OnInit {
   isCollapsed = false;
   person: Account = JSON.parse(localStorage.getItem('user')!);
-  isAdmin: boolean = this.person.type === UserType.Admin ? true : false;
+  isAdmin: boolean = this.person?.type === UserType.Admin ? true : false;
 
   constructor() { }
 

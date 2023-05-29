@@ -11,10 +11,36 @@
   <form nz-form [formGroup]="colorForm" [nzLayout]="'vertical'">
     <ng-container *ngIf="data?.id">
       <!-- Start upload image -->
+      <div nz-row class="mb-2">
+        <div nz-col nzSpan="24">
+          <nz-form-item>
+            <nz-form-label [nzSpan]="24" nzFor="color" nzRequired>
+              <span>Color</span>
+            </nz-form-label>
+            <nz-form-control [nzSpan]="24">
+              <nz-select
+                nzShowSearch
+                nzAllowClear
+                nzPlaceHolder="Select a color"
+                formControlName="colorId"
+                (ngModelChange)="updateUploadUrl()"
+              >
+                <nz-option
+                  *ngFor="let color of colors"
+                  [nzLabel]="color.code"
+                  [nzValue]="color.id"
+                ></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+
       <div nz-row>
         <div nz-col nzSpan="24">
           <div class="clearfix">
             <nz-upload
+            class="mb-2"
               [nzAction]="uploadUrl"
               nzListType="picture-card"
               [(nzFileList)]="fileList"
@@ -47,30 +73,7 @@
       <!-- End upload image -->
 
       <!-- Start select color -->
-      <div nz-row>
-        <div nz-col nzSpan="24">
-          <nz-form-item>
-            <nz-form-label [nzSpan]="24" nzFor="color" nzRequired>
-              <span>Color</span>
-            </nz-form-label>
-            <nz-form-control [nzSpan]="24">
-              <nz-select
-                nzShowSearch
-                nzAllowClear
-                nzPlaceHolder="Select a color"
-                formControlName="colorId"
-                (ngModelChange)="updateUploadUrl()"
-              >
-                <nz-option
-                  *ngFor="let color of colors"
-                  [nzLabel]="color.code"
-                  [nzValue]="color.id"
-                ></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-      </div>
+   
       <!-- End select color -->
     </ng-container>
   </form>

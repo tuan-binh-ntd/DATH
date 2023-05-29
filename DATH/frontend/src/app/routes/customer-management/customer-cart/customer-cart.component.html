@@ -13,20 +13,20 @@
             <nz-list-item-meta-title >
               <div nz-row nzGutter="8">
                 <span nz-col nzSpan="14" class="text-truncate " >{{ item.name }}</span>
-                <span nz-col nzSpan="10" class="float-right">{{ item.price | number }}VNĐ</span>
+                <span nz-col nzSpan="10" class="float-right">{{ item.cost | number }}VNĐ</span>
               </div>
             </nz-list-item-meta-title>
             <nz-list-item-meta-description >
                 <ng-container *ngFor="let ele of item.specifications">
                 <div *ngFor="let obj of ele | keyvalue" >
-                  <span class="d-flex  text-truncate">{{ obj.key.toString() | titlecase }}: &nbsp; <p class="mb-0">{{ obj.value }}</p></span>
+                  <span *ngIf="obj.key.toString() != 'id'" class="d-flex  text-truncate">{{ obj.key.toString() | titlecase }}: &nbsp; <p class="mb-0">{{ obj.value }}</p></span>
                 </div>
               </ng-container>
               </nz-list-item-meta-description>
           </nz-list-item-meta>
         </div>
       </div>
-      <nz-divider class="mb-1 mt-0"></nz-divider>
+      <nz-divider class="mb-0 mt-0"></nz-divider>
     </ng-container>
   </nz-list>
 </div>

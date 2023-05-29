@@ -5,6 +5,7 @@ using Bussiness.Interface.WarehouseInterface.Dto;
 using Bussiness.Services.Core;
 using CoreApiResponse;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -72,6 +73,15 @@ namespace API.Controllers
             {
                 return CustomResult(res, HttpStatusCode.OK);
             }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("by-code/{code}")]
+        public async Task<IActionResult> Get(string code)
+        {
+            OrderForViewDto? res = await _orderAppService.GetOrder(code);
+            if (res is null) return CustomResult(null, HttpStatusCode.NoContent);
+            return CustomResult(res, HttpStatusCode.OK);
         }
     }
 }
