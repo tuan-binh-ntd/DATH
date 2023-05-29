@@ -8,6 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { PageGridComponent } from './page-grid/page-grid.component';
 import { ListBaseComponent } from './list-base/list-base.component';
 import { ButtonBaseComponent } from './button-base/button-base.component';
+import { OrderStatusComponent } from './order-status/order-status.component';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { ButtonBaseComponent } from './button-base/button-base.component';
     PageGridComponent,
     ListBaseComponent,
     ButtonBaseComponent,
+    OrderStatusComponent,
   ],
   exports: [
     HeaderComponent,
@@ -27,6 +29,7 @@ import { ButtonBaseComponent } from './button-base/button-base.component';
     LoginComponent,
     PageGridComponent,
     ButtonBaseComponent,
+    OrderStatusComponent,
     
   ],
   imports: [

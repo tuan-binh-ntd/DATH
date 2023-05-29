@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { OrderStatus } from 'src/app/enums/order-status.enum';
 import { Order } from 'src/app/models/order-model';
 import { OrderService } from 'src/app/services/order.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
+import { CartService } from 'src/app/stores/cart/cart.service';
 
 @Component({
   selector: 'app-view-check-order',
@@ -15,10 +16,12 @@ export class ViewCheckOrderComponent {
   constructor(
     private orderService: OrderService,
     private route: ActivatedRoute,
+    private router: Router,
+    private cartService: CartService
 
   ){}
   data: Order;
-  orderStatus: OrderStatus = OrderStatus.Pending;
+  orderStatus = OrderStatus;
   code: string = '';
   ngOnInit(){
     this.route.paramMap
@@ -36,5 +39,10 @@ export class ViewCheckOrderComponent {
     })
   }
 
+  continue(){
+    this.cartService.removeAll();
+    this.router.navigateByUrl('home');
+  }
 }
+
 

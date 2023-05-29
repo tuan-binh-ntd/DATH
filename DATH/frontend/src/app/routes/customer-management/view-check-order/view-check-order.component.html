@@ -3,37 +3,42 @@
     <div nz-col nzSpan="7"></div>
     <div nz-col nzSpan="10" class="text-center">
         <nz-card nzTitle="#{{data?.code}}">
-              <div class="align-child-space-between ">
-                  <label>Status</label>
-                  <ng-container *ngSwitch="data?.status">
-                      <span class="font-weight-bold" *ngSwitchCase="orderStatus['Pending']">Pending</span>
-                      <span class="font-weight-bold" *ngSwitchCase="orderStatus['Rejected']">Rejected</span>
-                      <span class="font-weight-bold" *ngSwitchCase="orderStatus['Preparing']">Preparing</span>
-                      <span class="font-weight-bold" *ngSwitchCase="orderStatus['Delivering']">Delivering</span>
-                      <span class="font-weight-bold" *ngSwitchCase="orderStatus['Received']">Received</span>
-                  </ng-container>
-              </div>
-              <div class="align-child-space-between ">
+             
+              <div class="align-child-space-between mb-2 ">
                   <label>Customer name</label>
                   <span class="font-weight-bold">{{data?.customerName}}</span>
               </div>
-              <div class="align-child-space-between ">
+              <div class="align-child-space-between mb-2 ">
                   <label>Phone</label>
                   <span class="font-weight-bold">{{data?.phone}}</span>
               </div>
-              <div class="align-child-space-between ">
+              <div class="align-child-space-between mb-2 ">
                   <label>Email</label>
                   <span class="font-weight-bold">{{data?.email}}</span>
               </div>
-              <div class="align-child-space-between ">
+              <div class="align-child-space-between mb-2 ">
                   <label>Create date</label>
                   <span class="font-weight-bold">{{data?.createDate | date: 'dd/mm/yyyy'}}</span>
               </div>
-              <nz-divider class="m-0"></nz-divider>
-              <nz-card nzTitle="Product">
+              <div class="align-child-space-between mb-2 ">
+                <label>Status</label>
+            <app-order-status [status]="data?.status"></app-order-status>
+            </div>
                   <app-customer-cart></app-customer-cart>
-              </nz-card>
-              
+              <div class="align-child-space-between mb-2 ">
+                <label>Total</label>
+                <h2 class="font-weight-bold">{{data?.cost | number}}VNĐ</h2>
+            </div>
+            <button
+            nz-button
+            nzType="primary"
+            class="w-100 h-50px mt-3"
+            nzSize="large"
+            nzShape="round"
+            (click)="continue()"
+          >
+            Continue shopping
+          </button>
         </nz-card>
     </div>
     <div nz-col nzSpan="7"></div>
