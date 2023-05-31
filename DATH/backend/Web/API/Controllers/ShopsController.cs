@@ -2,6 +2,7 @@
 using Bussiness.Interface.OrderInterface;
 using Bussiness.Interface.ShopInterface;
 using Bussiness.Services.Core;
+using Entities.Enum.Order;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -49,7 +50,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ShopInput input)
         {
-            ShopForViewDto? res = await _shopAppService.CreateOrUpdate(null, input);
+            ShopForViewDto? res = await _shopAppService.CreateOrUpdate(id, input);
             if (res is null) return CustomResult(HttpStatusCode.NoContent);
             return CustomResult(res, HttpStatusCode.OK);
         }
@@ -70,9 +71,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}/orders")]
-        public async Task<IActionResult> Get(int id, [FromQuery] PaginationInput input)
+        public async Task<IActionResult> Get(int id, [FromQuery] PaginationInput input, [FromQuery] OrderStatus status)
         {
-            object res = await _orderAppService.GetOrdersForShop(id, input);
+            object res = await _orderAppService.GetOrdersForShop(id, input, status);
             return CustomResult(res, HttpStatusCode.OK);
         }
     }

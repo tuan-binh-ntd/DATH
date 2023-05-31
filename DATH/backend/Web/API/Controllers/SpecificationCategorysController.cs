@@ -43,7 +43,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, SpecificationCategoryInput input)
         {
-            SpecificationCategoryForViewDto? res = await _specificationCategoryAppService.CreateOrUpdate(null, input);
+            SpecificationCategoryForViewDto? res = await _specificationCategoryAppService.CreateOrUpdate(id, input);
             if (res is null) return CustomResult(HttpStatusCode.NoContent);
             return CustomResult(res, HttpStatusCode.OK);
         }

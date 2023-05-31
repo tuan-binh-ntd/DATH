@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using Bussiness.Dto;
+﻿using Bussiness.Dto;
 using Bussiness.Interface.CustomerInterface;
-using Bussiness.Repository;
 using CoreApiResponse;
-using Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
