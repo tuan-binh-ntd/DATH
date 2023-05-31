@@ -2,6 +2,7 @@
 using Bussiness.Interface.OrderInterface.Dto;
 using Bussiness.Services.Core;
 using Entities;
+using Entities.Enum.Order;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 
@@ -52,13 +53,14 @@ namespace API.SignalRHub
             var pageNum = httpContext.Request.Query["PageNum"].ToString();
             var pageSize = httpContext.Request.Query["PageSize"].ToString();
             var shopId = httpContext.Request.Query["ShopId"].ToString();
+            var status = httpContext.Request.Query["Status"].ToString();
             PaginationInput input = new()
             {
                 PageNum = int.Parse(pageNum),
                 PageSize = int.Parse(pageSize)
             };
 
-            object res = await _orderAppService.GetOrdersForShop(int.Parse(shopId), input);
+            object res = await _orderAppService.GetOrdersForShop(int.Parse(shopId), input, (OrderStatus)int.Parse(status));
 
             await Clients.Caller.SendAsync("GetOrderForShop", res);
         }

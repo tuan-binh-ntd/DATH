@@ -71,7 +71,7 @@ namespace Bussiness.Services.OrderService
         #endregion
 
         #region ForwardToTheStore
-        public async Task<object> ForwardToTheStore(long id, ForwardToTheStoreInput input)
+        public async Task<OrderForViewDto> ForwardToTheStore(long id, UpdateOrderInput input)
         {
             Order? order = await _orderRepo.GetAsync(id);
             order!.ShopId = input.ShopId;
@@ -87,23 +87,43 @@ namespace Bussiness.Services.OrderService
         public async Task<object> GetOrdersForAdmin(PaginationInput input)
         {
 
-            object res = await GetOrders(null, input);
+            object res = await GetOrders(null, input, null);
             return res;
         }
         #endregion
 
         #region GetOrdersForShop
-        public async Task<object> GetOrdersForShop(int shopId, PaginationInput input)
+        public async Task<object> GetOrdersForShop(int shopId, PaginationInput input, OrderStatus status)
         {
-            object res = await GetOrders(shopId, input);
+            object res = await GetOrders(shopId, input, status);
             return res;
         }
         #endregion
 
         #region UpdateOrder
-        public Task<object> UpdateOrder()
+        public async Task<OrderForViewDto> UpdateOrder(long id, UpdateOrderInput input)
         {
-            throw new NotImplementedException();
+            Order? order = await _orderRepo.GetAsync(id);
+
+            if (input.ShippingId is not null)
+            {
+                order!.ShippingId = input.ShippingId;
+            }
+
+            order!.Status = input.Status switch
+            {
+                OrderStatus.Rejected => OrderStatus.Rejected,
+                OrderStatus.Preparing => OrderStatus.Preparing,
+                OrderStatus.Prepared => OrderStatus.Prepared,
+                OrderStatus.Delivering => OrderStatus.Delivering,
+                OrderStatus.Received => OrderStatus.Received,
+                _ => order.Status
+            };
+
+            await _orderRepo.UpdateAsync(order);
+            OrderForViewDto res = ObjectMapper!.Map<OrderForViewDto>(order);
+            await HandleOrder(res);
+            return res;
         }
         #endregion
 
@@ -191,7 +211,7 @@ namespace Bussiness.Services.OrderService
         #endregion
 
         #region GetOrders
-        private async Task<object> GetOrders(int? shopId, PaginationInput input)
+        private async Task<object> GetOrders(int? shopId, PaginationInput input, OrderStatus? status)
         {
             if (shopId is null)
             {
@@ -232,7 +252,7 @@ namespace Bussiness.Services.OrderService
             {
                 IQueryable<OrderForViewDto> orders = from o in _orderRepo.GetAll().AsNoTracking()
                                                      join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
-                                                     where o.ShopId == shopId
+                                                     where o.ShopId == shopId && o.Status == status
                                                      orderby o.CreationTime descending
                                                      select new OrderForViewDto
                                                      {

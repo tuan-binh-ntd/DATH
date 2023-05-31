@@ -5,7 +5,6 @@ using Bussiness.Interface.WarehouseInterface.Dto;
 using Bussiness.Services.Core;
 using CoreApiResponse;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -35,12 +34,20 @@ namespace API.Controllers
             return CustomResult(res, HttpStatusCode.OK);
         }
 
-        [Authorize(Policy = "RequireAdminRole")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> ForwardToTheStore(long id, ForwardToTheStoreInput input)
+        [Authorize(Policy = "RequireEmployeeRole")]
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> ForwardToTheStore(long id, UpdateOrderInput input)
         {
-            object res = await _orderAppService.ForwardToTheStore(id, input);
-            return CustomResult(res, HttpStatusCode.OK);
+            if(input.ShopId is not null)
+            {
+                OrderForViewDto res = await _orderAppService.ForwardToTheStore(id, input);
+                return CustomResult(res, HttpStatusCode.OK);
+            }
+            else
+            {
+                OrderForViewDto res = await _orderAppService.UpdateOrder(id, input);
+                return CustomResult(res, HttpStatusCode.OK);
+            }
         }
 
         [Authorize(Policy = "RequireAdminRole")]
@@ -83,5 +90,7 @@ namespace API.Controllers
             if (res is null) return CustomResult(null, HttpStatusCode.NoContent);
             return CustomResult(res, HttpStatusCode.OK);
         }
+
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Entities.Enum.Order;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace Entities
@@ -27,7 +26,6 @@ namespace Entities
         public Promotion? Promotion { get; set; }
         public int? ShippingId { get; set; }
         public Shipping? Shipping { get; set; }
-        public long OrderDetailId { get; set; }
         public ICollection<OrderDetail>? OrderDetails { get; set; }
         public int? ShopId { get; set; }
         public Shop? Shop { get; set; }

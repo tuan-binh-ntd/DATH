@@ -1,12 +1,7 @@
-﻿using AutoMapper;
-using Bussiness.Dto;
-using Bussiness.Helper;
+﻿using Bussiness.Dto;
 using Bussiness.Interface.SpecificationInterface;
-using Bussiness.Repository;
 using Bussiness.Services.Core;
-using Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace API.Controllers
