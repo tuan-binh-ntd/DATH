@@ -4,6 +4,7 @@ import { EmployeeType } from "../shared/helper";
 import { Cart } from "../stores/cart/cart.model";
 
 export interface Order {
+  id: string,
   customerName: string
   address: string
   code: string

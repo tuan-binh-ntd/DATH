@@ -1,5 +1,5 @@
-    <nz-tag class="m-0 text-center font-sz15" style="width: 80px" *ngIf="status === orderStatus.Pending" [nzColor]="'#f3a638'">Pending</nz-tag>
-    <nz-tag class="m-0 text-center font-sz15" style="width: 80px" *ngIf="status === orderStatus.Rejected" [nzColor]="'#f50'">Rejected</nz-tag>
-    <nz-tag class="m-0 text-center font-sz15" style="width: 80px" *ngIf="status === orderStatus.Preparing" [nzColor]="'#2db7f5'">Preparing</nz-tag>
-    <nz-tag class="m-0 text-center font-sz15" style="width: 80px" *ngIf="status === orderStatus.Delivering" [nzColor]="'#108ee9'">Delivering</nz-tag>
-    <nz-tag class="m-0 text-center font-sz15" style="width: 80px" *ngIf="status === orderStatus.Received" [nzColor]="'#e3503e'">Received</nz-tag>
+    <nz-tag class="m-0 text-center font-sz14" [ngStyle]="{'width': width}" *ngIf="status === orderStatus.Pending" [nzColor]="'#f3a638'">Pending</nz-tag>
+    <nz-tag class="m-0 text-center font-sz14" [ngStyle]="{'width': width}" *ngIf="status === orderStatus.Rejected" [nzColor]="'#f50'">Rejected</nz-tag>
+    <nz-tag class="m-0 text-center font-sz14" [ngStyle]="{'width': width}" *ngIf="status === orderStatus.Preparing" [nzColor]="'#2db7f5'">Preparing</nz-tag>
+    <nz-tag class="m-0 text-center font-sz14" [ngStyle]="{'width': width}" *ngIf="status === orderStatus.Delivering" [nzColor]="'#108ee9'">Delivering</nz-tag>
+    <nz-tag class="m-0 text-center font-sz14" [ngStyle]="{'width': width}" *ngIf="status === orderStatus.Received" [nzColor]="'#e3503e'">Received</nz-tag>

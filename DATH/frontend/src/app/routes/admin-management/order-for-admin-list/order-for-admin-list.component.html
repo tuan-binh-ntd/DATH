@@ -4,18 +4,16 @@
     <div nz-col nzSpan="6">
       <div
         cdkDropList
+        id="pending"
         #listPending="cdkDropList"
         [cdkDropListData]="listOrderPending"
         cdkDropListSortingDisabled
         [cdkDropListConnectedTo]="[listPreparing, listDelivering, listRejected]"
         class="example-list p-1 p-1"
-        (cdkDropListDropped)="drop($event)"
+        (cdkDropListDropped)="drop($event, 1)"
       >
-      <div class="align-child-space-between">
-        <app-order-status [status]="1"></app-order-status>
-        <app-button-icon
-          iconClass="fa-solid fa-ellipsis-vertical"
-        ></app-button-icon>
+      <div class="text-center mb-1">
+        <app-order-status [width]="'100%'" [status]="1"></app-order-status>
       </div>
         <div class="example-box mb-2 p-2" *ngFor="let item of listOrderPending" cdkDrag>
           <ng-container
@@ -29,16 +27,14 @@
     <div nz-col nzSpan="6">
       <div
         cdkDropList
+        id="rejected"
         #listRejected="cdkDropList"
         [cdkDropListData]="listOrderRejected"
         class="example-list p-1"
-        (cdkDropListDropped)="drop($event)"
+        (cdkDropListDropped)="drop($event, 27)"
       >
-      <div class="align-child-space-between">
-        <app-order-status [status]="27"></app-order-status>
-        <app-button-icon
-          iconClass="fa-solid fa-ellipsis-vertical"
-        ></app-button-icon>
+      <div class="text-center mb-1">
+        <app-order-status [width]="'100%'" [status]="27"></app-order-status>
       </div>
         <div class="example-box mb-2 p-2" *ngFor="let item of listOrderRejected" cdkDrag>
           <ng-container
@@ -52,18 +48,16 @@
     <div nz-col nzSpan="6">
       <div
         cdkDropList
+        id="preparing"
         #listPreparing="cdkDropList"
         [cdkDropListData]="listOrderPreparing"
         class="example-list p-1"
         cdkDropListSortingDisabled
         [cdkDropListConnectedTo]="[listDelivering, listRejected]"
-        (cdkDropListDropped)="drop($event)"
+        (cdkDropListDropped)="drop($event, 2)"
       >
-      <div class="align-child-space-between">
-        <app-order-status [status]="2"></app-order-status>
-        <app-button-icon
-          iconClass="fa-solid fa-ellipsis-vertical"
-        ></app-button-icon>
+      <div class="text-center mb-1">
+        <app-order-status [width]="'100%'" [status]="2"></app-order-status>
       </div>
         <div
           class="example-box mb-2 p-2"
@@ -81,17 +75,15 @@
     <div nz-col nzSpan="6">
       <div
         cdkDropList
+        id="delivering"
         #listDelivering="cdkDropList"
         [cdkDropListData]="listOrderDelivering"
         class="example-list p-1"
         cdkDropListSortingDisabled
-        (cdkDropListDropped)="drop($event)"
+        (cdkDropListDropped)="drop($event, 23)"
       >
-      <div class="align-child-space-between">
-        <app-order-status [status]="23"></app-order-status>
-        <app-button-icon
-          iconClass="fa-solid fa-ellipsis-vertical"
-        ></app-button-icon>
+      <div class="text-center mb-1">
+        <app-order-status [width]="'100%'" [status]="23"></app-order-status>
       </div>
         <div
           class="example-box mb-2 p-2"
@@ -127,20 +119,29 @@
 
   <ng-template #content let-item="item">
     <div class="align-child-space-between mb-1">
-      <label>Customer name</label>
-      <span class="font-weight-bold">{{ item?.customerName }}</span>
+      <label class="text-muted text-truncate">#{{ item?.code }}</label>
     </div>
     <div class="align-child-space-between mb-1">
-      <label>Phone</label>
-      <span class="font-weight-bold">{{ item?.phone }}</span>
+      <label class="text-muted">Customer name</label>
+      <span >{{ item?.customerName }}</span>
     </div>
     <div class="align-child-space-between mb-1">
-      <label>Email</label>
-      <span class="font-weight-bold">{{ item?.email }}</span>
+      <label class="text-muted">Phone</label>
+      <span >{{ item?.phone }}</span>
     </div>
+    <div class="align-child-space-between mb-1">
+      <label class="text-muted">Email</label>
+      <span class="text-truncate">{{ item?.email }}</span>
+    </div>
+    <!-- <div class="align-child-space-between mb-1">
+      <label>Delivery date</label>
+      <span >{{
+        item?.createDate | date : "dd/MM/yyyy"
+      }}</span>
+    </div> -->
     <div class="align-child-space-between">
-      <label>Create date</label>
-      <span class="font-weight-bold">{{
+      <label class="text-muted">Create date</label>
+      <span >{{
         item?.createDate | date : "dd/MM/yyyy"
       }}</span>
     </div>

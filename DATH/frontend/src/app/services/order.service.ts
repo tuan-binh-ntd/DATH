@@ -8,7 +8,7 @@ import { Order } from '../models/order-model';
   providedIn: 'root'
 })
 export class OrderService {
-  baseUrl: string = environment.baseUrl + 'orders';
+  baseUrl: string = environment.baseUrl + 'orders/';
 
   constructor(private http: HttpClient) { }
 
@@ -20,9 +20,12 @@ export class OrderService {
     return this.http.get(this.baseUrl + id);
   }
 
-
   getByCode(code: string): Observable<any>{
-    return this.http.get(this.baseUrl + '/by-code/' + code);
+    return this.http.get(this.baseUrl + 'by-code/' + code);
+  }
+
+  patch(id: string, payload): Observable<any>{
+    return this.http.patch(this.baseUrl + id, payload);
   }
 
 }
