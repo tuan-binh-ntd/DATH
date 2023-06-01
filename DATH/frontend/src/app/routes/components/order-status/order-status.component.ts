@@ -8,6 +8,7 @@ import { OrderStatus } from 'src/app/enums/order-status.enum';
 })
 export class OrderStatusComponent {
   @Input() status: OrderStatus;
+  @Input() width: string = '80px';
   orderStatus = OrderStatus;
   
 }

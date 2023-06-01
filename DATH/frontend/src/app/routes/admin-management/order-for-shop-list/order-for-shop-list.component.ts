@@ -1,37 +1,20 @@
 import { Component } from '@angular/core';
+import { OrderStatus } from 'src/app/enums/order-status.enum';
 import { Account } from 'src/app/models/account.model';
+import { Order } from 'src/app/models/order-model';
 import { PaginationInput } from 'src/app/models/pagination-input';
 import { ShopService } from 'src/app/services/shop.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
+import { OrderForAdminListComponent } from '../order-for-admin-list/order-for-admin-list.component';
 
 @Component({
   selector: 'app-order-for-shop-list',
   templateUrl: './order-for-shop-list.component.html',
   styleUrls: ['./order-for-shop-list.component.less'],
 })
-export class OrderForShopListComponent {
-  paginationParam: PaginationInput = {
-    pageNum: 1,
-    pageSize: 12,
-    totalPage: 0,
-    totalCount: 0,
-  };
-  tabs: string[] = [
-    'Pending',
-    'Rejected',
-    'Preparing',
-    'Delivering',
-    'Received',
-  ];
-
-  orders: any[] = [];
-  person: Account = JSON.parse(localStorage.getItem('user')!);
-
-  constructor(private shopService: ShopService) {}
-  ngOnInit(): void {
-    this.fetchData();
-  }
-  fetchData(): void {
+export class OrderForShopListComponent extends OrderForAdminListComponent{
+ 
+  override fetchData(): void {
     this.shopService
       .getOrderForStores(
         this.person.shopId,
@@ -41,18 +24,15 @@ export class OrderForShopListComponent {
       .subscribe((res) => {
         if (checkResponseStatus(res)) {
           this.orders = [...res.data.content];
+          this.listOrderPending = this.orders.filter(item => item.status === OrderStatus.Pending);
+          this.listOrderRejected = this.orders.filter(item => item.status === OrderStatus.Rejected);
+          this.listOrderPreparing = this.orders.filter(item => item.status === OrderStatus.Preparing);
+          this.listOrderDelivering = this.orders.filter(item => item.status === OrderStatus.Delivering);
+          this.listOrderPending = this.orders.filter(item => item.status === OrderStatus.Pending);
           this.paginationParam.totalCount = res.data.totalCount;
         }
       });
   }
 
-  pageNumChanged(event: any): void {
-    this.paginationParam.pageNum = event;
-    this.fetchData();
-  }
-
-  pageSizeChanged(event: any) {
-    this.paginationParam.pageSize = event;
-    this.fetchData();
-  }
+ 
 }
