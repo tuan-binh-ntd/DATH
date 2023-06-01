@@ -7,5 +7,8 @@ namespace Bussiness.Interface.OrderInterface.Dto
         public int? ShippingId { get; set; }
         public OrderStatus Status { get; set; }
         public int? ShopId { get; set; }
+        public DateTime? EstimateDate { get; set; }
+
+
     }
 }

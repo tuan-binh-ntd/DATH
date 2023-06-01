@@ -122,7 +122,7 @@
       <label class="text-muted text-truncate">#{{ item?.code }}</label>
     </div>
     <div class="align-child-space-between mb-1">
-      <label class="text-muted">Customer name</label>
+      <label class="text-muted">Customer</label>
       <span >{{ item?.customerName }}</span>
     </div>
     <div class="align-child-space-between mb-1">
@@ -147,3 +147,38 @@
     </div>
   </ng-template>
 </app-page-grid>
+
+<ng-template #modalContent>
+  <form nz-form [formGroup]="deliveryForm">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="email" nzRequired>
+        Shipping provider
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Shipping provider is required">
+        <nz-select
+                  formControlName="shippingId"
+                  class="w-100"
+                  nzPlaceHolder="Shipping provider"
+                >
+                  <nz-option
+                    *ngFor="let item of listShipping"
+                    [nzValue]="item.id"
+                    [nzLabel]="item.name"
+                  ></nz-option>
+                </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="email" nzRequired>
+        Estimate date
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Estimate date is required">
+        <nz-date-picker
+        [nzDisabledDate]="disabledDate"
+        class="w-100"
+        formControlName="estimateDate"
+      ></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</ng-template>

@@ -3,12 +3,16 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 import { Account } from 'src/app/models/account.model';
 import { Order } from 'src/app/models/order-model';
 import { PaginationInput } from 'src/app/models/pagination-input';
+import { Shipping } from 'src/app/models/shipping.model';
 import { OrderService } from 'src/app/services/order.service';
+import { ShippingService } from 'src/app/services/shipping.service';
 import { ShopService } from 'src/app/services/shop.service';
 import { checkResponseStatus, OrderStatus } from 'src/app/shared/helper';
 import { OrderForShopListComponent } from '../order-for-shop-list/order-for-shop-list.component';
@@ -19,6 +23,14 @@ import { OrderForShopListComponent } from '../order-for-shop-list/order-for-shop
   styleUrls: ['./order-for-admin-list.component.less'],
 })
 export class OrderForAdminListComponent {
+  @ViewChild('modalContent') modalContent: any;
+  deliveryForm!: FormGroup;
+  disabledDate = (value: Date): boolean => {
+    if (!value) {
+      return false;
+    }
+    return value <= new Date();
+  };
   paginationParam: PaginationInput = {
     pageNum: 1,
     pageSize: 12,
@@ -31,16 +43,37 @@ export class OrderForAdminListComponent {
   listOrderPreparing: Order[] = [];
   listOrderDelivering: Order[] = [];
   listOrderReceived: Order[] = [];
+  listShipping: Shipping[] = [];
   orderStatus = OrderStatus;
-
   person: Account = JSON.parse(localStorage.getItem('user')!);
   constructor(
     protected shopService: ShopService,
     protected orderService: OrderService,
-    protected msg: NzMessageService
+    protected msg: NzMessageService,
+    protected modalService: NzModalService,
+    protected fb: FormBuilder,
+    protected shippingService: ShippingService
   ) {}
   ngOnInit(): void {
+    this.fetchShipping();
     this.fetchData();
+    this.initForm();
+  }
+
+  initForm(){
+    this.deliveryForm = this.fb.group({
+      shippingId: [null, Validators.required],
+      estimateDate: [null, Validators.required],
+    })
+
+  }
+
+  fetchShipping(): void {
+    this.shippingService.getAll().subscribe(res => {
+      if(checkResponseStatus(res)){
+        this.listShipping = res.data;
+      }
+    })
   }
   fetchData(): void {
     this.shopService
@@ -86,21 +119,58 @@ export class OrderForAdminListComponent {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     }
     else{
+      let payload;
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex  
       );
-        this.orderService
-          .patch(event.previousContainer.data[event.previousIndex].id, {
-            status: status,
-          })
-          .subscribe((res) => {
-            if (checkResponseStatus(res)) {
-              this.msg.success('Change status successfully');
+      if(event.container.id === 'delivering'){
+        this.modalService.create({
+          nzTitle:'Update',
+          nzCentered: true,
+          nzOkText: 'Save',
+          nzCancelText: 'Cancel',
+          nzContent: this.modalContent,
+          nzOnOk:  () => {
+            for (const i in this.deliveryForm.controls) {
+              this.deliveryForm.controls[i].markAsDirty();
+              this.deliveryForm.controls[i].updateValueAndValidity();
             }
-          });
+            if(this.deliveryForm.valid){
+              payload = {...this.deliveryForm.getRawValue(), status: status};
+              this.patchOrder(event, payload);
+            }
+           
+          },
+          nzOnCancel: () => {
+            transferArrayItem(
+              event.container.data,
+              event.previousContainer.data,
+              event.currentIndex,
+              event.previousIndex  
+            );
+            this.deliveryForm.reset();
+          }
+        })
+      }
+      else{
+        this.patchOrder(event, {status: status});
+       
+      }
+     
+        
     }
+  }
+
+  patchOrder(event: CdkDragDrop<Order[]>, payload: any){
+    this.orderService
+    .patch(event.container.data[event.currentIndex].id, payload)
+    .subscribe((res) => {
+      if (checkResponseStatus(res)) {
+        this.msg.success('Change status successfully');
+      }
+    });
   }
 }
