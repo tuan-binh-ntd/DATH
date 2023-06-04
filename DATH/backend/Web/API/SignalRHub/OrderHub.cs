@@ -60,7 +60,7 @@ namespace API.SignalRHub
                 PageSize = int.Parse(pageSize)
             };
 
-            object res = await _orderAppService.GetOrdersForShop(int.Parse(shopId), input, (OrderStatus)int.Parse(status));
+            object res = await _orderAppService.GetOrdersForShop(int.Parse(shopId), input);
 
             await Clients.Caller.SendAsync("GetOrderForShop", res);
         }

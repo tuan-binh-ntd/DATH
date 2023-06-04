@@ -140,7 +140,7 @@ namespace Bussiness.Services.ProductCategoryService
             string? productIdString = string.Join(",", await _productCateRepo.GetAll().AsNoTracking().Where(pc => pc.ParentId == id).Select(pc => pc.Id).ToListAsync());
 
             param.Add("ProductCategoryId", productIdString);
-            param.Add("SpecificationId", string.IsNullOrWhiteSpace(filter.SpecificationIds) ? @"""" : filter.SpecificationIds);
+            param.Add("SpecificationId", string.IsNullOrWhiteSpace(filter.SpecificationIds) ? @"""" : "," + filter.SpecificationIds);
             param.Add("Price", filter.Price);
             param.Add("Keyword", string.IsNullOrWhiteSpace(filter.Keyword) ? @"""" : filter.Keyword);
 

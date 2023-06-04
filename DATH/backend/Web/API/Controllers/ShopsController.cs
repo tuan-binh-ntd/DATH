@@ -71,9 +71,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}/orders")]
-        public async Task<IActionResult> Get(int id, [FromQuery] PaginationInput input, [FromQuery] OrderStatus status)
+        public async Task<IActionResult> Get(int id, [FromQuery] PaginationInput input)
         {
-            object res = await _orderAppService.GetOrdersForShop(id, input, status);
+            object res = await _orderAppService.GetOrdersForShop(id, input);
             return CustomResult(res, HttpStatusCode.OK);
         }
     }
