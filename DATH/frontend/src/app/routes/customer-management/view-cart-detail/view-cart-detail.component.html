@@ -194,6 +194,23 @@
     </div>
     <div nz-col nzSpan="7">
       <nz-card nzTitle="Sumary" class="mb-4">
+        <nz-form-item>
+          <nz-form-control
+            [nzSpan]="24"
+          >
+          <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+            <input
+              nz-input
+              id="promotionId"
+              formControlName="promotionId"
+              placeholder="Enter promotion code"
+            />
+            <ng-template #suffixButton>
+              <button nz-button nzType="primary" nzSearch (click)="onApplyPromotion()">Apply</button>
+            </ng-template>
+          </nz-input-group>
+        </nz-form-control>
+        </nz-form-item>
         <div class="align-child-space-between">
           <span
             >Subtotal &nbsp;
@@ -229,13 +246,13 @@
             (click)="onChangePayment(item.id)"
           >
         </div>
-        <br />
+        <!-- <br />
         <img
           nz-image
           nzSrc="../../../../assets/images/payment.jpg"
           width="300"
           height="300"
-        />
+        /> -->
       </nz-card>
       <button
         nz-button

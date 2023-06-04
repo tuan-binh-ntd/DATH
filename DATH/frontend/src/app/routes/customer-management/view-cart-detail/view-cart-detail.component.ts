@@ -25,10 +25,11 @@ import { StoresWarehouseListComponent } from '../../admin-management/stores-ware
 export class ViewCartDetailComponent {
   @ViewChild("quantity") quantity!: ElementRef;
   cartObjects$  = this.cartQuery.selectAll();
-  deliveryCost: number = 250000;
+  deliveryCost: number = 0;
   subTotalCost: number = 0;
   listCart: Cart[] = [];
   selectedPayment: number = 0;
+  isLoading: boolean = false;
   listOfColumn: any[] = [
     {
       name: 'Image',
@@ -78,10 +79,9 @@ export class ViewCartDetailComponent {
     private orderService: OrderService){};
 
 
-  ngOnInit(){
-    this.initForm();
+  async ngOnInit(){
+    await this.fetchPayments();
     this.fetchShops();
-    this.fetchPayments();
    this.cartObjects$.subscribe(res => {
     this.subTotalCost = 0;
     this.listCart = res;
@@ -89,6 +89,10 @@ export class ViewCartDetailComponent {
       this.subTotalCost += item.cost;
     })
    })
+   const paymentId = this.listPayment.find(item => item)?.id;
+    this.selectedPayment = paymentId;
+   this.initForm();
+
   }
 
   fetchShops(){
@@ -99,8 +103,8 @@ export class ViewCartDetailComponent {
     })
   }
 
-  fetchPayments(){
-    this.paymentService.getAll().subscribe(res => {
+  async fetchPayments(){
+    await this.paymentService.getAll().toPromise().then(res => {
       if(checkResponseStatus(res)){
         this.listPayment = res.data;
       }
@@ -121,6 +125,7 @@ export class ViewCartDetailComponent {
       shopId: [null],
     });
     this.infoForm.get('formal')?.setValue('store');
+    
   }
 
   onSort(direction: any, column: string){}
@@ -151,10 +156,16 @@ export class ViewCartDetailComponent {
 
   onChangeFormal(ev: string){
     switch(ev){
-      case 'store': this.deliveryCost = 0; 
+      case 'store': 
+      this.infoForm.get('address')?.clearValidators();      
+      this.infoForm.get('shopId')?.addValidators(Validators.required);      
+      this.deliveryCost = 0; 
 
       break;
-      case 'delivery': this.deliveryCost = 250000; break;
+      case 'delivery':
+      this.infoForm.get('address')?.addValidators(Validators.required);   
+      this.infoForm.get('shopId')?.clearValidators();      
+      this.deliveryCost = 50000; break;
     }
   }
 
@@ -163,6 +174,10 @@ export class ViewCartDetailComponent {
       this.selectedPayment = id;
       this.infoForm.get('paymentId')?.setValue(id);
     } 
+  }
+
+  onApplyPromotion(){
+    
   }
 
   validateForm() {

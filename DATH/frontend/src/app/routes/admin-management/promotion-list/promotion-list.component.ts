@@ -22,7 +22,7 @@ export class PromotionListComponent extends ListBaseComponent {
   override listOfColumn: any[] = [
     {
       name: 'Name',
-      width: '15%',
+      width: 'auto',
       sortKey: 'name',
       sortOrder: null,
       sortDirections: ['ascend', 'descend', null],
@@ -54,7 +54,7 @@ export class PromotionListComponent extends ListBaseComponent {
     },
     {
       name: 'Discount',
-      width: 'auto',
+      width: '15%',
       sortKey: 'discount',
       sortOrder: null,
       sortDirections: ['ascend', 'descend', null],
