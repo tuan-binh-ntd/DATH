@@ -39,6 +39,7 @@ import { StoresWarehouseDrawerComponent } from './stores-warehouse-list/partials
 import { QuillModule } from 'ngx-quill';
 import { OrderForAdminListComponent } from './order-for-admin-list/order-for-admin-list.component';
 import { OrderForShopListComponent } from './order-for-shop-list/order-for-shop-list.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -82,6 +83,7 @@ import { OrderForShopListComponent } from './order-for-shop-list/order-for-shop-
     ComponentsModule,
     SharedModule,
     OverlayModule,
+    DragDropModule
   ]
 })
 export class AdminManagementModule { }

@@ -109,6 +109,10 @@ namespace Bussiness.Services.OrderService
             {
                 order!.ShippingId = input.ShippingId;
             }
+            if(input.EstimateDate is not null)
+            {
+                order!.EstimateDate = input.EstimateDate;
+            }
 
             order!.Status = input.Status switch
             {
