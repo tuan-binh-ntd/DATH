@@ -87,15 +87,15 @@ namespace Bussiness.Services.OrderService
         public async Task<object> GetOrdersForAdmin(PaginationInput input)
         {
 
-            object res = await GetOrders(null, input, null);
+            object res = await GetOrders(null, input);
             return res;
         }
         #endregion
 
         #region GetOrdersForShop
-        public async Task<object> GetOrdersForShop(int shopId, PaginationInput input, OrderStatus status)
+        public async Task<object> GetOrdersForShop(int shopId, PaginationInput input)
         {
-            object res = await GetOrders(shopId, input, status);
+            object res = await GetOrders(shopId, input);
             return res;
         }
         #endregion
@@ -215,7 +215,7 @@ namespace Bussiness.Services.OrderService
         #endregion
 
         #region GetOrders
-        private async Task<object> GetOrders(int? shopId, PaginationInput input, OrderStatus? status)
+        private async Task<object> GetOrders(int? shopId, PaginationInput input)
         {
             if (shopId is null)
             {
@@ -256,7 +256,7 @@ namespace Bussiness.Services.OrderService
             {
                 IQueryable<OrderForViewDto> orders = from o in _orderRepo.GetAll().AsNoTracking()
                                                      join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
-                                                     where o.ShopId == shopId && o.Status == status
+                                                     where o.ShopId == shopId
                                                      orderby o.CreationTime descending
                                                      select new OrderForViewDto
                                                      {
