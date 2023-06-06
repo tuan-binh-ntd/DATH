@@ -1,6 +1,7 @@
 ﻿using Bussiness.Dto;
 using Bussiness.Interface.PromotionInterface;
 using Bussiness.Services.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -28,6 +29,14 @@ namespace API.Controllers
         public async Task<IActionResult> Get(int id)
         {
             PromotionForViewDto? res = await _promotionAppService.GetPromotion(id);
+            if (res is null) return CustomResult(HttpStatusCode.NoContent);
+            return CustomResult(res, HttpStatusCode.OK);
+        }
+        [AllowAnonymous]
+        [HttpGet("by-code/{code}")]
+        public async Task<IActionResult> Get(string code)
+        {
+            PromotionForViewDto? res = await _promotionAppService.GetPromotion(code);
             if (res is null) return CustomResult(HttpStatusCode.NoContent);
             return CustomResult(res, HttpStatusCode.OK);
         }

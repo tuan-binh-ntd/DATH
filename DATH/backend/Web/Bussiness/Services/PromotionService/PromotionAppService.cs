@@ -5,6 +5,7 @@ using Bussiness.Interface.PromotionInterface;
 using Bussiness.Repository;
 using Bussiness.Services.Core;
 using Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bussiness.Services.PromotionService
@@ -76,6 +77,26 @@ namespace Bussiness.Services.PromotionService
 
             return data;
         }
+
+        public async Task<PromotionForViewDto?> GetPromotion(string code)
+        {
+            IQueryable<PromotionForViewDto> query = from p in _promotionRepo.GetAll().AsNoTracking()
+                                                    where p.Code == code
+                                                    select new PromotionForViewDto()
+                                                    {
+                                                        Id = p.Id,
+                                                        Name = p.Name,
+                                                        Code = p.Code,
+                                                        StartDate = p.StartDate,
+                                                        EndDate = p.EndDate,
+                                                        Discount = p.Discount,
+                                                    };
+            PromotionForViewDto? data = await query.FirstOrDefaultAsync();
+            if (data == null) return null;
+
+            return data;
+        }
+
         #endregion
 
         #region GetPromotions
@@ -96,5 +117,6 @@ namespace Bussiness.Services.PromotionService
             else return await query.ToListAsync();
         }
         #endregion
+
     }
 }

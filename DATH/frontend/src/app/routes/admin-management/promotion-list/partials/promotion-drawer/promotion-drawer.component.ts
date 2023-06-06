@@ -61,6 +61,7 @@ override submitForm() {
         ).subscribe(res => {
           if(checkResponseStatus(res)){
             this.message.success('Create successfully');
+            this.data = res.data;
             this.changeToDetail();
             this.onCreate.emit(res.data);
           }

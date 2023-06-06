@@ -86,6 +86,7 @@
 
       <nz-card nzTitle="Information" class="mt-4">
         <form nz-form [formGroup]="infoForm">
+
           <div nz-row nzGutter="24">
             <div nz-col nzSpan="24" class="pr-1">
               <nz-form-item>
@@ -194,6 +195,24 @@
     </div>
     <div nz-col nzSpan="7">
       <nz-card nzTitle="Sumary" class="mb-4">
+          <nz-form-item>
+            <nz-form-control
+              [nzSpan]="24"
+            >
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+              <input
+                nz-input
+                id="promotionId"
+                [(ngModel)]="promotionCode"
+                placeholder="Enter promotion code"
+              />
+              <ng-template #suffixButton>
+                <button nz-button [nzLoading]="isLoading" nzType="primary" nzSearch (click)="onApplyPromotion()">Apply</button>
+              </ng-template>
+            </nz-input-group>
+          </nz-form-control>
+          </nz-form-item>
+
         <div class="align-child-space-between">
           <span
             >Subtotal &nbsp;
@@ -207,12 +226,16 @@
         </div>
         <div class="align-child-space-between">
           <span>Estimated Delivery & Handling</span>
-          <p>{{ deliveryCost | number }}VNĐ</p>
+          <p>{{ deliveryCost | number }} VNĐ</p>
         </div>
-        <nz-divider class="mt-0 mb-2"></nz-divider>
+        <nz-divider class="mt-0 mb-3"></nz-divider>
+        <div class="align-child-space-between">
+          <span>Discount</span>
+          <p>{{ discountPercent | number }} %</p>
+        </div>
         <div class="align-child-space-between">
           <span>Total</span>
-          <p>{{ subTotalCost + deliveryCost | number }}VNĐ</p>
+          <p>{{ totalCost | number }} VNĐ</p>
         </div>
       </nz-card>
       <nz-card nzTitle="Payment" class="text-center">
@@ -229,18 +252,18 @@
             (click)="onChangePayment(item.id)"
           >
         </div>
-        <br />
+        <!-- <br />
         <img
           nz-image
           nzSrc="../../../../assets/images/payment.jpg"
           width="300"
           height="300"
-        />
+        /> -->
       </nz-card>
       <button
         nz-button
         nzType="primary"
-        class="w-100 h-50px mt-3"
+        class="w-100 h-50px mt-3 mb-2"
         nzSize="large"
         nzShape="round"
         (click)="onCheckOut()"

@@ -23,6 +23,10 @@ export class PromotionService {
     return this.http.get(this.baseUrl + '/' + id);
   }
 
+  getByCode(code: string){
+    return this.http.get(this.baseUrl + '/' + 'by-code/' + code);
+  }
+
   update(id: number, payload: Promotion): Observable<any>{
     return this.http.put(this.baseUrl + '/' + id, payload);
   }
