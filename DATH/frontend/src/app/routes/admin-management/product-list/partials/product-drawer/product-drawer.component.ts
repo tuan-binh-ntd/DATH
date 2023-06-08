@@ -20,6 +20,9 @@ import { checkResponseStatus } from 'src/app/shared/helper';
 import Quill from 'quill';
 import { ImageHandler } from 'ngx-quill-upload';
 
+// or, from each individual module
+
+
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -27,7 +30,6 @@ const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
-
 Quill.register('modules/imageHandler', ImageHandler);
 
 @Component({
@@ -51,6 +53,10 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
 
   // Setup quill for upload photo
   editorOptions = {
+    imageResize: {
+      displaySize: true
+    },
+  
     imageHandler: {
       upload: (file: any) => {
         return new Promise((resolve, reject) => {
@@ -64,7 +70,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
               .toPromise()
               .then((res: any) => {
                 if (checkResponseStatus(res)) {
-                  resolve(res.data.photos[0]?.url);
+                  resolve(res.data.photos[res.data.photos.length - 1]?.url);
                 }
               })
               .catch((err: any) => {
