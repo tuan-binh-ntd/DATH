@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.Interface.FeedbackInterface.Dto;
+using Bussiness.Interface.MessageInterface.Dto;
+using Bussiness.Interface.NotificationInterface.Dto;
 using Bussiness.Interface.OrderInterface.Dto;
-using Bussiness.Interface.WarehouseInterface.Dto;
 using Entities;
 
 namespace Bussiness.Helper
@@ -109,6 +111,20 @@ namespace Bussiness.Helper
             CreateMap<OrderDetail, OrderDetailInput>().ReverseMap();
             CreateMap<OrderDetail, OrderDetailForViewDto>().ReverseMap();
             //End Declare Mapper OrderDetail
+
+            //Declare Mapper Message
+            CreateMap<Message, MessageInput>().ReverseMap();
+            CreateMap<Message, MessageForViewDto>().ReverseMap();
+            //End Declare Mapper Message
+
+            //Declare Mapper Notification
+            CreateMap<Notification, NotificationInput>().ReverseMap();
+            //End Declare Mapper Notification
+
+            //Declare Mapper Feedback
+            CreateMap<Feedback, FeedbackInput>().ReverseMap();
+            CreateMap<Feedback, FeedbackForViewDto>().ReverseMap();
+            //End Declare Mapper Feedback
         }
     }
 }

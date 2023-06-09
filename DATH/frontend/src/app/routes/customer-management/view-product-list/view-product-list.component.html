@@ -113,7 +113,7 @@
                   <span>{{ item.price | number }}Đ</span>
                 </nz-card>
                 <ng-template #coverTemplate>
-                  <img alt="example" [src]="item.photos![0].url" />
+                  <img alt="example" [src]="item.photos[0]?.url" />
                 </ng-template>
               </nz-list-item>
             </div>

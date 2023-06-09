@@ -140,9 +140,9 @@ namespace Bussiness.Services.ProductCategoryService
             string? productIdString = string.Join(",", await _productCateRepo.GetAll().AsNoTracking().Where(pc => pc.ParentId == id).Select(pc => pc.Id).ToListAsync());
 
             param.Add("ProductCategoryId", productIdString);
-            param.Add("SpecificationId", string.IsNullOrWhiteSpace(filter.SpecificationIds) ? @"""" : "," + filter.SpecificationIds);
+            param.Add("SpecificationId", string.IsNullOrWhiteSpace(filter.SpecificationIds) ? @"null" : "," + filter.SpecificationIds);
             param.Add("Price", filter.Price);
-            param.Add("Keyword", string.IsNullOrWhiteSpace(filter.Keyword) ? @"""" : filter.Keyword);
+            param.Add("Keyword", string.IsNullOrWhiteSpace(filter.Keyword) ? @"null" : filter.Keyword);
 
             if (input.PageNum != null && input.PageSize != null)
             {
@@ -157,8 +157,8 @@ namespace Bussiness.Services.ProductCategoryService
 		            from Product 
 		            where IsDeleted = 0
 			            and @ProductCategoryId is null or ProductCategoryId in (select * from string_split(@ProductCategoryId, ','))
-			            and (freetext(SpecificationId, @SpecificationId) or @SpecificationId = '""')
-			            and (freetext([Name], @Keyword) or @Keyword = '""')
+			            and (freetext(SpecificationId, @SpecificationId) or @SpecificationId = N'null')
+			            and (freetext([Name], @Keyword) or @Keyword = N'null')
 			            or [Name] like '%' + @Keyword +'%'
 			            and @Price is null or (Price >= @Price - 1000000 and Price <= @Price + 1000000)
                     ", input, param);
@@ -179,8 +179,8 @@ namespace Bussiness.Services.ProductCategoryService
 		            from Product 
 		            where IsDeleted = 0
 			            and @ProductCategoryId is null or ProductCategoryId in (select * from string_split(@ProductCategoryId, ','))
-			            and (freetext(SpecificationId, @SpecificationId) or @SpecificationId = '""')
-			            and (freetext([Name], @Keyword) or @Keyword = '""')
+			            and (freetext(SpecificationId, @SpecificationId) or @SpecificationId = 'null')
+			            and (freetext([Name], @Keyword) or @Keyword = 'null')
 			            or [Name] like '%' + @Keyword +'%'
 			            and @Price is null or (Price >= @Price - 1000000 and Price <= @Price + 1000000)
                     ", param, CommandType.Text);

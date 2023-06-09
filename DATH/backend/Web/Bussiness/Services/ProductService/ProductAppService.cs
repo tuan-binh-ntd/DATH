@@ -265,9 +265,16 @@ namespace Bussiness.Services.ProductService
 
             product.Photos!.Remove(photo);
 
+            ProductForViewDto? res = new();
+            ObjectMapper!.Map(product, res);
+
+            await HandleProduct(res);
+
+
             if (await _productRepo.UpdateAsync(product) != null)
             {
-                return product;
+                res.Photos!.Add(ObjectMapper!.Map<PhotoDto>(photo));
+                return res;
             }
             return "Failed to delete your photo";
         }

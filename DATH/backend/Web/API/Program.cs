@@ -38,6 +38,12 @@ using Bussiness.Interface.WarehouseInterface;
 using Bussiness.Services.WarehouseService;
 using Bussiness.Interface.OrderInterface;
 using Bussiness.Services.OrderService;
+using Bussiness.Services.MessageService;
+using Bussiness.Interface.MessageInterface;
+using Bussiness.Interface.NotificationInterface;
+using Bussiness.Services.NotificationService;
+using Bussiness.Interface.FeedbackInterface;
+using Bussiness.Services.FeedbackService;
 
 // Set path of project for APP_BASE_DIRECTORY
 Environment.SetEnvironmentVariable("APP_BASE_DIRECTORY", Directory.GetCurrentDirectory());
@@ -72,6 +78,9 @@ builder.Services.AddScoped<ISpecificationCategoryAppService, SpecificationCatego
 builder.Services.AddScoped<ISpecificationAppService, SpecificationAppService>();
 builder.Services.AddScoped<IWarehouseAppService, WarehouseAppService>();
 builder.Services.AddScoped<IOrderAppService, OrderAppService>();
+builder.Services.AddScoped<IMessageAppService, MessageAppService>();
+builder.Services.AddScoped<INotificationAppService, NotificationAppService>();
+builder.Services.AddScoped<IFeedbackAppService, FeedbackAppService>();
 // End  Declaration DI
 
 // Set up connection SQL Server
