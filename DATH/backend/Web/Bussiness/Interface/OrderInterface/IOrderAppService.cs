@@ -13,5 +13,6 @@ namespace Bussiness.Interface.OrderInterface
         Task<OrderForViewDto> ForwardToTheStore(long id, UpdateOrderInput input);
         Task<OrderForViewDto?> GetOrder(long id);
         Task<OrderForViewDto?> GetOrder(string code);
+        Task<IEnumerable<OrderForViewDto>> GetOrdersForCustomer(long userId);
     }
 }

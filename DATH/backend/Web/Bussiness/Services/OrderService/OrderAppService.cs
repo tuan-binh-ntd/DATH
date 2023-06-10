@@ -7,6 +7,8 @@ using Bussiness.Repository;
 using Bussiness.Services.Core;
 using Entities;
 using Entities.Enum.Order;
+using Entities.Enum.User;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bussiness.Services.OrderService
@@ -17,13 +19,15 @@ namespace Bussiness.Services.OrderService
         private readonly IRepository<OrderDetail, long> _orderDetailRepo;
         private readonly IDapper _dapper;
         private readonly IRepository<Payment> _paymentRepo;
+        private readonly UserManager<AppUser> _userManager;
 
         public OrderAppService(
             IMapper mapper,
             IRepository<Order, long> orderRepo,
             IRepository<OrderDetail, long> orderDetailRepo,
             IDapper dapper,
-            IRepository<Payment> paymentRepo
+            IRepository<Payment> paymentRepo,
+            UserManager<AppUser> userManager
             )
         {
             ObjectMapper = mapper;
@@ -31,6 +35,7 @@ namespace Bussiness.Services.OrderService
             _orderDetailRepo = orderDetailRepo;
             _dapper = dapper;
             _paymentRepo = paymentRepo;
+            _userManager = userManager;
         }
 
         #region CreateOrder
@@ -109,7 +114,7 @@ namespace Bussiness.Services.OrderService
             {
                 order!.ShippingId = input.ShippingId;
             }
-            if(input.EstimateDate is not null)
+            if (input.EstimateDate is not null)
             {
                 order!.EstimateDate = input.EstimateDate;
             }
@@ -151,7 +156,7 @@ namespace Bussiness.Services.OrderService
                                                     Discount = o.Discount,
                                                     CreateDate = (DateTime)o.CreationTime!,
                                                     Payment = p.Name
-                                                 };
+                                                };
             OrderForViewDto? res = await query.SingleOrDefaultAsync();
 
             await HandleOrder(res!);
@@ -302,8 +307,40 @@ namespace Bussiness.Services.OrderService
 
             return $"{prefix}{now}{orderCount:D6}";
         }
+
+
         #endregion
 
         #endregion
+
+        public async Task<IEnumerable<OrderForViewDto>> GetOrdersForCustomer(long userId)
+        {
+
+            IQueryable<OrderForViewDto> query = from o in _orderRepo.GetAll().AsNoTracking()
+                                                 join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
+                                                 where o.CreatorUserId == userId
+                                                 orderby o.CreationTime descending
+                                                 select new OrderForViewDto
+                                                 {
+                                                     Id = o.Id,
+                                                     CustomerName = o.CustomerName,
+                                                     Address = o.Address,
+                                                     Phone = o.Phone,
+                                                     Code = o.Code,
+                                                     Status = o.Status,
+                                                     ActualDate = o.ActualDate,
+                                                     EstimateDate = o.EstimateDate,
+                                                     Cost = o.Cost,
+                                                     Discount = o.Discount,
+                                                     CreateDate = (DateTime)o.CreationTime!,
+                                                     Payment = p.Name
+                                                 };
+
+            List<OrderForViewDto> orders = await query.ToListAsync();
+
+            await HandleOrders(orders);
+
+            return orders;
+        }
     }
 }
