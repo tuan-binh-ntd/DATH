@@ -19,5 +19,6 @@ namespace Entities
         public ICollection<Photo>? Photos { get; set; }
         public ICollection<WarehouseDetail> Products { get; set; } = new List<WarehouseDetail>();
         public ICollection<OrderDetail>? OrderDetails { get; set; }
+        public ICollection<Feedback>? Feedbacks { get; set; }
     }
 }

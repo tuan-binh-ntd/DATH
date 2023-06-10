@@ -125,6 +125,22 @@ namespace Bussiness.Repository
             await _dbContext.Set<TEntity>().AddRangeAsync(datas, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task UpdateRangeAsync(ICollection<TEntity> entity, CancellationToken cancellationToken = default)
+        {
+            ICollection<TEntity> datas = new List<TEntity>();
+            foreach (TEntity item in entity)
+            {
+                EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(item);
+                if (entry.Entity is IHasLastModifierUserId lastModifierUserId)
+                {
+                    lastModifierUserId.LastModifierUserId = GetCurrentUserId();
+                }
+                datas.Add(entry.Entity);
+            }
+            _dbContext.Set<TEntity>().UpdateRange(datas);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity<int>
@@ -243,6 +259,22 @@ namespace Bussiness.Repository
                 datas.Add(entry.Entity);
             }
             await _dbContext.Set<TEntity>().AddRangeAsync(datas, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task UpdateRangeAsync(ICollection<TEntity> entity, CancellationToken cancellationToken = default)
+        {
+            ICollection<TEntity> datas = new List<TEntity>();
+            foreach (TEntity item in entity)
+            {
+                EntityEntry<TEntity> entry = _dbContext.Set<TEntity>().Entry(item);
+                if (entry.Entity is IHasLastModifierUserId lastModifierUserId)
+                {
+                    lastModifierUserId.LastModifierUserId = GetCurrentUserId();
+                }
+                datas.Add(entry.Entity);
+            }
+            _dbContext.Set<TEntity>().UpdateRange(datas);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }

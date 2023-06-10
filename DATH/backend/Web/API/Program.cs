@@ -38,6 +38,12 @@ using Bussiness.Interface.WarehouseInterface;
 using Bussiness.Services.WarehouseService;
 using Bussiness.Interface.OrderInterface;
 using Bussiness.Services.OrderService;
+using Bussiness.Services.MessageService;
+using Bussiness.Interface.MessageInterface;
+using Bussiness.Interface.NotificationInterface;
+using Bussiness.Services.NotificationService;
+using Bussiness.Interface.FeedbackInterface;
+using Bussiness.Services.FeedbackService;
 
 // Set path of project for APP_BASE_DIRECTORY
 Environment.SetEnvironmentVariable("APP_BASE_DIRECTORY", Directory.GetCurrentDirectory());
@@ -72,6 +78,10 @@ builder.Services.AddScoped<ISpecificationCategoryAppService, SpecificationCatego
 builder.Services.AddScoped<ISpecificationAppService, SpecificationAppService>();
 builder.Services.AddScoped<IWarehouseAppService, WarehouseAppService>();
 builder.Services.AddScoped<IOrderAppService, OrderAppService>();
+builder.Services.AddScoped<IMessageAppService, MessageAppService>();
+builder.Services.AddScoped<INotificationAppService, NotificationAppService>();
+builder.Services.AddScoped<IFeedbackAppService, FeedbackAppService>();
+builder.Services.AddSingleton<PresenceTracker>();
 // End  Declaration DI
 
 // Set up connection SQL Server
@@ -117,7 +127,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 // If the request is for our hub...
                 var path = context.HttpContext.Request.Path;
                 if (!string.IsNullOrEmpty(accessToken) &&
-                    (path.StartsWithSegments("/hubs/chat")))
+                    (path.StartsWithSegments("/hubs")))
                 {
                     // Read the token out of the query string
                     context.Token = accessToken;
@@ -131,13 +141,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             OnMessageReceived = context =>
             {
                 var accessToken = context.Request.Query["access_token"];
-
-                // If the request is for our hub...
                 var path = context.HttpContext.Request.Path;
-                if (!string.IsNullOrEmpty(accessToken) &&
-                    (path.StartsWithSegments("/hubs/notify")))
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
                 {
-                    // Read the token out of the query string
                     context.Token = accessToken;
                 }
                 return Task.CompletedTask;
@@ -247,5 +253,7 @@ app.MapHub<ChatHub>("hubs/chat");
 app.MapHub<NotifyHub>("hubs/notify");
 
 app.MapHub<NotifyHub>("hubs/order");
+
+app.MapHub<PresenceHub>("hubs/presence");
 
 await app.RunAsync();

@@ -31,6 +31,9 @@ namespace Database
         public DbSet<Installment> Installment { get; set; }
         public DbSet<Payment> Payment { get; set; }
         public DbSet<WarehouseDetail> WarehouseDetail { get; set; }
+        public DbSet<Feedback> Feedback { get; set; }
+        public DbSet<Notification> Notification { get; set; }
+        public DbSet<Message> Message { get; set; }
         //End Entity Declaration
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -184,8 +187,37 @@ namespace Database
                 .WithOne(o => o.Payment)
                 .HasForeignKey(o => o.PaymentId)
                 .IsRequired();
+
+            // Many to Many Relationship (AppUser, Message, AppUser)
+            modelBuilder.Entity<Message>()
+                .HasOne(u => u.Sender)
+                .WithMany(m => m.MessagesSent)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(u => u.Recipient)
+                .WithMany(m => m.MessagesReceived)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Set decimal scale for Star col in Feedback tbl
+            modelBuilder.Entity<Feedback>().Property(i => i.Star).HasPrecision(1, 1);
+
+            // One to Many Relationship (Product, Feedback)
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.Feedbacks)
+                .WithOne(f => f.Product)
+                .HasForeignKey(f => f.ProductId)
+                .IsRequired();
+
+            // One to Many Relationship (AppUser, Notification)
+            modelBuilder.Entity<AppUser>()
+                .HasMany(p => p.Notifications)
+                .WithOne(f => f.AppUser)
+                .HasForeignKey(f => f.UserId)
+                .IsRequired();
         }
 
+        #region Override SaveChange
         // Set SoftDelete
         public override int SaveChanges()
         {
@@ -230,5 +262,6 @@ namespace Database
             }
             return await base.SaveChangesAsync(cancellationToken);
         }
+        #endregion
     }
 }

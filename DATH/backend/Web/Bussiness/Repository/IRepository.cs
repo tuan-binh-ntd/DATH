@@ -18,6 +18,9 @@ namespace Bussiness.Repository
         Task DeleteAsync(TPrimaryKey id, CancellationToken cancellationToken = default);
 
         Task AddRangeAsync(ICollection<TEntity> entity, CancellationToken cancellationToken = default);
+
+        Task UpdateRangeAsync(ICollection<TEntity> entity, CancellationToken cancellationToken = default);
+
     }
 
     public interface IRepository<TEntity> : IRepository<TEntity, int> where TEntity : class, IEntity<int>

@@ -1,4 +1,6 @@
 ﻿using Bussiness.Dto;
+using Bussiness.Interface.FeedbackInterface;
+using Bussiness.Interface.FeedbackInterface.Dto;
 using Bussiness.Interface.ProductInterface;
 using Bussiness.Services.Core;
 using Entities;
@@ -11,12 +13,15 @@ namespace API.Controllers
     public class ProductsController : AdminBaseController
     {
         private readonly IProductAppService _productAppService;
+        private readonly IFeedbackAppService _feedbackAppService;
 
         public ProductsController(
-            IProductAppService productAppService
+            IProductAppService productAppService,
+            IFeedbackAppService feedbackAppService
             )
         {
             _productAppService = productAppService;
+            _feedbackAppService = feedbackAppService;
         }
 
         [AllowAnonymous]
@@ -89,7 +94,7 @@ namespace API.Controllers
             {
                 return CustomResult(HttpStatusCode.NoContent);
             }
-            else if (res is Product)
+            else if (res is ProductForViewDto)
             {
                 return CustomResult(HttpStatusCode.OK);
             }
@@ -109,6 +114,15 @@ namespace API.Controllers
         {
             ProductForViewDto? res = await _productAppService.GetProductBySpecificationId(id, specificationId);
             if(res == null) return CustomResult(HttpStatusCode.NoContent);
+            return CustomResult(res, HttpStatusCode.OK);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}/feedbacks")]
+        public async Task<IActionResult> GetFeedbacks(long id)
+        {
+            IEnumerable<FeedbackForViewDto> res = await _feedbackAppService.Get(id);
+            if (res == null) return CustomResult(HttpStatusCode.NoContent);
             return CustomResult(res, HttpStatusCode.OK);
         }
     }
