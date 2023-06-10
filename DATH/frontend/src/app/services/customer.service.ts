@@ -18,4 +18,8 @@ export class CustomerService {
   createAddress(id: number, payload: any): Observable<any> {
     return this.http.post(this.baseUrl + '/' + id + '/addresses', payload);
   }
+
+  getOrderHistory(){
+    
+  }
 }

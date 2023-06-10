@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Observer } from 'rxjs';
 import { Customer } from 'src/app/models/customer.model';
@@ -20,6 +21,7 @@ export class CustomerChangeInfoComponent {
   currentPasswordVisible = false;
   newPasswordVisible = false;
   confirmNewPasswordVisible = false;
+  listOrder: any[] = [];
   customer: Customer = JSON.parse(localStorage.getItem('user')!);
 
   infoObserver: Observer<any> = {
@@ -62,12 +64,21 @@ export class CustomerChangeInfoComponent {
     private accountService: AccountService,
     private customerService: CustomerService,
     private msg: NzMessageService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.initForm();
     this.infoForm.patchValue(this.customer);
     this.infoForm.get('gender')!.setValue(this.customer.gender?.toString());
+  }
+
+  getOrderHistory(){
+    // this.customerService.getOrderHistory().subscribe(res => {
+    //   if(checkResponseStatus(res)){
+    //     this.listOrder = res.data;
+    //   }
+    // })
   }
 
   initForm() {
@@ -144,5 +155,9 @@ export class CustomerChangeInfoComponent {
 
   removeAddress(index: number) {
     this.addresses.removeAt(index);
+  }
+
+  goToProduct(id: string){
+    this.router.navigateByUrl(`/product-detail/${id}`);
   }
 }
