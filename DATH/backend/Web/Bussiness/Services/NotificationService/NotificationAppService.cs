@@ -22,18 +22,22 @@ namespace Bussiness.Services.NotificationService
         }
 
         #region CreateOrUpdate
-        public async Task CreateOrUpdate(long? id, NotificationInput input)
+        public async Task<NotificationForViewDto> CreateOrUpdate(long? id, NotificationInput input)
         {
             if (id is null)
             {
                 Notification notification = ObjectMapper!.Map<Notification>(input);
                 await _notificationRepo.InsertAsync(notification);
+                NotificationForViewDto res = ObjectMapper!.Map<NotificationForViewDto>(notification);
+                return res;
             }
             else
             {
                 Notification? notification = await _notificationRepo.GetAsync((long)id);
                 ObjectMapper!.Map(input, notification);
                 await _notificationRepo.UpdateAsync(notification!);
+                NotificationForViewDto res = ObjectMapper!.Map<NotificationForViewDto>(notification);
+                return res;
             }
         }
         #endregion
@@ -42,19 +46,19 @@ namespace Bussiness.Services.NotificationService
         public async Task<IEnumerable<NotificationForViewDto>> Get(long userId)
         {
             IQueryable<NotificationForViewDto> query = from n in _notificationRepo.GetAll().AsNoTracking()
-                                             where n.UserId == userId
-                                             select new NotificationForViewDto
-                                             {
-                                                 Id = n.Id,
-                                                 Content = n.Content,
-                                             };
+                                                       where n.UserId == userId
+                                                       select new NotificationForViewDto
+                                                       {
+                                                           Id = n.Id,
+                                                           Content = n.Content,
+                                                       };
 
             return await query.ToListAsync();
         }
         #endregion
 
         #region UnReadNotificationNum
-        public async Task<int> UnReadNotificationNum(long userId)
+        public async Task<int> UnreadNotificationNum(long userId)
         {
             IQueryable<Notification> query = from n in _notificationRepo.GetAll().AsNoTracking()
                                              where n.UserId == userId && n.IsRead == false

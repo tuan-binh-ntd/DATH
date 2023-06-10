@@ -7,6 +7,7 @@ import { Register } from '../models/register.model';
 import { Login } from '../models/login.model';
 import { CookieService } from 'ngx-cookie-service';
 import { ChangePassword } from '../models/change-password.model';
+import { PresenceService } from './presence.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,7 @@ export class AccountService {
   currentUserSource = new ReplaySubject<Account | null>(1);
 
   // currentUser = this.currentUserSource.asObservable();
-  constructor(private http: HttpClient, private cookieService: CookieService) {}
+  constructor(private http: HttpClient, private cookieService: CookieService, private presenceService: PresenceService) {}
 
   signIn(payload: Login): Observable<any> {
     return this.http.post<any>(this.baseUrl + 'login', payload).pipe(
@@ -24,6 +25,7 @@ export class AccountService {
         const user = response;
         if (user) {
           this.setCurrentUser(user.data, payload.remember);
+          this.presenceService.createHubConnection(user.data);
         }
         return user;
       })
@@ -52,6 +54,7 @@ export class AccountService {
         const user = response;
         if (user) {
           this.setCurrentUser(user.data);
+          this.presenceService.createHubConnection(user.data);
         }
         return user;
       })
@@ -62,6 +65,8 @@ export class AccountService {
     this.cookieService.delete('token');
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
+    this.presenceService.stopHubConnection();
+
   }
 
   register(payload: Register): Observable<any> {
@@ -70,6 +75,7 @@ export class AccountService {
         const user = response;
         if (user) {
           this.setCurrentUser(user.data);
+          this.presenceService.createHubConnection(user);
         }
         return user;
       })

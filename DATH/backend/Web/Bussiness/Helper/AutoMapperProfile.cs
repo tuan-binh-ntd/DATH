@@ -119,6 +119,7 @@ namespace Bussiness.Helper
 
             //Declare Mapper Notification
             CreateMap<Notification, NotificationInput>().ReverseMap();
+            CreateMap<Notification, NotificationForViewDto>().ReverseMap();
             //End Declare Mapper Notification
 
             //Declare Mapper Feedback

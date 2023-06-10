@@ -81,6 +81,7 @@ builder.Services.AddScoped<IOrderAppService, OrderAppService>();
 builder.Services.AddScoped<IMessageAppService, MessageAppService>();
 builder.Services.AddScoped<INotificationAppService, NotificationAppService>();
 builder.Services.AddScoped<IFeedbackAppService, FeedbackAppService>();
+builder.Services.AddSingleton<PresenceTracker>();
 // End  Declaration DI
 
 // Set up connection SQL Server
@@ -126,7 +127,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 // If the request is for our hub...
                 var path = context.HttpContext.Request.Path;
                 if (!string.IsNullOrEmpty(accessToken) &&
-                    (path.StartsWithSegments("/hubs/chat")))
+                    (path.StartsWithSegments("/hubs")))
                 {
                     // Read the token out of the query string
                     context.Token = accessToken;
@@ -140,13 +141,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             OnMessageReceived = context =>
             {
                 var accessToken = context.Request.Query["access_token"];
-
-                // If the request is for our hub...
                 var path = context.HttpContext.Request.Path;
-                if (!string.IsNullOrEmpty(accessToken) &&
-                    (path.StartsWithSegments("/hubs/notify")))
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
                 {
-                    // Read the token out of the query string
                     context.Token = accessToken;
                 }
                 return Task.CompletedTask;
@@ -256,5 +253,7 @@ app.MapHub<ChatHub>("hubs/chat");
 app.MapHub<NotifyHub>("hubs/notify");
 
 app.MapHub<NotifyHub>("hubs/order");
+
+app.MapHub<PresenceHub>("hubs/presence");
 
 await app.RunAsync();
