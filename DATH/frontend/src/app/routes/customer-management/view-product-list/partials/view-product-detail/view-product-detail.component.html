@@ -9,6 +9,7 @@
       >
         <div ngxSlickItem *ngFor="let slide of data?.photos" class="slide">
           <img
+          *ngIf="slide?.isMain"
             src="{{ slide.url }}"
             alt=""
             width="90%"
@@ -106,4 +107,13 @@
       </nz-card>
     </div>
   </div>
+
+  <nz-divider></nz-divider>
+
+  <nz-card [nzTitle]="descriptionTitle">
+    <ng-template #descriptionTitle>
+      <h2 class="text-center">Specification</h2>
+    </ng-template>
+    <div [innerHTML]="data?.description"></div>
+  </nz-card>
 </app-page-grid>
