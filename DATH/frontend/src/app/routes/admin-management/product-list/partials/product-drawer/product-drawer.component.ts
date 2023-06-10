@@ -53,10 +53,6 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
 
   // Setup quill for upload photo
   editorOptions = {
-    imageResize: {
-      displaySize: true
-    },
-  
     imageHandler: {
       upload: (file: any) => {
         return new Promise((resolve, reject) => {
@@ -300,7 +296,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
   updateUploadUrl() {
     this.uploadUrl = `https://localhost:7114/api/products/${
       this.data?.id
-    }/photos/true&${this.colorForm?.get('colorId').value}`;
+    }/photos/true?specificationId=${this.colorForm?.get('colorId').value}`;
     console.log(this.uploadUrl);
   }
 }

@@ -22,6 +22,18 @@ export class ProductCategoryDrawerComponent extends DrawerFormBaseComponent {
   ) {
     super(fb, cdr, message);
   }
+  override ngOnInit() {
+    this.fetchData();
+    this.initForm();
+  }
+
+   fetchData(): void {
+      this.productCategoryService.getAll().subscribe((res) => {
+        if (checkResponseStatus(res)) {
+          this.productCategoryParents = res.data;
+        }
+      });
+  }
 
   override checkEditForm() {
     const formValue = this.drawerForm.getRawValue();

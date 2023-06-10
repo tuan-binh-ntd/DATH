@@ -10,13 +10,15 @@ import { PaginationInput } from 'src/app/models/pagination-input';
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.less']
+  styleUrls: ['./product-list.component.less'],
 })
 export class ProductListComponent extends ListBaseComponent {
   @ViewChild('drawerFormBase') override drawerFormBase!: ProductDrawerComponent;
 
-  constructor(protected override msg: NzMessageService,
-    private productService: ProductService) {
+  constructor(
+    protected override msg: NzMessageService,
+    private productService: ProductService
+  ) {
     super(msg);
   }
   override listOfColumn: any[] = [
@@ -35,18 +37,21 @@ export class ProductListComponent extends ListBaseComponent {
       sortOrder: null,
       sortDirections: ['ascend', 'descend', null],
       class: 'text-left',
-    }
+    },
   ];
 
-
   override fetchData(): void {
-    this.productService.getAll(this.paginationParam.pageNum, this.paginationParam.pageSize).pipe(
-      finalize(() => this.isLoadingTable = false)).subscribe(res => {
+    this.isLoadingTable = true;
+    this.productService
+      .getAll(this.paginationParam.pageNum, this.paginationParam.pageSize)
+      .pipe(finalize(() => (this.isLoadingTable = false)))
+      .subscribe((res) => {
         if (checkResponseStatus(res)) {
           this.listOfData = [...res.data.content];
+          this.isLoadingTable = false ;
           this.paginationParam.totalCount = res.data.totalCount;
         }
-      })
+      });
   }
 
   pageNumChanged(event: any): void {
@@ -58,5 +63,4 @@ export class ProductListComponent extends ListBaseComponent {
     this.paginationParam.pageSize = event;
     this.fetchData();
   }
-
 }

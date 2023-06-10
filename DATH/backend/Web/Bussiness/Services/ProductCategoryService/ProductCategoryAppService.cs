@@ -216,6 +216,7 @@ namespace Bussiness.Services.ProductCategoryService
                                                           {
                                                               Id = pc.Id,
                                                               Name = pc.Name,
+                                                              ParentId = pc.ParentId
                                                           };
 
             if (input.PageNum != null && input.PageSize != null) return await query.Pagination(input);

@@ -109,11 +109,11 @@
                   [nzCover]="coverTemplate"
                   (click)="goToDetail(item.id)"
                 >
-                  <nz-card-meta [nzTitle]="item.name"></nz-card-meta>
+                  <nz-card-meta [nzTitle]="item.name" nz-tooltip [nzTooltipTitle]="item.name"></nz-card-meta>
                   <span>{{ item.price | number }}Đ</span>
                 </nz-card>
                 <ng-template #coverTemplate>
-                  <img alt="example" [src]="item.photos![0].url" />
+                  <img alt="example" [src]="item.photos![0]?.url ?? ''" />
                 </ng-template>
               </nz-list-item>
             </div>
