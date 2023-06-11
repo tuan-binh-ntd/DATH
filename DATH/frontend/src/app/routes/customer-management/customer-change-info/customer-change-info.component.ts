@@ -74,15 +74,16 @@ export class CustomerChangeInfoComponent {
   }
 
   getOrderHistory(){
-    // this.customerService.getOrderHistory().subscribe(res => {
-    //   if(checkResponseStatus(res)){
-    //     this.listOrder = res.data;
-    //   }
-    // })
+    this.customerService.getOrderHistory(this.infoForm.value.id).subscribe(res => {
+      if(checkResponseStatus(res)){
+        this.listOrder = res.data;
+      }
+    })
   }
 
   initForm() {
     this.infoForm = this.fb.group({
+      id: [null],
       firstName: [null, Validators.required],
       lastName: [null, Validators.required],
       email: [null, Validators.required],

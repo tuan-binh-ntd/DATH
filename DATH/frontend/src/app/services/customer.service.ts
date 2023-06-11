@@ -19,7 +19,7 @@ export class CustomerService {
     return this.http.post(this.baseUrl + '/' + id + '/addresses', payload);
   }
 
-  getOrderHistory(){
-    
+getOrderHistory(id: string): Observable<any>{
+    return this.http.get(this.baseUrl + '/' + id + '/orders');
   }
 }
