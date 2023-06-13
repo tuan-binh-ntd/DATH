@@ -145,8 +145,8 @@
                 formControlName="formal"
                 (ngModelChange)="onChangeFormal($event)"
               >
+              <label nz-radio nzValue="delivery">Delivery</label>
                 <label nz-radio nzValue="store">At store</label>
-                <label nz-radio nzValue="delivery">Delivery</label>
               </nz-radio-group>
             </div>
           </div>
@@ -180,13 +180,28 @@
                     nzErrorTip="Please input your id address!"
                   >
                     <input
+                      *ngIf="!customer?.address || customer?.address?.length == 0; else addressPick"
                       nz-input
                       id="address"
                       formControlName="address"
                       placeholder="Address"
                     />
                   </nz-form-control>
+                  <ng-template #addressPick>
+                    <nz-select
+                    formControlName="address"
+                    class="w-100"
+                    nzPlaceHolder="Address"
+                  >
+                    <nz-option
+                      *ngFor="let item of customer?.address"
+                      [nzValue]="item"
+                      [nzLabel]="item"
+                    ></nz-option>
+                  </nz-select>
+                  </ng-template>
                 </nz-form-item>
+
               </div>
             </div>
           </ng-template>

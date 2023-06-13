@@ -71,6 +71,7 @@ export class CustomerChangeInfoComponent {
     this.initForm();
     this.infoForm.patchValue(this.customer);
     this.infoForm.get('gender')!.setValue(this.customer.gender?.toString());
+    this.getOrderHistory();
   }
 
   getOrderHistory(){
@@ -93,10 +94,10 @@ export class CustomerChangeInfoComponent {
       idNumber: [null, Validators.required]
     });
 
+    const addresses: string[] = this.customer.address ? this.customer.address!.split(",") : [];
     this.addressForm = this.fb.group({
       addresses: this.fb.array([]),
     });
-    const addresses: string[] = this.customer.address ? this.customer.address!.split(",") : [];
     if(addresses.length > 0) {
       addresses.forEach(e => {
         const control: FormGroup = this.fb.group({
@@ -104,6 +105,13 @@ export class CustomerChangeInfoComponent {
         });
         this.addresses.push(control);
       });
+    }
+    else{
+      const addressControl = this.addressForm.get('addresses') as FormArray;
+      const group = this.fb.group({
+        address: [null, [Validators.required]]
+      })
+      addressControl.push(group);
     }
 
     this.changePasswordForm = this.fb.group({
@@ -155,7 +163,10 @@ export class CustomerChangeInfoComponent {
   }
 
   removeAddress(index: number) {
-    this.addresses.removeAt(index);
+    if(index > 0) this.addresses.removeAt(index);
+    else{
+      this.addresses.at(index).get('address')?.setValue("");
+    }
   }
 
   goToProduct(id: string){

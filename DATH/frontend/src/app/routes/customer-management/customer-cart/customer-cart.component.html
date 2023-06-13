@@ -2,7 +2,7 @@
   <h3>Your cart</h3>
   <nz-list style="width: 400px" *ngIf="(cartObjects$ | async)?.length > 0; else empty">
     <ng-container *ngFor="let item of cartObjects$ | async | slice:0:4" (click)="goToProduct(item.id)">
-      <div nz-row nzGutter="16">
+      <div nz-row >
         <div nz-col nzSpan="6">
           <nz-badge [nzCount]="item.quantity">
           <img width="80px" class="cart-img" alt="logo" [src]="item.photo!" />

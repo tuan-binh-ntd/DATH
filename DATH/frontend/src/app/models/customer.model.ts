@@ -10,5 +10,6 @@ export interface Customer {
   birthday: Date | null,
   email: string | null,
   address: string | null
+  phone: string | null
   isActive: boolean | null,
 }

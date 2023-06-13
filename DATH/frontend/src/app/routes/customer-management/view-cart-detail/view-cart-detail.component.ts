@@ -12,10 +12,12 @@ import {
   take,
 } from 'rxjs';
 import { OrderStatus } from 'src/app/enums/order-status.enum';
+import { Customer } from 'src/app/models/customer.model';
 import { Order } from 'src/app/models/order-model';
 import { Payment } from 'src/app/models/payment.model';
 import { Product } from 'src/app/models/product.model';
 import { Shop } from 'src/app/models/shop.model';
+import { CustomerService } from 'src/app/services/customer.service';
 import { OrderService } from 'src/app/services/order.service';
 import { PaymentService } from 'src/app/services/payment.service';
 import { PromotionService } from 'src/app/services/promotion.service';
@@ -47,6 +49,7 @@ export class ViewCartDetailComponent {
   selectedPayment: number = 0;
   isLoading: boolean = false;
   promotionCode: string = '';
+  customer: Customer = JSON.parse(localStorage.getItem('user')!);
   listOfColumn: any[] = [
     {
       name: 'Image',
@@ -95,7 +98,8 @@ export class ViewCartDetailComponent {
     private shopService: ShopService,
     private paymentService: PaymentService,
     private orderService: OrderService,
-    private promotionService: PromotionService
+    private promotionService: PromotionService,
+    private customerService: CustomerService
   ) {}
 
   async ngOnInit() {
@@ -108,6 +112,12 @@ export class ViewCartDetailComponent {
       res.forEach((item) => {
         this.subTotalCost += item.cost;
       });
+    });
+    if(this.customer) this.infoForm.patchValue({
+      customerName: this.customer.firstName + ' ' + this.customer.lastName,
+      address: this.customer.address?.length > 0 ? this.customer.address[0] : null,
+      phone: this.customer.phone,
+      email: this.customer.email,
     });
   }
 
@@ -146,7 +156,7 @@ export class ViewCartDetailComponent {
       formal: [null],
       shopId: [null],
     });
-    this.infoForm.get('formal')?.setValue('store');
+    this.infoForm.get('formal')?.setValue('delivery');
   }
 
   onSort(direction: any, column: string) {}
@@ -179,6 +189,7 @@ export class ViewCartDetailComponent {
     switch (ev) {
       case 'store':
         this.infoForm.get('address')?.clearValidators();
+        this.infoForm.get('address')?.setValue("");
         this.infoForm.get('shopId')?.addValidators(Validators.required);
         this.deliveryCost = 0;
 
@@ -239,10 +250,17 @@ export class ViewCartDetailComponent {
       };
       this.orderService.create(payload).subscribe((res) => {
         if (checkResponseStatus(res)) {
+          this.addAddressIfNotExisted();
           // this.cartService.removeAll();
           this.router.navigateByUrl(`order/${res.data.code}`);
         }
       });
     }
+  }
+
+  addAddressIfNotExisted(): void {
+    this.customerService
+      .createAddress(this.customer.id!, {addresses: this.infoForm.value.address})
+      .subscribe();
   }
 }

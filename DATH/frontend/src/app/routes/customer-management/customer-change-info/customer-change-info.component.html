@@ -1,9 +1,14 @@
 <div nz-row nzGutter="64" class="p-4">
   <div nz-col nzSpan="8">
-    <img nz-image nzSrc="../../../../assets/images/change-info.jpg" width="100%" height="450px"/>
+    <img
+      nz-image
+      nzSrc="../../../../assets/images/change-info.jpg"
+      width="100%"
+      height="400px"
+    />
   </div>
   <div nz-col nzSpan="16">
-    <nz-card nzTitle="Change information">
+    <nz-card>
       <nz-tabset nzTabPosition="right" [(nzSelectedIndex)]="selectedIndex">
         <!-- Start Change Info View -->
         <nz-tab nzTitle="Basic information">
@@ -166,45 +171,43 @@
         <!-- End Change Info View -->
         <!-- Start Add Address View -->
         <nz-tab nzTitle="Your addresses">
-          <form nz-form [formGroup]="addressForm">
+          <form nz-form [formGroup]="addressForm" *ngIf="addressForm">
+            <nz-form-label class="p-0" nzRequired>
+              <span>Address</span>
+            </nz-form-label>
             <div formArrayName="addresses">
               <ng-container
                 *ngFor="let address of addresses.controls; index as i"
                 [formGroupName]="i"
               >
-                <nz-form-item class="mb-0">
-                  <nz-form-label [nzSpan]="24" nzRequired nzFor="address">
-                    <span>Address</span>
-                  </nz-form-label>
-                  <nz-form-control
-                    [nzSpan]="20"
-                    nzErrorTip="Please input your id address!"
-                  >
-                    <input
-                      nz-input
-                      id="address"
-                      formControlName="address"
-                      placeholder="Address"
-                    />
-                  </nz-form-control>
-                  <button
-                    class="w-10 pl-1"
-                    nzAlign="center"
-                    nz-button
-                    nzType="primary"
-                    (click)="addAddress(i + 1)"
-                  >
-                    Add
-                  </button>
-                  <button
-                    class="w-10 pl-1"
-                    nzAlign="center"
-                    nz-button
-                    nzType="primary"
-                    (click)="removeAddress(i)"
-                  >
-                    Remove
-                  </button>
+                <nz-form-item class="align-end mb-1">
+                  <div nz-col [nzSpan]="22">
+                    <nz-form-control nzErrorTip="Please input your id address!">
+                      <input
+                        nz-input
+                        id="address"
+                        formControlName="address"
+                        placeholder="Address {{ i + 1 }}"
+                      />
+                    </nz-form-control>
+                  </div>
+                  <div nz-col nzSpan="2" class="d-flex">
+                    <app-button-icon
+                      class="ml-2"
+                      toolTipTitle="Add"
+                      iconClass="fa-solid fa-plus"
+                      placement="top"
+                      (onClick)="addAddress(i + 1)"
+                    ></app-button-icon>
+                    <app-button-icon
+                      *ngIf="i == addresses.length - 1"
+                      class="ml-2"
+                      toolTipTitle="Delete"
+                      iconClass="fa-regular fa-trash-can"
+                      placement="top"
+                      (onClick)="removeAddress(i)"
+                    ></app-button-icon>
+                  </div>
                 </nz-form-item>
               </ng-container>
             </div>
@@ -339,21 +342,24 @@
         <!-- Start Add Photo View -->
         <nz-tab nzTitle="Change cover photo"> </nz-tab>
         <nz-tab nzTitle="Order history">
-          <ng-container
-            *ngFor="let item of listOrder"
-            (click)="goToProduct(item.code)"
-          >
-          <nz-list *ngIf="listOrder.length > 0; else empty" [nzBordered]="false" [nzHeader]="item.code">
-              <nz-collapse *ngFor="let ele of item.orderDetail">
-                <nz-collapse-panel [nzHeader]="eleHeader"> </nz-collapse-panel>
-                <ng-template #eleHeader>
-                  <div class="align-child-space-between">
-                    <h4>{{ele.name}}</h4>
-                    <img nz-image [nzSrc]="ele.photo">
-                  </div>
-                </ng-template>
-              </nz-collapse>
-            </nz-list>
+          <ng-container *ngIf="listOrder.length > 0; else empty">
+            <ng-container
+              *ngFor="let item of listOrder"
+              (click)="goToProduct(item.code)"
+            >
+              <nz-list [nzBordered]="false" [nzHeader]="item.code">
+                <nz-collapse *ngFor="let ele of item.orderDetail">
+                  <nz-collapse-panel [nzHeader]="eleHeader">
+                  </nz-collapse-panel>
+                  <ng-template #eleHeader>
+                    <div class="align-child-space-between">
+                      <h4>{{ ele.name }}</h4>
+                      <img nz-image [nzSrc]="ele.photo" />
+                    </div>
+                  </ng-template>
+                </nz-collapse>
+              </nz-list>
+            </ng-container>
           </ng-container>
         </nz-tab>
         <!-- End Add Photo View -->
