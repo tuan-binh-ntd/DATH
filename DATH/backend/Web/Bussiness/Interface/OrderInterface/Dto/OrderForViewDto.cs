@@ -17,6 +17,7 @@ namespace Bussiness.Interface.OrderInterface.Dto
         public string? Phone { get; set; }
         public DateTime? EstimateDate { get; set; }
         public DateTime? ActualDate { get; set; }
+        public string? Email { get; set; }
         public decimal Cost { get; set; }
         public decimal Discount { get; set; } = 0;
         public int? PromotionId { get; set; }

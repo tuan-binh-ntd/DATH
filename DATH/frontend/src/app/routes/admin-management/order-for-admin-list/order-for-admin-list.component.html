@@ -15,12 +15,14 @@
       <div class="text-center mb-1">
         <app-order-status [width]="'100%'" [status]="1"></app-order-status>
       </div>
+      <div class="example-list-wrap">
         <div class="example-box mb-2 p-2" *ngFor="let item of listOrderPending" cdkDrag>
           <ng-container
             [ngTemplateOutlet]="content"
             [ngTemplateOutletContext]="{ item: item }"
           ></ng-container>
         </div>
+      </div>
       </div>
     </div>
 
@@ -36,11 +38,13 @@
       <div class="text-center mb-1">
         <app-order-status [width]="'100%'" [status]="27"></app-order-status>
       </div>
+      <div class="example-list-wrap">
         <div class="example-box mb-2 p-2" *ngFor="let item of listOrderRejected" cdkDrag>
           <ng-container
             [ngTemplateOutlet]="content"
             [ngTemplateOutletContext]="{ item: item }"
           ></ng-container>
+          </div>
         </div>
       </div>
     </div>
@@ -59,6 +63,8 @@
       <div class="text-center mb-1">
         <app-order-status [width]="'100%'" [status]="2"></app-order-status>
       </div>
+      <div class="example-list-wrap">
+
         <div
           class="example-box mb-2 p-2"
           *ngFor="let item of listOrderPreparing"
@@ -68,6 +74,7 @@
             [ngTemplateOutlet]="content"
             [ngTemplateOutletContext]="{ item: item }"
           ></ng-container>
+        </div>
         </div>
       </div>
     </div>
@@ -85,6 +92,8 @@
       <div class="text-center mb-1">
         <app-order-status [width]="'100%'" [status]="23"></app-order-status>
       </div>
+      <div class="example-list-wrap">
+
         <div
           class="example-box mb-2 p-2"
           *ngFor="let item of listOrderDelivering"
@@ -94,6 +103,7 @@
             [ngTemplateOutlet]="content"
             [ngTemplateOutletContext]="{ item: item }"
           ></ng-container>
+        </div>
         </div>
       </div>
     </div>
@@ -118,30 +128,30 @@
   </div>
 
   <ng-template #content let-item="item">
-    <div class="align-child-space-between mb-1">
-      <label class="text-muted text-truncate">#{{ item?.code }}</label>
+    <div class=" mb-1">
+      <label class="text-muted text-truncate mr-2">#{{ item?.code }}</label>
     </div>
-    <div class="align-child-space-between mb-1">
-      <label class="text-muted">Customer</label>
-      <span >{{ item?.customerName }}</span>
+    <div class=" mb-1" nz-row nzGutter="16">
+      <label class="text-muted " nz-col nzSpan="8">Customer</label>
+      <span nz-col nzSpan="16">{{ item?.customerName }}</span>
     </div>
-    <div class="align-child-space-between mb-1">
-      <label class="text-muted">Phone</label>
-      <span >{{ item?.phone }}</span>
+    <div class=" mb-1" nz-row nzGutter="16">
+      <label class="text-muted" nz-col nzSpan="8">Phone</label>
+      <span nz-col nzSpan="16">{{ item?.phone }}</span>
     </div>
-    <div class="align-child-space-between mb-1">
-      <label class="text-muted">Email</label>
-      <span class="text-truncate">{{ item?.email }}</span>
+    <div class=" mb-1"  nz-row nzGutter="16">
+      <label class="text-muted" nz-col nzSpan="8">Email</label>
+      <span class="text-truncate" nz-col nzSpan="16">{{ item?.email }}</span>
     </div>
-    <!-- <div class="align-child-space-between mb-1">
+    <!-- <div class=" mb-1">
       <label>Delivery date</label>
       <span >{{
         item?.createDate | date : "dd/MM/yyyy"
       }}</span>
     </div> -->
-    <div class="align-child-space-between">
-      <label class="text-muted">Create date</label>
-      <span >{{
+    <div  nz-row nzGutter="16">
+      <label class="text-muted " nz-col nzSpan="8">Created</label>
+      <span nz-col nzSpan="16">{{
         item?.createDate | date : "dd/MM/yyyy"
       }}</span>
     </div>

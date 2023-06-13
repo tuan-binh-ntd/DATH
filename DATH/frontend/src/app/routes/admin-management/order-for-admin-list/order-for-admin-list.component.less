@@ -1,15 +1,19 @@
 .example-list {
-  overflow: hidden scroll;
-  min-height: calc(100vh - 160px);
+  height: calc(100vh - 160px);
   border: solid 1px #ccc;
   display: flex;
   flex-direction: column;
   background-color: #f4f5f7;
   border-radius: 4px;
-  overflow: hidden;
   display: block;
 }
-.example-list::-webkit-scrollbar{
+
+.example-list-wrap{
+  overflow: hidden scroll;
+  max-height: calc(100vh - 200px);
+
+}
+.example-list-wrap::-webkit-scrollbar{
   display: none;
 }
 .example-box {

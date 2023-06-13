@@ -238,6 +238,7 @@ namespace Bussiness.Services.OrderService
                                                          Status = o.Status,
                                                          ActualDate = o.ActualDate,
                                                          EstimateDate = o.EstimateDate,
+                                                         Email = o.Email,
                                                          Cost = o.Cost,
                                                          Discount = o.Discount,
                                                          CreateDate = (DateTime)o.CreationTime!,
