@@ -25,6 +25,8 @@ namespace Bussiness.Services.OrderService
         private readonly UserManager<AppUser> _userManager;
         private readonly IRepository<Product, long> _productRepo;
         private readonly DataContext _dataContext;
+        private readonly IRepository<InstallmentSchedule, long> _installmentSchRepo;
+        private readonly IRepository<Installment, int> _installmentRepo;
 
         public OrderAppService(
             IMapper mapper,
@@ -34,7 +36,9 @@ namespace Bussiness.Services.OrderService
             IRepository<Payment> paymentRepo,
             UserManager<AppUser> userManager,
             IRepository<Product, long> productRepo,
-            DataContext dataContext
+            DataContext dataContext,
+            IRepository<InstallmentSchedule, long> installmentSchRepo,
+            IRepository<Installment, int> installmentRepo
             )
         {
             ObjectMapper = mapper;
@@ -45,6 +49,8 @@ namespace Bussiness.Services.OrderService
             _userManager = userManager;
             _productRepo = productRepo;
             _dataContext = dataContext;
+            _installmentSchRepo = installmentSchRepo;
+            _installmentRepo = installmentRepo;
         }
 
         #region CreateOrder
@@ -71,6 +77,7 @@ namespace Bussiness.Services.OrderService
 
             await _orderDetailRepo.AddRangeAsync(orderDetails);
 
+
             OrderForViewDto res = new();
             ObjectMapper!.Map(order, res);
             res.OrderDetails = new List<OrderDetailForViewDto>();
@@ -79,6 +86,8 @@ namespace Bussiness.Services.OrderService
             {
                 res.OrderDetails!.Add(ObjectMapper!.Map<OrderDetailForViewDto>(item));
             }
+
+            await CreateInstallment(orderDetails, input.OrderDetailInputs);
 
             return res;
         }
@@ -343,6 +352,7 @@ namespace Bussiness.Services.OrderService
 
         #endregion
 
+        #region GetOrdersForCustomer
         public async Task<IEnumerable<OrderForViewDto>> GetOrdersForCustomer(long userId)
         {
 
@@ -372,5 +382,42 @@ namespace Bussiness.Services.OrderService
 
             return orders;
         }
+        #endregion
+
+        #region CreateInstallment
+        public async Task CreateInstallment(ICollection<OrderDetail> orderDetail, ICollection<OrderDetailInput> orderDetailInputs)
+        {
+            foreach(OrderDetail item in orderDetail)
+            {
+                if(item.InstallmentId is not null)
+                {
+                    ICollection<InstallmentSchedule> installmentSchedules = new List<InstallmentSchedule>();
+
+                    Installment? installment = await _installmentRepo.GetAsync((int)item.InstallmentId);
+
+                    decimal moneyPerTerm = ((item.Cost * installment!.Balance) / 100) / installment!.Term;
+
+                    for(int i = 1; i <= installment!.Term; i++)
+                    {
+
+                        InstallmentSchedule installmentSchedule = new()
+                        {
+                            Term = i,
+                            StartDate = DateTime.Now.AddMonths(i),
+                            EndDate = DateTime.Now.AddMonths(i + 1),
+                            Status = InstallmentStatus.Unpaid,
+                            Money = moneyPerTerm,
+                            OrderDetailId = item.Id,
+                            PaymentId = item.PaymentId
+                        };
+
+                        installmentSchedules.Add(installmentSchedule);
+                    }
+
+                    await _installmentSchRepo.AddRangeAsync(installmentSchedules);
+                }
+            }
+        }
+        #endregion
     }
 }

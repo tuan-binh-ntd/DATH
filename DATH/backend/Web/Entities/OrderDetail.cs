@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities
 {
@@ -19,5 +20,8 @@ namespace Entities
         public int? InstallmentId { get; set; }
         public Installment? Installment { get; set; }
         public ICollection<InstallmentSchedule>? InstallmentSchedules { get; set; }
+        // Ignore property
+        [NotMapped]
+        public int PaymentId { get; set; }
     }
 }

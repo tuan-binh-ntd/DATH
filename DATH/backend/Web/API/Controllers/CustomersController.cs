@@ -1,4 +1,5 @@
 ﻿using Bussiness.Dto;
+using Bussiness.EmailService;
 using Bussiness.Interface.CustomerInterface;
 using Bussiness.Interface.OrderInterface;
 using Bussiness.Interface.OrderInterface.Dto;
@@ -14,14 +15,17 @@ namespace API.Controllers
     {
         private readonly ICustomerAppService _customerAppService;
         private readonly IOrderAppService _orderAppService;
+        private readonly IEmailSender _emailSender;
 
         public CustomersController(
             ICustomerAppService customerAppService,
-            IOrderAppService orderAppService
+            IOrderAppService orderAppService,
+            IEmailSender emailSender
             )
         {
             _customerAppService = customerAppService;
             _orderAppService = orderAppService;
+            _emailSender = emailSender;
         }
 
         [HttpGet("{id}")]
@@ -54,6 +58,13 @@ namespace API.Controllers
             IEnumerable<OrderForViewDto> res = await _orderAppService.GetOrdersForCustomer(id);
 
             return CustomResult(res, HttpStatusCode.OK);
+        }
+
+        [HttpGet]
+        public async Task Get()
+        {
+            var message = new Message(new string[] { "binh20664@huce.edu.vn" }, "Hello", "This is the content from our email.");
+            _emailSender.SendEmail(message);
         }
     }
 }
