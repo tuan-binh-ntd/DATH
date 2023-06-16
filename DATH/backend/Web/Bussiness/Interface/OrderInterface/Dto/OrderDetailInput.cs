@@ -12,5 +12,6 @@ namespace Bussiness.Interface.OrderInterface.Dto
         public string? SpecificationId { get; set; }
         public long ProductId { get; set; }
         public int? InstallmentId { get; set; }
+        public int? PaymentId { get; set; }
     }
 }

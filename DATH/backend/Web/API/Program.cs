@@ -44,6 +44,10 @@ using Bussiness.Interface.NotificationInterface;
 using Bussiness.Services.NotificationService;
 using Bussiness.Interface.FeedbackInterface;
 using Bussiness.Services.FeedbackService;
+using Bussiness.Interface.InstallmentInterface;
+using Bussiness.Services.InstallmentService;
+using Bussiness.EmailService;
+using Microsoft.Extensions.Configuration;
 
 // Set path of project for APP_BASE_DIRECTORY
 Environment.SetEnvironmentVariable("APP_BASE_DIRECTORY", Directory.GetCurrentDirectory());
@@ -82,6 +86,9 @@ builder.Services.AddScoped<IMessageAppService, MessageAppService>();
 builder.Services.AddScoped<INotificationAppService, NotificationAppService>();
 builder.Services.AddScoped<IFeedbackAppService, FeedbackAppService>();
 builder.Services.AddSingleton<PresenceTracker>();
+builder.Services.AddScoped<IInstallmentAppService, InstallmentAppService>();
+// Add EmailService
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 // End  Declaration DI
 
 // Set up connection SQL Server
@@ -201,6 +208,10 @@ builder.Services.AddSignalR();
 
 //Add HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
+
+// Add EmailService
+EmailConfiguration? emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig!);
 
 var app = builder.Build();
 // Init Admin

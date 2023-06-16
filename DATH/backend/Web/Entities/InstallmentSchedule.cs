@@ -13,5 +13,6 @@ namespace Entities
         // Relationship
         public long OrderDetailId { get; set; }
         public OrderDetail? OrderDetail { get; set; }
+        public int PaymentId { get; set; }
     }
 }

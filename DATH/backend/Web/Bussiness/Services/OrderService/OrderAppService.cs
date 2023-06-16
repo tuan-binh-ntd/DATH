@@ -1,15 +1,18 @@
 ﻿using AutoMapper;
+using Bussiness.Dto;
 using Bussiness.Helper;
 using Bussiness.Interface.Core;
 using Bussiness.Interface.OrderInterface;
 using Bussiness.Interface.OrderInterface.Dto;
 using Bussiness.Repository;
 using Bussiness.Services.Core;
+using Database;
 using Entities;
 using Entities.Enum.Order;
 using Entities.Enum.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Bussiness.Services.OrderService
 {
@@ -20,6 +23,10 @@ namespace Bussiness.Services.OrderService
         private readonly IDapper _dapper;
         private readonly IRepository<Payment> _paymentRepo;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IRepository<Product, long> _productRepo;
+        private readonly DataContext _dataContext;
+        private readonly IRepository<InstallmentSchedule, long> _installmentSchRepo;
+        private readonly IRepository<Installment, int> _installmentRepo;
 
         public OrderAppService(
             IMapper mapper,
@@ -27,7 +34,11 @@ namespace Bussiness.Services.OrderService
             IRepository<OrderDetail, long> orderDetailRepo,
             IDapper dapper,
             IRepository<Payment> paymentRepo,
-            UserManager<AppUser> userManager
+            UserManager<AppUser> userManager,
+            IRepository<Product, long> productRepo,
+            DataContext dataContext,
+            IRepository<InstallmentSchedule, long> installmentSchRepo,
+            IRepository<Installment, int> installmentRepo
             )
         {
             ObjectMapper = mapper;
@@ -36,6 +47,10 @@ namespace Bussiness.Services.OrderService
             _dapper = dapper;
             _paymentRepo = paymentRepo;
             _userManager = userManager;
+            _productRepo = productRepo;
+            _dataContext = dataContext;
+            _installmentSchRepo = installmentSchRepo;
+            _installmentRepo = installmentRepo;
         }
 
         #region CreateOrder
@@ -61,6 +76,7 @@ namespace Bussiness.Services.OrderService
 
             await _orderDetailRepo.AddRangeAsync(orderDetails);
 
+
             OrderForViewDto res = new();
             ObjectMapper!.Map(order, res);
             res.OrderDetails = new List<OrderDetailForViewDto>();
@@ -69,6 +85,8 @@ namespace Bussiness.Services.OrderService
             {
                 res.OrderDetails!.Add(ObjectMapper!.Map<OrderDetailForViewDto>(item));
             }
+
+            await CreateInstallment(orderDetails, input.OrderDetailInputs);
 
             return res;
         }
@@ -205,7 +223,8 @@ namespace Bussiness.Services.OrderService
 
         private async Task HandleOrder(OrderForViewDto input)
         {
-            input.OrderDetails = await (from od in _orderDetailRepo.GetAll()
+            input.OrderDetails = await (from od in _orderDetailRepo.GetAll().AsNoTracking()
+                                        join p in _productRepo.GetAll().AsNoTracking() on od.ProductId equals p.Id
                                         where od.OrderId == input.Id
                                         select new OrderDetailForViewDto
                                         {
@@ -215,7 +234,27 @@ namespace Bussiness.Services.OrderService
                                             SpecificationId = od.SpecificationId,
                                             ProductId = od.ProductId,
                                             InstallmentId = od.InstallmentId,
+                                            ProductName = p.Name,
+                                            Price = p.Price
                                         }).ToListAsync();
+
+            await HandleOrderDetails(input.OrderDetails);
+        }
+        private async Task HandleOrderDetails(ICollection<OrderDetailForViewDto> input)
+        {
+            foreach (OrderDetailForViewDto item in input)
+            {
+                IQueryable<PhotoDto> query = from p in _dataContext.Photo.AsNoTracking().Where(p => p.ProductId == item.ProductId)
+                                             select new PhotoDto
+                                             {
+                                                 Id = p.Id,
+                                                 Url = p.Url,
+                                                 IsMain = p.IsMain,
+                                             };
+
+                item.Photos = await query.ToListAsync();
+            }
+
         }
         #endregion
 
@@ -314,28 +353,29 @@ namespace Bussiness.Services.OrderService
 
         #endregion
 
+        #region GetOrdersForCustomer
         public async Task<IEnumerable<OrderForViewDto>> GetOrdersForCustomer(long userId)
         {
 
             IQueryable<OrderForViewDto> query = from o in _orderRepo.GetAll().AsNoTracking()
-                                                 join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
-                                                 where o.CreatorUserId == userId
-                                                 orderby o.CreationTime descending
-                                                 select new OrderForViewDto
-                                                 {
-                                                     Id = o.Id,
-                                                     CustomerName = o.CustomerName,
-                                                     Address = o.Address,
-                                                     Phone = o.Phone,
-                                                     Code = o.Code,
-                                                     Status = o.Status,
-                                                     ActualDate = o.ActualDate,
-                                                     EstimateDate = o.EstimateDate,
-                                                     Cost = o.Cost,
-                                                     Discount = o.Discount,
-                                                     CreateDate = (DateTime)o.CreationTime!,
-                                                     Payment = p.Name
-                                                 };
+                                                join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
+                                                where o.CreatorUserId == userId
+                                                orderby o.CreationTime descending
+                                                select new OrderForViewDto
+                                                {
+                                                    Id = o.Id,
+                                                    CustomerName = o.CustomerName,
+                                                    Address = o.Address,
+                                                    Phone = o.Phone,
+                                                    Code = o.Code,
+                                                    Status = o.Status,
+                                                    ActualDate = o.ActualDate,
+                                                    EstimateDate = o.EstimateDate,
+                                                    Cost = o.Cost,
+                                                    Discount = o.Discount,
+                                                    CreateDate = (DateTime)o.CreationTime!,
+                                                    Payment = p.Name
+                                                };
 
             List<OrderForViewDto> orders = await query.ToListAsync();
 
@@ -343,5 +383,42 @@ namespace Bussiness.Services.OrderService
 
             return orders;
         }
+        #endregion
+
+        #region CreateInstallment
+        public async Task CreateInstallment(ICollection<OrderDetail> orderDetail, ICollection<OrderDetailInput> orderDetailInputs)
+        {
+            foreach(OrderDetail item in orderDetail)
+            {
+                if(item.InstallmentId is not null)
+                {
+                    ICollection<InstallmentSchedule> installmentSchedules = new List<InstallmentSchedule>();
+
+                    Installment? installment = await _installmentRepo.GetAsync((int)item.InstallmentId);
+
+                    decimal moneyPerTerm = ((item.Cost * installment!.Balance) / 100) / installment!.Term;
+
+                    for(int i = 1; i <= installment!.Term; i++)
+                    {
+
+                        InstallmentSchedule installmentSchedule = new()
+                        {
+                            Term = i,
+                            StartDate = DateTime.Now.AddMonths(i),
+                            EndDate = DateTime.Now.AddMonths(i + 1),
+                            Status = InstallmentStatus.Unpaid,
+                            Money = moneyPerTerm,
+                            OrderDetailId = item.Id,
+                            PaymentId = item.PaymentId
+                        };
+
+                        installmentSchedules.Add(installmentSchedule);
+                    }
+
+                    await _installmentSchRepo.AddRangeAsync(installmentSchedules);
+                }
+            }
+        }
+        #endregion
     }
 }
