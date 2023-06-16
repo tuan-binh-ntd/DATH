@@ -71,6 +71,7 @@ export class CustomerHeaderComponent implements OnInit {
       if (checkResponseStatus(res)) {
         this.signUpForm.reset();
         this.msg.success('Successfully!');
+        window.location.reload();
         this.handleCancel();
       } else {
         this.msg.error('There is an error from server');
@@ -85,6 +86,7 @@ export class CustomerHeaderComponent implements OnInit {
       if (checkResponseStatus(res)) {
         this.signUpForm.reset();
         this.msg.success('Successfully');
+        window.location.reload();
         this.handleCancel();
       } else {
         this.msg.error('There is an error from server');
@@ -148,7 +150,7 @@ export class CustomerHeaderComponent implements OnInit {
     this.accountService
       .signIn({ ...this.signInForm.value })
       //.pipe(finalize(() => (this.isLoading = false)))
-      .subscribe(this.signInObserver);
+      .subscribe(this.signInObserver)
   }
 
   signIn() {
@@ -163,6 +165,7 @@ export class CustomerHeaderComponent implements OnInit {
 
   logOut() {
     this.accountService.logOut();
+    window.location.reload();
     // this.router.navigateByUrl('/home');
     this.isLoggedIn = false;
   }

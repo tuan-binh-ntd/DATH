@@ -1,13 +1,21 @@
-<div nz-row nzGutter="64" class="p-4">
-  <div nz-col nzSpan="24">
-    <nz-card nzTitle="Change information">
-      <nz-tabset nzTabPosition="left" [(nzSelectedIndex)]="selectedIndex">
+<div nz-row nzGutter="16" class="p-4">
+  <div nz-col nzSpan="8">
+    <img
+      nz-image
+      nzSrc="../../../../assets/images/change-info.jpg"
+      width="100%"
+      height="400px"
+    />
+  </div>
+  <div nz-col nzSpan="16">
+    <nz-card>
+      <nz-tabset nzTabPosition="right" [(nzSelectedIndex)]="selectedIndex">
         <!-- Start Change Info View -->
         <nz-tab nzTitle="Basic information">
           <form nz-form [formGroup]="infoForm">
             <div nz-row nzGutter="24">
               <div nz-col nzSpan="12" class="pr-1">
-                <nz-form-item>
+                <nz-form-item class="mb-0">
                   <nz-form-label [nzSpan]="24" nzFor="firstName" nzRequired>
                     First Name
                   </nz-form-label>
@@ -26,9 +34,9 @@
                   </nz-form-control>
                 </nz-form-item>
               </div>
-  
+
               <div nz-col nzSpan="12">
-                <nz-form-item>
+                <nz-form-item class="mb-0">
                   <nz-form-label [nzSpan]="24" nzFor="lastName" nzRequired>
                     Last Name
                   </nz-form-label>
@@ -48,10 +56,10 @@
                 </nz-form-item>
               </div>
             </div>
-  
+
             <div nz-row nzGutter="24">
               <div nz-col nzSpan="12" class="pr-1">
-                <nz-form-item>
+                <nz-form-item class="mb-0">
                   <nz-form-label [nzSpan]="24" nzFor="email" nzRequired>
                     Email
                   </nz-form-label>
@@ -67,9 +75,9 @@
                   </nz-form-control>
                 </nz-form-item>
               </div>
-  
+
               <div nz-col nzSpan="12">
-                <nz-form-item>
+                <nz-form-item class="mb-0">
                   <nz-form-label [nzSpan]="24" nzFor="phone" nzRequired>
                     Phone
                   </nz-form-label>
@@ -86,10 +94,10 @@
                 </nz-form-item>
               </div>
             </div>
-  
+
             <div nz-row nzGutter="24">
               <div nz-col nzSpan="12" class="pr-1">
-                <nz-form-item>
+                <nz-form-item class="mb-0">
                   <nz-form-label
                     nzAlign="start"
                     [nzSpan]="24"
@@ -105,9 +113,9 @@
                   </nz-form-control>
                 </nz-form-item>
               </div>
-  
+
               <div nz-col nzSpan="12">
-                <nz-form-item>
+                <nz-form-item class="mb-0">
                   <nz-form-label
                     nzAlign="start"
                     [nzSpan]="24"
@@ -126,8 +134,8 @@
                 </nz-form-item>
               </div>
             </div>
-  
-            <nz-form-item>
+
+            <nz-form-item class="mb-0">
               <nz-form-label [nzSpan]="24" nzRequired nzFor="idNumber">
                 <span>Id Number</span>
               </nz-form-label>
@@ -145,7 +153,7 @@
               </nz-form-control>
             </nz-form-item>
           </form>
-  
+
           <div nz-row>
             <div class="w-100 mt-2">
               <button
@@ -163,43 +171,43 @@
         <!-- End Change Info View -->
         <!-- Start Add Address View -->
         <nz-tab nzTitle="Your addresses">
-          <form nz-form [formGroup]="addressForm">
+          <form nz-form [formGroup]="addressForm" *ngIf="addressForm">
+            <nz-form-label class="p-0" nzRequired>
+              <span>Address</span>
+            </nz-form-label>
             <div formArrayName="addresses">
-              <ng-container *ngFor="let address of addresses.controls; index as i"
-              [formGroupName]="i">
-                <nz-form-item>
-                  <nz-form-label [nzSpan]="24" nzRequired nzFor="address">
-                    <span>Address</span>
-                  </nz-form-label>
-                  <nz-form-control
-                    [nzSpan]="20"
-                    nzErrorTip="Please input your id address!"
-                  >
-                    <input
-                      nz-input
-                      id="address"
-                      formControlName="address"
-                      placeholder="Address"
-                    />
-                  </nz-form-control>
-                  <button
-                    class="w-10 pl-1"
-                    nzAlign="center"
-                    nz-button
-                    nzType="primary"
-                    (click)="addAddress(i + 1)"
-                  >
-                    Add
-                  </button>
-                  <button
-                    class="w-10 pl-1"
-                    nzAlign="center"
-                    nz-button
-                    nzType="primary"
-                    (click)="removeAddress(i)"
-                  >
-                    Remove
-                  </button>
+              <ng-container
+                *ngFor="let address of addresses.controls; index as i"
+                [formGroupName]="i"
+              >
+                <nz-form-item class="align-end mb-1">
+                  <div nz-col [nzSpan]="22">
+                    <nz-form-control nzErrorTip="Please input your id address!">
+                      <input
+                        nz-input
+                        id="address"
+                        formControlName="address"
+                        placeholder="Address {{ i + 1 }}"
+                      />
+                    </nz-form-control>
+                  </div>
+                  <div nz-col nzSpan="2" class="d-flex">
+                    <app-button-icon
+                      class="ml-2"
+                      toolTipTitle="Add"
+                      iconClass="fa-solid fa-plus"
+                      placement="top"
+                      (onClick)="addAddress(i + 1)"
+                    ></app-button-icon>
+                    <app-button-icon
+                      *ngIf="i == addresses.length - 1"
+                      class="ml-2"
+                      toolTipTitle="Delete"
+                      iconClass="fa-regular fa-trash-can"
+                      placement="top"
+                      (onClick)="removeAddress(i)"
+                    ></app-button-icon>
+                  </div>
                 </nz-form-item>
               </ng-container>
             </div>
@@ -222,7 +230,7 @@
         <!-- Start Change Password View -->
         <nz-tab nzTitle="Change password">
           <form nz-form [formGroup]="changePasswordForm">
-            <nz-form-item>
+            <nz-form-item class="mb-0">
               <nz-form-label [nzSpan]="24" nzFor="currentPassword" nzRequired>
                 Current Password
               </nz-form-label>
@@ -249,8 +257,8 @@
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
-  
-            <nz-form-item>
+
+            <nz-form-item class="mb-0">
               <nz-form-label [nzSpan]="24" nzFor="newPassword" nzRequired>
                 New Password
               </nz-form-label>
@@ -278,9 +286,13 @@
                 </ng-template>
               </nz-form-control>
             </nz-form-item>
-  
-            <nz-form-item>
-              <nz-form-label [nzSpan]="24" nzFor="confirmNewPassword" nzRequired>
+
+            <nz-form-item class="mb-0">
+              <nz-form-label
+                [nzSpan]="24"
+                nzFor="confirmNewPassword"
+                nzRequired
+              >
                 Confirm New Password
               </nz-form-label>
               <nz-form-control
@@ -300,7 +312,9 @@
                 <ng-template #suffixTemplate>
                   <span
                     nz-icon
-                    [nzType]="confirmNewPasswordVisible ? 'eye-invisible' : 'eye'"
+                    [nzType]="
+                      confirmNewPasswordVisible ? 'eye-invisible' : 'eye'
+                    "
                     (click)="
                       confirmNewPasswordVisible = !confirmNewPasswordVisible
                     "
@@ -309,7 +323,7 @@
               </nz-form-control>
             </nz-form-item>
           </form>
-  
+
           <div nz-row>
             <div class="w-100 mt-2">
               <button
@@ -326,13 +340,35 @@
         </nz-tab>
         <!-- End Change Password View -->
         <!-- Start Add Photo View -->
-        <nz-tab nzTitle="Change cover photo">
-          
+        <nz-tab nzTitle="Change cover photo"> </nz-tab>
+        <nz-tab nzTitle="Order history">
+          <ng-container *ngIf="listOrder.length > 0; else empty">
+            <ng-container
+              *ngFor="let item of listOrder"
+              (click)="goToProduct(item.code)"
+            >
+              <nz-list [nzBordered]="false" [nzHeader]="item.code">
+                <nz-collapse *ngFor="let ele of item.orderDetail">
+                  <nz-collapse-panel [nzHeader]="eleHeader">
+                  </nz-collapse-panel>
+                  <ng-template #eleHeader>
+                    <div class="align-child-space-between">
+                      <h4>{{ ele.name }}</h4>
+                      <img nz-image [nzSrc]="ele.photo" />
+                    </div>
+                  </ng-template>
+                </nz-collapse>
+              </nz-list>
+            </ng-container>
+          </ng-container>
         </nz-tab>
         <!-- End Add Photo View -->
       </nz-tabset>
     </nz-card>
   </div>
+  <ng-template #empty>
+    <nz-empty></nz-empty>
+  </ng-template>
   <!-- <div nz-col nzSpan="16">
 
   </div> -->

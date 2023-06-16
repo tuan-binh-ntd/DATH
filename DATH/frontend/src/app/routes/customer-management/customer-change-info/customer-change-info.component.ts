@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Observer } from 'rxjs';
 import { Customer } from 'src/app/models/customer.model';
@@ -20,6 +21,7 @@ export class CustomerChangeInfoComponent {
   currentPasswordVisible = false;
   newPasswordVisible = false;
   confirmNewPasswordVisible = false;
+  listOrder: any[] = [];
   customer: Customer = JSON.parse(localStorage.getItem('user')!);
 
   infoObserver: Observer<any> = {
@@ -62,16 +64,27 @@ export class CustomerChangeInfoComponent {
     private accountService: AccountService,
     private customerService: CustomerService,
     private msg: NzMessageService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.initForm();
     this.infoForm.patchValue(this.customer);
     this.infoForm.get('gender')!.setValue(this.customer.gender?.toString());
+    this.getOrderHistory();
+  }
+
+  getOrderHistory(){
+    this.customerService.getOrderHistory(this.infoForm.value.id).subscribe(res => {
+      if(checkResponseStatus(res)){
+        this.listOrder = res.data;
+      }
+    })
   }
 
   initForm() {
     this.infoForm = this.fb.group({
+      id: [null],
       firstName: [null, Validators.required],
       lastName: [null, Validators.required],
       email: [null, Validators.required],
@@ -81,10 +94,10 @@ export class CustomerChangeInfoComponent {
       idNumber: [null, Validators.required]
     });
 
+    const addresses: string[] = this.customer.address ? this.customer.address!.split("|") : [];
     this.addressForm = this.fb.group({
       addresses: this.fb.array([]),
     });
-    const addresses: string[] = this.customer.address ? this.customer.address!.split(",") : [];
     if(addresses.length > 0) {
       addresses.forEach(e => {
         const control: FormGroup = this.fb.group({
@@ -92,6 +105,13 @@ export class CustomerChangeInfoComponent {
         });
         this.addresses.push(control);
       });
+    }
+    else{
+      const addressControl = this.addressForm.get('addresses') as FormArray;
+      const group = this.fb.group({
+        address: [null, [Validators.required]]
+      })
+      addressControl.push(group);
     }
 
     this.changePasswordForm = this.fb.group({
@@ -143,6 +163,13 @@ export class CustomerChangeInfoComponent {
   }
 
   removeAddress(index: number) {
-    this.addresses.removeAt(index);
+    if(index > 0) this.addresses.removeAt(index);
+    else{
+      this.addresses.at(index).get('address')?.setValue("");
+    }
+  }
+
+  goToProduct(id: string){
+    this.router.navigateByUrl(`/product-detail/${id}`);
   }
 }

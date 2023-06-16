@@ -7,7 +7,7 @@ export interface CartState extends EntityState<Cart, any>{
   name: string | null,
   photo: string | null,
   specifications: any[],
-  price: number | null,
+  cost: number | null,
   quantity: number | null,
 }
 

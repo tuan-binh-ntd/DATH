@@ -49,13 +49,13 @@
       </nz-badge>
 
       <nz-dropdown-menu #cart="nzDropdownMenu" nzNoAnimation>
-        <ul nz-menu>
-          <li>
+        <ul nz-menu style="width: 420px">
+          <li class="pl-4 pr-4 pt-2 pb-2">
             <app-customer-cart></app-customer-cart>
           </li>
           <li *ngIf="(cartCount$ | async) > 0">
             <button
-            class="w-100"
+            class="w-100 mb-1"
             nz-button
             nzType="default"
             (click)="goToCart()"

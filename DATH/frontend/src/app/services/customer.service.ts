@@ -11,11 +11,18 @@ export class CustomerService {
 
   constructor(private http: HttpClient) { }
 
+  get(id: number): Observable<any> {
+    return this.http.get(this.baseUrl + '/' + id);
+  }
   changeInfo(id: number, payload: any): Observable<any> {
     return this.http.put(this.baseUrl + '/' + id, payload);
   }
 
   createAddress(id: number, payload: any): Observable<any> {
     return this.http.post(this.baseUrl + '/' + id + '/addresses', payload);
+  }
+
+getOrderHistory(id: string): Observable<any>{
+    return this.http.get(this.baseUrl + '/' + id + '/orders');
   }
 }

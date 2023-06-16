@@ -12,10 +12,13 @@ import {
   take,
 } from 'rxjs';
 import { OrderStatus } from 'src/app/enums/order-status.enum';
+import { Customer } from 'src/app/models/customer.model';
 import { Order } from 'src/app/models/order-model';
 import { Payment } from 'src/app/models/payment.model';
 import { Product } from 'src/app/models/product.model';
 import { Shop } from 'src/app/models/shop.model';
+import { AccountService } from 'src/app/services/account.service';
+import { CustomerService } from 'src/app/services/customer.service';
 import { OrderService } from 'src/app/services/order.service';
 import { PaymentService } from 'src/app/services/payment.service';
 import { PromotionService } from 'src/app/services/promotion.service';
@@ -47,6 +50,7 @@ export class ViewCartDetailComponent {
   selectedPayment: number = 0;
   isLoading: boolean = false;
   promotionCode: string = '';
+  customer: Customer = JSON.parse(localStorage.getItem('user')!);
   listOfColumn: any[] = [
     {
       name: 'Image',
@@ -85,6 +89,7 @@ export class ViewCartDetailComponent {
   infoForm!: FormGroup;
   listShop: Shop[] = [];
   listPayment: Payment[] = [];
+  listAddress: string[] = [];
 
   constructor(
     private cartQuery: CartQuery,
@@ -95,7 +100,9 @@ export class ViewCartDetailComponent {
     private shopService: ShopService,
     private paymentService: PaymentService,
     private orderService: OrderService,
-    private promotionService: PromotionService
+    private promotionService: PromotionService,
+    private customerService: CustomerService,
+    private accountService: AccountService
   ) {}
 
   async ngOnInit() {
@@ -108,6 +115,14 @@ export class ViewCartDetailComponent {
       res.forEach((item) => {
         this.subTotalCost += item.cost;
       });
+    });
+    this.listAddress = this.customer.address ? this.customer.address!.split("|") : [];
+  
+    if(this.customer) this.infoForm.patchValue({
+      customerName: this.customer.firstName + ' ' + this.customer.lastName,
+      address: this.listAddress ?.length > 0 ? this.listAddress [0] :  null,
+      phone: this.customer.phone,
+      email: this.customer.email,
     });
   }
 
@@ -146,7 +161,7 @@ export class ViewCartDetailComponent {
       formal: [null],
       shopId: [null],
     });
-    this.infoForm.get('formal')?.setValue('store');
+    this.infoForm.get('formal')?.setValue('delivery');
   }
 
   onSort(direction: any, column: string) {}
@@ -179,6 +194,7 @@ export class ViewCartDetailComponent {
     switch (ev) {
       case 'store':
         this.infoForm.get('address')?.clearValidators();
+        this.infoForm.get('address')?.setValue("");
         this.infoForm.get('shopId')?.addValidators(Validators.required);
         this.deliveryCost = 0;
 
@@ -206,8 +222,8 @@ export class ViewCartDetailComponent {
             this.msg.success('Applied promotion');
             this.infoForm.get('promotionId')?.setValue(res.data.id);
             this.discountPercent = res.data.discount;
-            this.totalCost = this.deliveryCost + this.subTotalCost - this.subTotalCost
-             * (this.discountPercent * 0.01);
+            this.totalCost = this.deliveryCost + this.subTotalCost - (this.subTotalCost
+             * (this.discountPercent * 0.01));
           } else {
             this.msg.error('Promotion code not valid');
           }
@@ -225,24 +241,47 @@ export class ViewCartDetailComponent {
   onCheckOut() {
     this.validateForm();
     if (this.infoForm.valid) {
-      this.listCart = this.listCart.map((item) => {
-        return {
-          ...item,
-          specificationId: item.specifications.map((item) => item.id).join(','),
+      if(this.listCart?.length > 0){
+        this.listCart = this.listCart.map((item) => {
+          return {
+            ...item,
+            specificationId: item.specifications.map((item) => item.id).join(','),
+          };
+        });
+       
+        const payload: Order = {
+          ...this.infoForm.value,
+          cost: this.totalCost,
+          discount: this.discountPercent,
+          createDate: Date.now(),
+          orderDetailInputs: this.listCart,
         };
-      });
-      const payload: Order = {
-        ...this.infoForm.value,
-        cost: this.totalCost,
-        createDate: Date.now(),
-        orderDetailInputs: this.listCart,
-      };
-      this.orderService.create(payload).subscribe((res) => {
-        if (checkResponseStatus(res)) {
-          // this.cartService.removeAll();
-          this.router.navigateByUrl(`order/${res.data.code}`);
+        this.orderService.create(payload).subscribe((res) => {
+          if (checkResponseStatus(res)) {
+            if(this.customer.id && !this.customer.address) this.addAddressIfNotExisted();
+            const id = this.msg.loading('Action in progress..', { nzDuration: 0 }).messageId;
+            setTimeout(() => {
+              this.msg.remove(id);
+              this.msg.success("Created order");
+              this.router.navigateByUrl(`order/${res.data.code}`);
+            }, 2000);
+            // this.cartService.removeAll();
+          }
+        });
+      }
+      else{
+        this.msg.error("Your cart is empty");
+      }
+    }
+  }
+
+  addAddressIfNotExisted(): void {
+    this.customerService
+      .createAddress(this.customer.id!, {addresses: [this.infoForm.value.address]})
+      .subscribe(res => {
+        if(checkResponseStatus(res)){
+          this.accountService.setCurrentUser(res.data, true);
         }
       });
-    }
   }
 }

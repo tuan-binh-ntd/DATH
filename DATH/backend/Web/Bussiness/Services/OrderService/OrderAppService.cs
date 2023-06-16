@@ -60,7 +60,6 @@ namespace Bussiness.Services.OrderService
             order.Code = await GenerateOrderCode();
             order.Status = OrderStatus.Pending;
             order.IsExport = false;
-
             long orderId = await _orderRepo.InsertAndGetIdAsync(order);
 
             ICollection<OrderDetail> orderDetails = new List<OrderDetail>();
@@ -199,6 +198,7 @@ namespace Bussiness.Services.OrderService
                                                     ActualDate = o.ActualDate,
                                                     EstimateDate = o.EstimateDate,
                                                     Cost = o.Cost,
+                                                    Email = o.Email,
                                                     Discount = o.Discount,
                                                     CreateDate = (DateTime)o.CreationTime!
                                                 };
@@ -277,6 +277,7 @@ namespace Bussiness.Services.OrderService
                                                          Status = o.Status,
                                                          ActualDate = o.ActualDate,
                                                          EstimateDate = o.EstimateDate,
+                                                         Email = o.Email,
                                                          Cost = o.Cost,
                                                          Discount = o.Discount,
                                                          CreateDate = (DateTime)o.CreationTime!,
