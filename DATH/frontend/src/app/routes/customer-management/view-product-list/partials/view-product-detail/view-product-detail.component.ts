@@ -153,7 +153,7 @@ export class ViewProductDetailComponent {
       .selectEntity((item) => {
         const cart = {...item};
         cart.quantity = 1;
-        cart.price = this.cartObject.cost;
+        cart.cost = this.cartObject.cost;
         delete cart.id;
         return JSON.stringify(cart) === JSON.stringify(this.cartObject)
       })

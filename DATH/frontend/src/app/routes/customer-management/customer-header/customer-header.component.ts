@@ -165,6 +165,7 @@ export class CustomerHeaderComponent implements OnInit {
 
   logOut() {
     this.accountService.logOut();
+    window.location.reload();
     // this.router.navigateByUrl('/home');
     this.isLoggedIn = false;
   }

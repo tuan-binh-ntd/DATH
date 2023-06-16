@@ -72,7 +72,12 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { IconDefinition } from '@ant-design/icons-angular';
 import { UserOutline } from '@ant-design/icons-angular/icons';
 import { CheckOutline } from '@ant-design/icons-angular/icons';
-const icons: IconDefinition[] = [ UserOutline, CheckOutline];
+import { ShoppingOutline } from '@ant-design/icons-angular/icons';
+import { SolutionOutline } from '@ant-design/icons-angular/icons';
+import { InboxOutline } from '@ant-design/icons-angular/icons';
+import { CloseOutline } from '@ant-design/icons-angular/icons';
+
+const icons: IconDefinition[] = [ UserOutline, CheckOutline,ShoppingOutline,SolutionOutline,InboxOutline,CloseOutline ];
 @NgModule({
   imports: [
     NzIconModule.forRoot(icons),

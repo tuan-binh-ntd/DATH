@@ -94,7 +94,7 @@ export class CustomerChangeInfoComponent {
       idNumber: [null, Validators.required]
     });
 
-    const addresses: string[] = this.customer.address ? this.customer.address!.split(",") : [];
+    const addresses: string[] = this.customer.address ? this.customer.address!.split("|") : [];
     this.addressForm = this.fb.group({
       addresses: this.fb.array([]),
     });

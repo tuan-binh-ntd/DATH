@@ -1,8 +1,8 @@
-<div class="pl-4 pr-4">
-  <h3>Your cart</h3>
-  <nz-list style="width: 400px" *ngIf="(cartObjects$ | async)?.length > 0; else empty">
+<div >
+  <!-- <h3>Your cart</h3> -->
+  <nz-list  *ngIf="(cartObjects$ | async)?.length > 0; else empty">
     <ng-container *ngFor="let item of cartObjects$ | async | slice:0:4" (click)="goToProduct(item.id)">
-      <div nz-row >
+      <div nz-row nzGutter="8">
         <div nz-col nzSpan="6">
           <nz-badge [nzCount]="item.quantity">
           <img width="80px" class="cart-img" alt="logo" [src]="item.photo!" />
@@ -26,7 +26,7 @@
           </nz-list-item-meta>
         </div>
       </div>
-      <nz-divider class="mb-0 mt-0"></nz-divider>
+      <nz-divider class="mb-0 mt-2"></nz-divider>
     </ng-container>
   </nz-list>
 </div>

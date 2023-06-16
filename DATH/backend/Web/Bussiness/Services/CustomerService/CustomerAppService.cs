@@ -26,7 +26,7 @@ namespace Bussiness.Services.CustomerService
             Customer? customer = await _customerRepo.GetAsync(id);
             if (customer == null) return null;
 
-            if (input.Addresses!.Count != 0) customer!.Address = string.Join(",", input.Addresses!.ToList());
+            if (input.Addresses!.Count != 0) customer!.Address = string.Join("|", input.Addresses!.ToList());
             await _customerRepo.UpdateAsync(customer!);
             CustomerForViewDto? res = new();
             ObjectMapper!.Map(customer, res);
