@@ -22,5 +22,6 @@ namespace Bussiness.Dto
         public DateTime? JoinDate { get; set; }
         public string? Code { get; set; }
         public int ShopId { get; set; }
+        public long UserId { get; set; }
     }
 }
