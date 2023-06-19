@@ -142,6 +142,7 @@ namespace API.Controllers
             {
                 Type = user.Type,
                 Username = user.UserName,
+                UserId = user.Id,
                 Token = await _tokenService.CreateToken(user)
             };   
 
@@ -156,6 +157,7 @@ namespace API.Controllers
                 res.Code = employee!.Code;
                 res.ShopId = employee!.ShopId;
                 _mapper.Map(employee, res);
+                
                 return CustomResult(res);
             }
             _mapper.Map(customer, res);
