@@ -17,6 +17,7 @@ import { EmployeeChangeInfoComponent } from './employee-change-info/employee-cha
 import { StoresWarehouseListComponent } from './stores-warehouse-list/stores-warehouse-list.component';
 import { OrderForAdminListComponent } from './order-for-admin-list/order-for-admin-list.component';
 import { OrderForShopListComponent } from './order-for-shop-list/order-for-shop-list.component';
+import { OrderListComponent } from './order-list/order-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -124,7 +125,7 @@ const routes: Routes = [
   },
   {
     path: 'order',
-    component: OrderForAdminListComponent,
+    component: OrderListComponent,
     data: {
       breadcrumb: 'Home / Order'
     },

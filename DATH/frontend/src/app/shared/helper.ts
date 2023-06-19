@@ -32,6 +32,8 @@ export enum EmployeeType {
   Sale = 1,
   Orders = 2,
   Warehouse = 3,
+  OrderTransfer = 4,
+  OrderConfirm = 5,
 }
 
 export enum EventType {
