@@ -37,6 +37,7 @@ const routes: Routes = [
   {
     path: 'order/:code',
     component: ViewCheckOrderComponent,
+    canActivate: [CustomerAuthGuard],
   },
   {
     path: '**',

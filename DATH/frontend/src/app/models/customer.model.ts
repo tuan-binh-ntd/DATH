@@ -2,6 +2,7 @@ import { Gender } from "../enums/gender.enum";
 
 export interface Customer {
   id: number | null,
+  userId: number | null,
   username: string | null,
   firstName: string | null,
   lastName: string | null,

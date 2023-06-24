@@ -359,7 +359,6 @@ namespace Bussiness.Services.OrderService
         #region GetOrdersForCustomer
         public async Task<IEnumerable<OrderForViewDto>> GetOrdersForCustomer(long userId)
         {
-
             IQueryable<OrderForViewDto> query = from o in _orderRepo.GetAll().AsNoTracking()
                                                 join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
                                                 where o.CreatorUserId == userId
@@ -378,7 +377,6 @@ namespace Bussiness.Services.OrderService
                                                     Discount = o.Discount,
                                                     CreateDate = (DateTime)o.CreationTime!,
                                                     CreatorUserId = o.CreatorUserId,
-
                                                     Payment = p.Name
                                                 };
 

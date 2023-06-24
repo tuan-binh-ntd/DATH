@@ -8,8 +8,8 @@
     />
   </div>
   <div nz-col nzSpan="16">
-    <nz-card>
-      <nz-tabset nzTabPosition="right" [(nzSelectedIndex)]="selectedIndex">
+    <nz-card class="content">
+      <nz-tabset [(nzSelectedIndex)]="selectedIndex">
         <!-- Start Change Info View -->
         <nz-tab nzTitle="Basic information">
           <form nz-form [formGroup]="infoForm">
@@ -343,24 +343,69 @@
         <nz-tab nzTitle="Change cover photo"> </nz-tab>
         <nz-tab nzTitle="Order history">
           <ng-container *ngIf="listOrder.length > 0; else empty">
-            <ng-container
-              *ngFor="let item of listOrder"
-              (click)="goToProduct(item.code)"
-            >
-              <nz-list [nzBordered]="false" [nzHeader]="item.code">
-                <nz-collapse *ngFor="let ele of item.orderDetail">
-                  <nz-collapse-panel [nzHeader]="eleHeader">
-                  </nz-collapse-panel>
-                  <ng-template #eleHeader>
-                    <div class="align-child-space-between">
-                      <h4>{{ ele.name }}</h4>
-                      <img nz-image [nzSrc]="ele.photo" />
+              <nz-collapse *ngFor="let item of listOrder">
+                <nz-collapse-panel
+                  [nzHeader]="header"
+                  [nzShowArrow]="false"
+                  class="mb-4"
+                >
+                  <ng-template #header>
+                    <div nz-row nzGutter="16">
+                      <div nz-col nzSpan="8">
+                        <span class="text-muted">#{{ item.code }}</span>
+                        <br />
+                        <a (click)="goToDetail(item.code)">Go to detail</a>
+                        <app-order-status
+                          class="order-status"
+                          [status]="item?.status"
+                        ></app-order-status>
+                        <br />
+                      </div>
+                      <div nz-col nzSpan="5">
+                        <span class="text-muted">Order placed</span>
+                        <br />
+                        <span>{{ item.createDate | date : "dd/MM/YYYY" }}</span>
+                      </div>
+                      <div nz-col nzSpan="4">
+                        <span class="text-muted">Total</span>
+                        <br />
+                        <span>{{ item.cost | number }}Đ</span>
+                      </div>
+                      <div nz-col nzSpan="7">
+                        <span class="text-muted">Ship to</span>
+                        <br />
+                        <span>{{ item.address }}</span>
+                      </div>
                     </div>
                   </ng-template>
-                </nz-collapse>
-              </nz-list>
+                  <ng-container 
+                  *ngFor="let ele of item.orderDetails"
+                  >
+                  <div class="align-center" nz-row nzGutter="16">
+                    <div nz-col nzSpan="18">
+                      <div class="d-flex">
+                        <img
+                          nz-image
+                          width="50px"
+                          height="50px"
+                          [nzSrc]="ele?.photos ? ele?.photos[0].url : ''"
+                          class="mr-2"
+                        />
+                        <div>
+                          <h4>{{ ele.productName }}</h4>
+                          <p class="text-muted mt-0">
+                            {{ ele.cost | number }}VNĐ
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div nz-col nzSpan="4"></div>
+                    <span nz-col nzSpan="2">x{{ ele.quantity }}</span>
+                  </div>
+                </ng-container>
+                </nz-collapse-panel>
+              </nz-collapse>
             </ng-container>
-          </ng-container>
         </nz-tab>
         <!-- End Add Photo View -->
       </nz-tabset>
