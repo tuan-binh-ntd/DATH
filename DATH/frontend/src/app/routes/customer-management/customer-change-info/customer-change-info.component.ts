@@ -75,7 +75,7 @@ export class CustomerChangeInfoComponent {
   }
 
   getOrderHistory(){
-    this.customerService.getOrderHistory(this.infoForm.value.id).subscribe(res => {
+    this.customerService.getOrderHistory(this.infoForm.value.userId).subscribe(res => {
       if(checkResponseStatus(res)){
         this.listOrder = res.data;
       }
@@ -91,7 +91,8 @@ export class CustomerChangeInfoComponent {
       phone: [null, Validators.required],
       birthday: [null, Validators.required],
       gender: [null, Validators.required],
-      idNumber: [null, Validators.required]
+      idNumber: [null, Validators.required],
+      userId: [null],
     });
 
     const addresses: string[] = this.customer.address ? this.customer.address!.split("|") : [];
@@ -171,5 +172,9 @@ export class CustomerChangeInfoComponent {
 
   goToProduct(id: string){
     this.router.navigateByUrl(`/product-detail/${id}`);
+  }
+
+  goToDetail(code: string){
+    this.router.navigateByUrl(`/order/${code}`);
   }
 }

@@ -9,11 +9,20 @@ import { AccountService } from '../services/account.service';
 export class CustomerAuthGuard implements CanActivate {
   constructor(private accountService: AccountService,
     private router: Router){}
-  canActivate(): Observable<boolean> {
-   if(!(this.accountService.currentUserSource instanceof Observable)){
-    this.router.navigateByUrl('/home');
-    return of(false);
-   }
-   return of(true);
-  }
+    canActivate(): Observable<boolean> {
+      if (this.accountService.currentUserSource.closed || this.accountService.currentUserSource.observers.length === 0) {
+        this.router.navigateByUrl('/home');
+        return of(false);
+      }
+  
+      return this.accountService.currentUserSource.pipe(
+        map(user => {
+          if (user === null) {
+            this.router.navigateByUrl('/home');
+            return false;
+          }
+          return true;
+        })
+      );
+    }
 }

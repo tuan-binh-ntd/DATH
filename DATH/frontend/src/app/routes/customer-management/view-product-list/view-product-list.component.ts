@@ -94,20 +94,24 @@ export class ViewProductListComponent {
  ngAfterViewInit(){
   fromEvent(this.search.nativeElement, 'change')
       .pipe(
-        debounceTime(500),
+        debounceTime(300),
         distinctUntilChanged(),
-        switchMap((text) =>
-          this.productCategoryService.getAllByCategory(
+        switchMap((text) =>{
+          this.isLoading = true;
+          return this.productCategoryService.getAllByCategory(
             this.categoryId,
             1,
             this.paginationParam.pageSize,
             this.selectedItemIds.join(','),
             this.listTextSearch,
           )
+        }
+          
         )
       )
       .subscribe((res) => {
         if (checkResponseStatus(res)) {
+          this.isLoading = false;
           this.listOfData = res.data.content;
         }
       });

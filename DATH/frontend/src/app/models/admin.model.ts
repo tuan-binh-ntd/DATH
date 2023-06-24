@@ -1,8 +1,8 @@
 import { Gender } from "../enums/gender.enum";
+import { UserType } from "../shared/helper";
 
-export interface Customer {
+export interface Admin {
   id: number | null,
-  userId: number | null,
   username: string | null,
   firstName: string | null,
   lastName: string | null,
@@ -13,4 +13,5 @@ export interface Customer {
   address: string | null
   phone: string | null
   isActive: boolean | null,
+  type: UserType
 }

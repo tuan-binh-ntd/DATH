@@ -116,6 +116,7 @@ export class ViewCartDetailComponent {
         this.subTotalCost += item.cost;
       });
     });
+    this.totalCost = this.deliveryCost + this.subTotalCost;
     this.listAddress = this.customer.address ? this.customer.address!.split("|") : [];
   
     if(this.customer) this.infoForm.patchValue({

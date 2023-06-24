@@ -281,6 +281,7 @@ namespace Bussiness.Services.OrderService
                                                          Cost = o.Cost,
                                                          Discount = o.Discount,
                                                          CreateDate = (DateTime)o.CreationTime!,
+                                                         CreatorUserId = o.CreatorUserId,
                                                          Payment = p.Name
                                                      };
 
@@ -316,6 +317,8 @@ namespace Bussiness.Services.OrderService
                                                          Cost = o.Cost,
                                                          Discount = o.Discount,
                                                          CreateDate = (DateTime)o.CreationTime!,
+                                                         CreatorUserId = o.CreatorUserId,
+
                                                          Payment = p.Name
                                                      };
 
@@ -356,7 +359,6 @@ namespace Bussiness.Services.OrderService
         #region GetOrdersForCustomer
         public async Task<IEnumerable<OrderForViewDto>> GetOrdersForCustomer(long userId)
         {
-
             IQueryable<OrderForViewDto> query = from o in _orderRepo.GetAll().AsNoTracking()
                                                 join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
                                                 where o.CreatorUserId == userId
@@ -374,6 +376,7 @@ namespace Bussiness.Services.OrderService
                                                     Cost = o.Cost,
                                                     Discount = o.Discount,
                                                     CreateDate = (DateTime)o.CreationTime!,
+                                                    CreatorUserId = o.CreatorUserId,
                                                     Payment = p.Name
                                                 };
 
@@ -388,9 +391,9 @@ namespace Bussiness.Services.OrderService
         #region CreateInstallment
         public async Task CreateInstallment(ICollection<OrderDetail> orderDetail, ICollection<OrderDetailInput> orderDetailInputs)
         {
-            foreach(OrderDetail item in orderDetail)
+            foreach (OrderDetail item in orderDetail)
             {
-                if(item.InstallmentId is not null)
+                if (item.InstallmentId is not null)
                 {
                     ICollection<InstallmentSchedule> installmentSchedules = new List<InstallmentSchedule>();
 
@@ -398,7 +401,7 @@ namespace Bussiness.Services.OrderService
 
                     decimal moneyPerTerm = ((item.Cost * installment!.Balance) / 100) / installment!.Term;
 
-                    for(int i = 1; i <= installment!.Term; i++)
+                    for (int i = 1; i <= installment!.Term; i++)
                     {
 
                         InstallmentSchedule installmentSchedule = new()

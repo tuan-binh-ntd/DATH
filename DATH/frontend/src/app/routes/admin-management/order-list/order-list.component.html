@@ -1,0 +1,6 @@
+<ng-container *ngIf="person?.type === userType.OrderTransfer; else shop">
+    <app-order-for-admin-list></app-order-for-admin-list>
+</ng-container>
+<ng-template #shop>
+    <app-order-for-shop-list></app-order-for-shop-list>
+</ng-template>
