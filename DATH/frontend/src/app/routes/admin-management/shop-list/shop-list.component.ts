@@ -40,6 +40,7 @@ export class ShopListComponent extends ListBaseComponent {
 
 
   override fetchData(): void {
+    this.isLoadingTable = true;
     this.shopService.getAll(this.paginationParam.pageNum, this.paginationParam.pageSize).pipe(
       finalize(() => this.isLoadingTable = false)).subscribe(res => {
         if (checkResponseStatus(res)) {
@@ -49,13 +50,5 @@ export class ShopListComponent extends ListBaseComponent {
       })
   }
 
-  pageNumChanged(event: any): void {
-    this.paginationParam.pageNum = event;
-    this.fetchData();
-  }
-
-  pageSizeChanged(event: any) {
-    this.paginationParam.pageSize = event;
-    this.fetchData();
-  }
+ 
 }

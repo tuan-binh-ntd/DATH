@@ -80,4 +80,15 @@ export class ListBaseComponent {
     this.listOfData = [...list];
    }
 
+   pageNumChanged(event: any): void {
+    this.paginationParam.pageNum = event;
+    this.fetchData();
+  }
+
+  pageSizeChanged(event: any) {
+    this.paginationParam.pageSize = event;
+    this.fetchData();
+  }
+
+  transformResponse(){}
 }

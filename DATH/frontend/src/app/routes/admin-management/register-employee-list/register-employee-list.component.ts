@@ -72,6 +72,7 @@ export class RegisterEmployeeListComponent extends ListBaseComponent {
 
 
   override fetchData(): void {
+    this.isLoadingTable = true;
     this.employeeService.getAllEmployee(this.paginationParam.pageNum, this.paginationParam.pageSize).pipe(
       finalize(() => this.isLoadingTable = false))
       .subscribe(res => {
@@ -82,13 +83,5 @@ export class RegisterEmployeeListComponent extends ListBaseComponent {
       })
   }
 
-  pageNumChanged(event: any): void {
-    this.paginationParam.pageNum = event;
-    this.fetchData();
-  }
-
-  pageSizeChanged(event: any) {
-    this.paginationParam.pageSize = event;
-    this.fetchData();
-  }
+ 
 }

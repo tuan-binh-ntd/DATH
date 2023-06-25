@@ -41,6 +41,7 @@ import { OrderForAdminListComponent } from './order-for-admin-list/order-for-adm
 import { OrderForShopListComponent } from './order-for-shop-list/order-for-shop-list.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OrderListComponent } from './order-list/order-list.component';
+import { OrderForAdminDrawerComponent } from './order-for-admin-list/partials/order-for-admin-drawer/order-for-admin-drawer.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import { OrderListComponent } from './order-list/order-list.component';
     StoresWarehouseDrawerComponent,
     OrderForAdminListComponent,
     OrderForShopListComponent,
-    OrderListComponent
+    OrderListComponent,
+    OrderForAdminDrawerComponent
   ],
   imports: [
     QuillModule.forRoot(),

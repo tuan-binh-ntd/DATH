@@ -10,10 +10,22 @@
       <button
         nz-button
         nzType="primary"
-        class="float-right"
+        class="float-right ml-2"
+        nz-tooltip
+        nzTooltipTitle="Create"
         (click)="goToCreate()"
       >
-        Create
+        <i class="fa-sharp fa-solid fa-plus"></i>
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        class="float-right"
+        nz-tooltip
+        nzTooltipTitle="Reload"
+        (click)="fetchData()"
+      >
+        <i class="fa-solid fa-rotate-right"></i>
       </button>
     </div>
   </div>
@@ -26,6 +38,7 @@
     [nzShowPagination]="false"
     [nzFrontPagination]="false"
     [nzScroll]="{ y: scrollY }"
+    [nzLoading]="true"
   >
     <thead>
       <tr>

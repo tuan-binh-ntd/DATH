@@ -51,6 +51,7 @@ export class SpecificationListComponent extends ListBaseComponent {
   }
 
   override fetchData(): void {
+    this.isLoadingTable = true;
     this.specificationService.getAll(this.paginationParam.pageNum, this.paginationParam.pageSize).pipe(
       finalize(() => this.isLoadingTable = false)).subscribe(res => {
         if (checkResponseStatus(res)) {
@@ -60,13 +61,4 @@ export class SpecificationListComponent extends ListBaseComponent {
       })
   }
 
-  pageNumChanged(event: any): void {
-    this.paginationParam.pageNum = event;
-    this.fetchData();
-  }
-
-  pageSizeChanged(event: any) {
-    this.paginationParam.pageSize = event;
-    this.fetchData();
-  }
 }

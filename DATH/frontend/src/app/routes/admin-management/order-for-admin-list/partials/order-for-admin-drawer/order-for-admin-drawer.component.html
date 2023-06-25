@@ -1,0 +1,170 @@
+<app-drawer-form-base
+  [mode]="mode"
+  [isEdit]="isEdit"
+  [isVisible]="isVisible"
+  [titleDrawer]="titleDrawer"
+  (onCloseDrawer)="isVisible = false"
+  [customFooterTpl]="footerTpl"
+  (onSubmit)="submitForm()"
+>
+  <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
+        <span>Code</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Code is required">
+        <input
+          nz-input
+          name="code"
+          id="code"
+          formControlName="code"
+          placeholder="Input code"
+        />
+      </nz-form-control>
+    </nz-form-item>
+
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="12">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
+                  <span>Create Date</span>
+                </nz-form-label>
+                <nz-form-control [nzSpan]="24" nzErrorTip="Code is required">
+                  <nz-date-picker
+                  class="w-100"
+                  formControlName="createDate"
+                ></nz-date-picker>
+                </nz-form-control>
+              </nz-form-item>
+        </div>
+        <div nz-col nzSpan="12">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzFor="price" nzRequired>
+                  <span>Price</span>
+                </nz-form-label>
+                <nz-form-control [nzSpan]="24" nzErrorTip="Price is required">
+                  <nz-input-number
+                    class="w-100"
+                    nz-input
+                    name="price"
+                    id="price"
+                    formControlName="cost"
+                    placeholder="Input price"
+                    [nzFormatter]="formatterPrice"
+                    [nzParser]="parserPrice"
+                  ></nz-input-number>
+                </nz-form-control>
+              </nz-form-item>
+        </div>
+    </div>
+    
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="12">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
+                  <span>Customer</span>
+                </nz-form-label>
+                <nz-form-control [nzSpan]="24" nzErrorTip="Code is required">
+                  <input
+                    nz-input
+                    formControlName="customerName"
+                    placeholder="Input code"
+                  />
+                </nz-form-control>
+              </nz-form-item>
+        </div>
+        <div nz-col nzSpan="12">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
+                  <span>Email</span>
+                </nz-form-label>
+                <nz-form-control [nzSpan]="24" nzErrorTip="Email is required">
+                  <input
+                    nz-input
+                    formControlName="email"
+                    placeholder="Input code"
+                  />
+                </nz-form-control>
+              </nz-form-item>
+        </div>
+    </div>
+
+    <div nz-row nzGutter="16">
+        <div nz-col nzSpan="12">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
+                  <span>Shop</span>
+                </nz-form-label>
+                <nz-form-control [nzSpan]="24" >
+                    <nz-select
+                    formControlName="shopId"
+                    class="w-100"
+                    nzPlaceHolder="Shop"
+                  >
+                    <nz-option
+                      *ngFor="let item of listShop"
+                      [nzValue]="item.id"
+                      [nzLabel]="item.name"
+                    ></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+        </div>
+        <div nz-col nzSpan="12">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="24" nzFor="discount" nzRequired>
+                  <span>Discount</span>
+                </nz-form-label>
+                <nz-form-control [nzSpan]="24" nzErrorTip="Discount is required">
+                  <nz-input-number
+                    class="w-100"
+                    name="discount"
+                    id="discount"
+                    formControlName="discount"
+                    placeholder="Input discount"
+                    [nzMin]="1"
+                    [nzMax]="100"
+                    [nzStep]="1"
+                    [nzFormatter]="formatterPercent"
+                    [nzParser]="parserPercent"
+                  ></nz-input-number>
+                </nz-form-control>
+              </nz-form-item>
+        </div>
+    </div>
+   
+  </form>
+</app-drawer-form-base>
+
+<ng-template #footerTpl>
+  <app-button-base
+    class="float-left"
+    text="Close"
+    type="default"
+    iconClass="fa-solid fa-xmark"
+    (onClick)="closeDrawer()"
+  ></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Save"
+    buttonClass="btn-success mr-2"
+    iconClass="fa-solid fa-floppy-disk"
+    *ngIf="isEdit"
+    (onClick)="submitForm()"
+  ></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Back"
+    iconClass="fa-solid fa-arrow-left"
+    *ngIf="mode === 'detail' && isEdit"
+    (onClick)="changeToDetail()"
+  ></app-button-base>
+  <app-button-base
+    class="float-right"
+    text="Edit"
+    type="primary"
+    iconClass="fa-solid fa-pen-to-square"
+    *ngIf="mode === 'detail' && !isEdit"
+    (onClick)="changeToUpdate()"
+  ></app-button-base>
+</ng-template>

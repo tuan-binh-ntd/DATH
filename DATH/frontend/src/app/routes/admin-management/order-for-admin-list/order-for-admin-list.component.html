@@ -1,194 +1,88 @@
 <app-page-grid>
-  <h2>Order Management</h2>
-  <div nz-row nzGutter="16">
+  <h2>Product Management</h2>
+  <div nz-row class="mb-2">
     <div nz-col nzSpan="6">
-      <div
-        cdkDropList
-        id="pending"
-        #listPending="cdkDropList"
-        [cdkDropListData]="listOrderPending"
-        cdkDropListSortingDisabled
-        [cdkDropListConnectedTo]="[listPreparing, listDelivering, listRejected]"
-        class="example-list p-1 p-1"
-        (cdkDropListDropped)="drop($event, 1)"
-      >
-      <div class="text-center mb-1">
-        <app-order-status [width]="'100%'" [status]="1"></app-order-status>
-      </div>
-      <div class="example-list-wrap">
-        <div class="example-box mb-2 p-2" *ngFor="let item of listOrderPending" cdkDrag>
-          <ng-container
-            [ngTemplateOutlet]="content"
-            [ngTemplateOutletContext]="{ item: item }"
-          ></ng-container>
-        </div>
-      </div>
-      </div>
+      <nz-input-group [nzSuffix]="searchIcon">
+        <input type="text" nz-input placeholder="Search..." />
+      </nz-input-group>
     </div>
-
-    <div nz-col nzSpan="6">
-      <div
-        cdkDropList
-        id="rejected"
-        #listRejected="cdkDropList"
-        [cdkDropListData]="listOrderRejected"
-        class="example-list p-1"
-        (cdkDropListDropped)="drop($event, 27)"
+    <div nz-col nzSpan="18">
+      <!-- <button
+        nz-button
+        nzType="primary"
+        class="float-right ml-2"
+        nz-tooltip
+        nzTooltipTitle="Create"
+        (click)="goToCreate()"
       >
-      <div class="text-center mb-1">
-        <app-order-status [width]="'100%'" [status]="27"></app-order-status>
-      </div>
-      <div class="example-list-wrap">
-        <div class="example-box mb-2 p-2" *ngFor="let item of listOrderRejected" cdkDrag>
-          <ng-container
-            [ngTemplateOutlet]="content"
-            [ngTemplateOutletContext]="{ item: item }"
-          ></ng-container>
-          </div>
-        </div>
-      </div>
+        <i class="fa-sharp fa-solid fa-plus"></i>
+      </button> -->
+      <button
+        nz-button
+        nzType="primary"
+        class="float-right"
+        nz-tooltip
+        nzTooltipTitle="Reload"
+        (click)="fetchData()"
+      >
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
     </div>
-
-    <div nz-col nzSpan="6">
-      <div
-        cdkDropList
-        id="preparing"
-        #listPreparing="cdkDropList"
-        [cdkDropListData]="listOrderPreparing"
-        class="example-list p-1"
-        cdkDropListSortingDisabled
-        [cdkDropListConnectedTo]="[listDelivering, listRejected]"
-        (cdkDropListDropped)="drop($event, 2)"
-      >
-      <div class="text-center mb-1">
-        <app-order-status [width]="'100%'" [status]="2"></app-order-status>
-      </div>
-      <div class="example-list-wrap">
-
-        <div
-          class="example-box mb-2 p-2"
-          *ngFor="let item of listOrderPreparing"
-          cdkDrag
-        >
-          <ng-container
-            [ngTemplateOutlet]="content"
-            [ngTemplateOutletContext]="{ item: item }"
-          ></ng-container>
-        </div>
-        </div>
-      </div>
-    </div>
-
-    <div nz-col nzSpan="6">
-      <div
-        cdkDropList
-        id="delivering"
-        #listDelivering="cdkDropList"
-        [cdkDropListData]="listOrderDelivering"
-        class="example-list p-1"
-        cdkDropListSortingDisabled
-        (cdkDropListDropped)="drop($event, 23)"
-      >
-      <div class="text-center mb-1">
-        <app-order-status [width]="'100%'" [status]="23"></app-order-status>
-      </div>
-      <div class="example-list-wrap">
-
-        <div
-          class="example-box mb-2 p-2"
-          *ngFor="let item of listOrderDelivering"
-          cdkDrag
-        >
-          <ng-container
-            [ngTemplateOutlet]="content"
-            [ngTemplateOutletContext]="{ item: item }"
-          ></ng-container>
-        </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- <div nz-col nzSpan="4">
-      <div
-        cdkDropList
-        #listReceived="cdkDropList"
-        [cdkDropListData]="listOrderReceived"
-        class="example-list"
-        cdkDropListSortingDisabled
-        (cdkDropListDropped)="drop($event)"
-      >
-        <div class="example-box" *ngFor="let item of listOrderReceived" cdkDrag>
-          <ng-container
-            [ngTemplateOutlet]="content"
-            [ngTemplateOutletContext]="{ item: 'item' }"
-          ></ng-container>
-        </div>
-      </div>
-    </div> -->
   </div>
-
-  <ng-template #content let-item="item">
-    <div class=" mb-1">
-      <label class="text-muted text-truncate mr-2">#{{ item?.code }}</label>
-    </div>
-    <div class=" mb-1" nz-row nzGutter="16">
-      <label class="text-muted " nz-col nzSpan="8">Customer</label>
-      <span nz-col nzSpan="16">{{ item?.customerName }}</span>
-    </div>
-    <div class=" mb-1" nz-row nzGutter="16">
-      <label class="text-muted" nz-col nzSpan="8">Phone</label>
-      <span nz-col nzSpan="16">{{ item?.phone }}</span>
-    </div>
-    <div class=" mb-1"  nz-row nzGutter="16">
-      <label class="text-muted" nz-col nzSpan="8">Email</label>
-      <span class="text-truncate" nz-col nzSpan="16">{{ item?.email }}</span>
-    </div>
-    <!-- <div class=" mb-1">
-      <label>Delivery date</label>
-      <span >{{
-        item?.createDate | date : "dd/MM/yyyy"
-      }}</span>
-    </div> -->
-    <div  nz-row nzGutter="16">
-      <label class="text-muted " nz-col nzSpan="8">Created</label>
-      <span nz-col nzSpan="16">{{
-        item?.createDate | date : "dd/MM/yyyy"
-      }}</span>
-    </div>
+  <ng-template #searchIcon>
+    <span><i class="fa-solid fa-search mr-2 text-muted"></i></span>
   </ng-template>
+  <nz-table
+    #rowSelectionTable
+    [nzData]="listOfData"
+    [nzShowPagination]="false"
+    [nzFrontPagination]="false"
+    [nzScroll]="{ y: scrollY }"
+    [nzLoading]="isLoadingTable"
+  >
+    <thead>
+      <tr>
+        <th
+          *ngFor="let column of listOfColumn"
+          [nzWidth]="column.width"
+          [nzSortOrder]="column.sortOrder"
+          [ngClass]="column.class"
+          [nzSortDirections]="column.sortDirections"
+          (nzSortOrderChange)="onSort($event, column)"
+        >
+          {{ column.name }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let data of rowSelectionTable.data">
+        <tr (click)="goToDetail(data)">
+          <td>{{ data.code }}</td>
+          <td nzAlign="center">{{ data.createDate | date: 'dd/MM/YYYY'}}</td>
+          <td>{{ data.shopName }}</td>
+          <td>{{ data.customerName }}</td>
+          <td>{{ data.cost | moneyFormatter}}</td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </nz-table>
+  <br />
+  <nz-pagination
+    class="float-right"
+    nzShowSizeChanger
+    [nzPageIndex]="paginationParam.pageNum"
+    [nzTotal]="paginationParam.totalCount"
+    [nzPageSize]="paginationParam.pageSize"
+    nzFrontPagination="false"
+    (nzPageSizeChange)="pageSizeChanged($event)"
+    (nzPageIndexChange)="pageNumChanged($event)"
+  ></nz-pagination>
 </app-page-grid>
 
-<ng-template #modalContent>
-  <form nz-form [formGroup]="deliveryForm">
-    <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="email" nzRequired>
-        Shipping provider
-      </nz-form-label>
-      <nz-form-control [nzSpan]="24" nzErrorTip="Shipping provider is required">
-        <nz-select
-                  formControlName="shippingId"
-                  class="w-100"
-                  nzPlaceHolder="Shipping provider"
-                >
-                  <nz-option
-                    *ngFor="let item of listShipping"
-                    [nzValue]="item.id"
-                    [nzLabel]="item.name"
-                  ></nz-option>
-                </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="email" nzRequired>
-        Estimate date
-      </nz-form-label>
-      <nz-form-control [nzSpan]="24" nzErrorTip="Estimate date is required">
-        <nz-date-picker
-        [nzDisabledDate]="disabledDate"
-        class="w-100"
-        formControlName="estimateDate"
-      ></nz-date-picker>
-      </nz-form-control>
-    </nz-form-item>
-  </form>
-</ng-template>
+<app-order-for-admin-drawer
+  #drawerFormBase
+  (onCreate)="onCreateItem($event)"
+  (onUpdate)="onUpdateItem($event)"
+  (onDelete)="onDeleteItem($event)"
+  [listShop]="listShop"
+></app-order-for-admin-drawer>
