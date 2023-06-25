@@ -54,13 +54,4 @@ export class ProductListComponent extends ListBaseComponent {
       });
   }
 
-  pageNumChanged(event: any): void {
-    this.paginationParam.pageNum = event;
-    this.fetchData();
-  }
-
-  pageSizeChanged(event: any) {
-    this.paginationParam.pageSize = event;
-    this.fetchData();
-  }
 }

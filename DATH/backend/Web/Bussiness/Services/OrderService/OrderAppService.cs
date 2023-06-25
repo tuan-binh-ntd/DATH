@@ -261,11 +261,11 @@ namespace Bussiness.Services.OrderService
         #region GetOrders
         private async Task<object> GetOrders(int? shopId, PaginationInput input)
         {
-            if (shopId is null)
+                if (shopId is null)
             {
                 IQueryable<OrderForViewDto> orders = from o in _orderRepo.GetAll().AsNoTracking()
                                                      join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
-                                                     where o.ShopId == null
+                                                     //where o.ShopId == null
                                                      orderby o.CreationTime descending
                                                      select new OrderForViewDto
                                                      {
@@ -282,6 +282,7 @@ namespace Bussiness.Services.OrderService
                                                          Discount = o.Discount,
                                                          CreateDate = (DateTime)o.CreationTime!,
                                                          CreatorUserId = o.CreatorUserId,
+                                                         ShopId = o.ShopId,
                                                          Payment = p.Name
                                                      };
 
@@ -318,7 +319,7 @@ namespace Bussiness.Services.OrderService
                                                          Discount = o.Discount,
                                                          CreateDate = (DateTime)o.CreationTime!,
                                                          CreatorUserId = o.CreatorUserId,
-
+                                                         ShopId = o.ShopId,
                                                          Payment = p.Name
                                                      };
 

@@ -116,13 +116,4 @@ export class WarehouseDetailListComponent extends ListBaseComponent {
     this.drawerFormBase.drawerForm.get('type')?.setValue(type);
   }
 
-  pageNumChanged(event: any): void {
-    this.paginationParam.pageNum = event;
-    this.fetchData();
-  }
-
-  pageSizeChanged(event: any) {
-    this.paginationParam.pageSize = event;
-    this.fetchData();
-  }
 }
