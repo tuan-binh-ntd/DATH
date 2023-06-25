@@ -11,5 +11,9 @@ import { EmployeeType, UserType } from 'src/app/shared/helper';
 export class OrderListComponent {
   person: Account = JSON.parse(localStorage.getItem('user')!);
 
-  userType = EmployeeType
+  userType = UserType
+
+  ngOnInit(){
+    this.person;
+  }
 }

@@ -129,14 +129,7 @@ const routes: Routes = [
     data: {
       breadcrumb: 'Home / Order'
     },
-  },
-  {
-    path: 'stores-order',
-    component: OrderForShopListComponent,
-    data: {
-      breadcrumb: 'Home / Stores Order'
-    },
-  },
+  }
 ];
 
 @NgModule({
