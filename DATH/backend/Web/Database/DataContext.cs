@@ -215,6 +215,9 @@ namespace Database
                 .WithOne(f => f.AppUser)
                 .HasForeignKey(f => f.UserId)
                 .IsRequired();
+
+            //Set decimal scale for Interest col in Installment tbl
+            modelBuilder.Entity<Installment>().Property(i => i.Interest).HasPrecision(19, 5);
         }
 
         #region Override SaveChange
