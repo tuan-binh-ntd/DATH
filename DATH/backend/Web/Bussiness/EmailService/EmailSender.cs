@@ -88,14 +88,9 @@ namespace Bussiness.EmailService
             }
             else
             {
-                emailMessage.Body = new TextPart(textFormat) 
-                { 
-                    Text = string.Format(@"
-                        <h2 style='color:red;'>{0}</h2>
-                        ", 
-                        message.Content,
-                        message.Subject
-                        ) 
+                emailMessage.Body = new TextPart(textFormat)
+                {
+                    Text = message.Content
                 };
             }
 
