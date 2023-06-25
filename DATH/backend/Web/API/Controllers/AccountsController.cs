@@ -146,7 +146,7 @@ namespace API.Controllers
                 Token = await _tokenService.CreateToken(user)
             };   
 
-            if(user.Type == UserType.Admin) return CustomResult(res, HttpStatusCode.OK);
+            if(user.Type == UserType.Admin || user.Type == UserType.OrderTransfer) return CustomResult(res, HttpStatusCode.OK);
 
             Customer? customer = await _customerRepo.GetAll().AsNoTracking().Where(c => c.UserId == user.Id).FirstOrDefaultAsync();
 

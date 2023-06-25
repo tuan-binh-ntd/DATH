@@ -88,5 +88,12 @@ namespace Bussiness.Services.Core
         {
             return new SqlConnection(_config.GetConnectionString(_connectionString));
         }
+
+        public async Task<IEnumerable<T>> QueryAsync<T>(string query, DynamicParameters? param = null, CommandType commandType = CommandType.Text)
+        {
+            using IDbConnection db = new SqlConnection(_config.GetConnectionString(_connectionString));
+            IEnumerable<T> result = await db.QueryAsync<T>(query, param, commandType: commandType);
+            return result.ToList()!;
+        }
     }
 }

@@ -6,7 +6,7 @@
         Employee = 2,
         Customer = 3,
         OrderTransfer = 4,
-        OrderConfirm = 5,
+        //OrderConfirm = 5,
     }
 
     public enum EmployeeType : ushort

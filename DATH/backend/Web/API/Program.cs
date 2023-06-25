@@ -163,7 +163,8 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
     options.AddPolicy("RequireEmployeeRole", policy => policy.RequireRole("Admin", "Employee"));
-    options.AddPolicy("RequireAllRole", policy => policy.RequireRole("Admin", "Customer", "Employee"));
+    options.AddPolicy("RequireAllRole", policy => policy.RequireRole("Admin", "Customer", "Employee", "OrderTransfer"));
+    options.AddPolicy("RequireOrderTransferRole", policy => policy.RequireRole("Admin", "Employee", "OrderTransfer"));
     // other authorization policies
 });
 
@@ -209,7 +210,7 @@ builder.Services.AddSignalR();
 //Add HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
 
-// Add EmailService
+// Add EmailService Service
 EmailConfiguration? emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig!);
 

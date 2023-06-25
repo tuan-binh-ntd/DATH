@@ -1,5 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
+using MimeKit.Text;
 
 namespace Bussiness.EmailService
 {
@@ -10,20 +11,10 @@ namespace Bussiness.EmailService
         {
             _emailConfig = emailConfig;
         }
-        public void SendEmail(Message message)
+        public void SendEmail(EmailMessage message, TextFormat textFormat = TextFormat.Text)
         {
-            var emailMessage = CreateEmailMessage(message);
+            var emailMessage = CreateEmailMessage(message, textFormat);
             Send(emailMessage);
-        }
-
-        private MimeMessage CreateEmailMessage(Message message)
-        {
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
-            emailMessage.To.AddRange(message.To);
-            emailMessage.Subject = message.Subject;
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text) { Text = message.Content };
-            return emailMessage;
         }
 
         private void Send(MimeMessage mailMessage)
@@ -50,9 +41,9 @@ namespace Bussiness.EmailService
             }
         }
 
-        public async Task SendEmailAsync(Message message)
+        public async Task SendEmailAsync(EmailMessage message, TextFormat textFormat = TextFormat.Text)
         {
-            var mailMessage = CreateEmailMessage(message);
+            var mailMessage = CreateEmailMessage(message, textFormat);
 
             await SendAsync(mailMessage);
         }
@@ -80,6 +71,35 @@ namespace Bussiness.EmailService
                     client.Dispose();
                 }
             }
+        }
+
+        private MimeMessage CreateEmailMessage(EmailMessage message, TextFormat textFormat)
+        {
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
+            emailMessage.To.AddRange(message.To);
+            emailMessage.Subject = message.Subject;
+            if (textFormat is TextFormat.Text)
+            {
+                emailMessage.Body = new TextPart(textFormat) 
+                { 
+                    Text = message.Content 
+                };
+            }
+            else
+            {
+                emailMessage.Body = new TextPart(textFormat) 
+                { 
+                    Text = string.Format(@"
+                        <h2 style='color:red;'>{0}</h2>
+                        ", 
+                        message.Content,
+                        message.Subject
+                        ) 
+                };
+            }
+
+            return emailMessage;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
+using Bussiness.EmailService;
 using Bussiness.Helper;
 using Bussiness.Interface.Core;
 using Bussiness.Interface.OrderInterface;
@@ -9,10 +10,7 @@ using Bussiness.Services.Core;
 using Database;
 using Entities;
 using Entities.Enum.Order;
-using Entities.Enum.User;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Bussiness.Services.OrderService
 {
@@ -22,11 +20,11 @@ namespace Bussiness.Services.OrderService
         private readonly IRepository<OrderDetail, long> _orderDetailRepo;
         private readonly IDapper _dapper;
         private readonly IRepository<Payment> _paymentRepo;
-        private readonly UserManager<AppUser> _userManager;
         private readonly IRepository<Product, long> _productRepo;
         private readonly DataContext _dataContext;
         private readonly IRepository<InstallmentSchedule, long> _installmentSchRepo;
         private readonly IRepository<Installment, int> _installmentRepo;
+        private readonly IEmailSender _emailSender;
 
         public OrderAppService(
             IMapper mapper,
@@ -34,11 +32,11 @@ namespace Bussiness.Services.OrderService
             IRepository<OrderDetail, long> orderDetailRepo,
             IDapper dapper,
             IRepository<Payment> paymentRepo,
-            UserManager<AppUser> userManager,
             IRepository<Product, long> productRepo,
             DataContext dataContext,
             IRepository<InstallmentSchedule, long> installmentSchRepo,
-            IRepository<Installment, int> installmentRepo
+            IRepository<Installment, int> installmentRepo,
+            IEmailSender emailSender
             )
         {
             ObjectMapper = mapper;
@@ -46,11 +44,11 @@ namespace Bussiness.Services.OrderService
             _orderDetailRepo = orderDetailRepo;
             _dapper = dapper;
             _paymentRepo = paymentRepo;
-            _userManager = userManager;
             _productRepo = productRepo;
             _dataContext = dataContext;
             _installmentSchRepo = installmentSchRepo;
             _installmentRepo = installmentRepo;
+            _emailSender = emailSender;
         }
 
         #region CreateOrder
@@ -85,9 +83,10 @@ namespace Bussiness.Services.OrderService
             {
                 res.OrderDetails!.Add(ObjectMapper!.Map<OrderDetailForViewDto>(item));
             }
-
+            // create installment schedule when InstallmentId in orderdetail is not null
             await CreateInstallment(orderDetails, input.OrderDetailInputs);
-
+            // send email for customer
+            await SendEmail();
             return res;
         }
         #endregion
@@ -353,6 +352,14 @@ namespace Bussiness.Services.OrderService
         }
 
 
+        #endregion
+
+        #region Send email to customer
+        private async Task SendEmail()
+        {
+            EmailMessage message = new(new string[] { "binh20664@huce.edu.vn" }, "Hello", "This is the content from our email.");
+            _emailSender.SendEmail(message);
+        }
         #endregion
 
         #endregion

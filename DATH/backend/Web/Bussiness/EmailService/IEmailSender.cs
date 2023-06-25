@@ -1,8 +1,10 @@
-﻿namespace Bussiness.EmailService
+﻿using MimeKit.Text;
+
+namespace Bussiness.EmailService
 {
     public interface IEmailSender
     {
-        void SendEmail(Message message);
-        Task SendEmailAsync(Message message);
+        void SendEmail(EmailMessage message, TextFormat textFormat = TextFormat.Text);
+        Task SendEmailAsync(EmailMessage message, TextFormat textFormat = TextFormat.Text);
     }
 }

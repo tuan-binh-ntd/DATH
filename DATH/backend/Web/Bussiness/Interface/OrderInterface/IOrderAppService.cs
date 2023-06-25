@@ -1,6 +1,5 @@
 ﻿using Bussiness.Interface.OrderInterface.Dto;
 using Bussiness.Services.Core;
-using Entities.Enum.Order;
 
 namespace Bussiness.Interface.OrderInterface
 {
