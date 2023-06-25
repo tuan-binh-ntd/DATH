@@ -464,7 +464,7 @@ namespace Bussiness.Services.OrderService
         #endregion
 
         #region CreateInstallment
-        public async Task CreateInstallment(ICollection<OrderDetail> orderDetail, ICollection<OrderDetailInput> orderDetailInputs)
+        private async Task CreateInstallment(ICollection<OrderDetail> orderDetail, ICollection<OrderDetailInput> orderDetailInputs)
         {
             foreach (OrderDetail item in orderDetail)
             {
@@ -474,7 +474,7 @@ namespace Bussiness.Services.OrderService
 
                     Installment? installment = await _installmentRepo.GetAsync((int)item.InstallmentId);
 
-                    decimal moneyPerTerm = ((item.Cost * installment!.Balance) / 100) / installment!.Term;
+                    decimal moneyPerTerm = ((item.Cost * installment!.Balance * installment!.Interest) / 100) / installment!.Term;
 
                     for (int i = 1; i <= installment!.Term; i++)
                     {
