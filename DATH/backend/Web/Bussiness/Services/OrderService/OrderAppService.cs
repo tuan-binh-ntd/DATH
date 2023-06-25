@@ -11,6 +11,8 @@ using Database;
 using Entities;
 using Entities.Enum.Order;
 using Microsoft.EntityFrameworkCore;
+using MimeKit.Text;
+using System.Globalization;
 
 namespace Bussiness.Services.OrderService
 {
@@ -86,7 +88,7 @@ namespace Bussiness.Services.OrderService
             // create installment schedule when InstallmentId in orderdetail is not null
             await CreateInstallment(orderDetails, input.OrderDetailInputs);
             // send email for customer
-            await SendEmail();
+            await SendEmail(order);
             return res;
         }
         #endregion
@@ -355,10 +357,75 @@ namespace Bussiness.Services.OrderService
         #endregion
 
         #region Send email to customer
-        private async Task SendEmail()
+        private async Task SendEmail(Order input)
         {
-            EmailMessage message = new(new string[] { "binh20664@huce.edu.vn" }, "Hello", "This is the content from our email.");
-            _emailSender.SendEmail(message);
+            string head = @"
+                <!DOCTYPE html>
+                <html>
+                <head>
+                  <title>Order Confirmation</title>
+                  <style>
+                    body {
+                      font-family: Arial, sans-serif;
+                    }
+
+                    .container {
+                      width: 500px;
+                      margin: 0 auto;
+                      padding: 20px;
+                      background-color: #f5f5f5;
+                      border: 1px solid #ccc;
+                      border-radius: 4px;
+                    }
+
+                    h1 {
+                      text-align: center;
+                      color: #333;
+                    }
+
+                    p {
+                      margin-bottom: 20px;
+                      line-height: 1.5;
+                    }
+
+                    .button {
+                      display: inline-block;
+                      padding: 10px 20px;
+                      background-color: #fca311;
+                      color: #242525;
+                      text-decoration: none;
+                      border-radius: 4px;
+                    }
+                  </style>
+                </head>
+            ";
+
+
+            EmailMessage message = new(new string[] { input.Email! }, "Order Confirmation", head + $@"
+                <body>
+                  <div class=""container"">
+                    <h1>Order Confirmation</h1>
+                    <p>Dear {input.CustomerName} </p>
+                    <p>Thank you for your order! We are pleased to inform you that your order has been successfully placed and will be processed shortly.</p>
+                    <p>Order Details:</p>
+                    <ul>
+                      <li>Order Code: {input.Code} </li>
+                      <li>Order Date: {input.CreationTime} </li>
+                      <li>Order Cost: {input.Cost.ToString("#,###", CultureInfo.GetCultureInfo("vi-VN").NumberFormat)} </li>
+                    </ul>
+                    <p>If you have any questions or need further assistance, please don't hesitate to contact our customer support.</p>
+                    <p>Thank you for choosing our services!</p>
+                    <p>Sincerely,</p>
+                    <p>The [Company Name] Team</p>
+                    <div style=""text-align: center;"">
+                      <a href=""[Company Website]"" class=""button"">Visit Our Website</a>
+                    </div>
+                  </div>
+                </body>
+                </html>
+            ");
+
+            await _emailSender.SendEmailAsync(message, TextFormat.Html);
         }
         #endregion
 

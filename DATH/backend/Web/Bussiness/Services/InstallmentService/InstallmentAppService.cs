@@ -65,7 +65,8 @@ namespace Bussiness.Services.InstallmentService
                                                       {
                                                           Id = i.Id,
                                                           Balance = i.Balance,
-                                                          Term = i.Term
+                                                          Term = i.Term,
+                                                          Interest = i.Interest,
                                                       };
             InstallmentForViewDto? data = await query.SingleOrDefaultAsync();
             if (data == null) return null;
@@ -82,7 +83,8 @@ namespace Bussiness.Services.InstallmentService
                                                       {
                                                           Id = i.Id,
                                                           Balance = i.Balance,
-                                                          Term = i.Term
+                                                          Term = i.Term,
+                                                          Interest = i.Interest,
                                                       };
 
             if (input.PageNum != null && input.PageSize != null) return await query.Pagination(input);
