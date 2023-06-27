@@ -1,7 +1,9 @@
 ﻿using Bussiness.Extensions;
 using Bussiness.Interface.NotificationInterface;
 using Bussiness.Interface.NotificationInterface.Dto;
+using Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 
 namespace API.SignalRHub
@@ -31,12 +33,6 @@ namespace API.SignalRHub
                 int unreadNotificationNum = await _notificationAppService.UnreadNotificationNum((long)userId);
                 await Clients.Caller.SendAsync("UnreadNotificationNum", unreadNotificationNum);
             }
-        }
-
-        public async Task CreateNotification(NotificationInput input)
-        {
-            NotificationForViewDto res = await _notificationAppService.CreateOrUpdate(null, input);
-            await Clients.User(input.UserId.ToString()).SendAsync("CreateNotification", res);
         }
 
         public async Task ReadNotification(long id, NotificationInput input)

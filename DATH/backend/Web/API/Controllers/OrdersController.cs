@@ -50,7 +50,6 @@ namespace API.Controllers
             }
         }
 
-        //[Authorize(Policy = "RequireAdminRole")]
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationInput input)

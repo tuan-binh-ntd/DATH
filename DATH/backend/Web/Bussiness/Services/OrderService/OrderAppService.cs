@@ -266,7 +266,7 @@ namespace Bussiness.Services.OrderService
             {
                 IQueryable<OrderForViewDto> orders = from o in _orderRepo.GetAll().AsNoTracking()
                                                      join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
-                                                     //where o.ShopId == null
+                                                     where o.ShopId == null
                                                      orderby o.CreationTime descending
                                                      select new OrderForViewDto
                                                      {
@@ -429,40 +429,6 @@ namespace Bussiness.Services.OrderService
         }
         #endregion
 
-        #endregion
-
-        #region GetOrdersForCustomer
-        public async Task<IEnumerable<OrderForViewDto>> GetOrdersForCustomer(long userId)
-        {
-            IQueryable<OrderForViewDto> query = from o in _orderRepo.GetAll().AsNoTracking()
-                                                join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
-                                                where o.CreatorUserId == userId
-                                                orderby o.CreationTime descending
-                                                select new OrderForViewDto
-                                                {
-                                                    Id = o.Id,
-                                                    CustomerName = o.CustomerName,
-                                                    Address = o.Address,
-                                                    Phone = o.Phone,
-                                                    Code = o.Code,
-                                                    Status = o.Status,
-                                                    ActualDate = o.ActualDate,
-                                                    EstimateDate = o.EstimateDate,
-                                                    Cost = o.Cost,
-                                                    Discount = o.Discount,
-                                                    CreateDate = (DateTime)o.CreationTime!,
-                                                    CreatorUserId = o.CreatorUserId,
-                                                    Payment = p.Name
-                                                };
-
-            List<OrderForViewDto> orders = await query.ToListAsync();
-
-            await HandleOrders(orders);
-
-            return orders;
-        }
-        #endregion
-
         #region CreateInstallment
         private async Task CreateInstallment(ICollection<OrderDetail> orderDetail, ICollection<OrderDetailInput> orderDetailInputs)
         {
@@ -498,5 +464,40 @@ namespace Bussiness.Services.OrderService
             }
         }
         #endregion
+
+        #endregion
+
+        #region GetOrdersForCustomer
+        public async Task<IEnumerable<OrderForViewDto>> GetOrdersForCustomer(long userId)
+        {
+            IQueryable<OrderForViewDto> query = from o in _orderRepo.GetAll().AsNoTracking()
+                                                join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
+                                                where o.CreatorUserId == userId
+                                                orderby o.CreationTime descending
+                                                select new OrderForViewDto
+                                                {
+                                                    Id = o.Id,
+                                                    CustomerName = o.CustomerName,
+                                                    Address = o.Address,
+                                                    Phone = o.Phone,
+                                                    Code = o.Code,
+                                                    Status = o.Status,
+                                                    ActualDate = o.ActualDate,
+                                                    EstimateDate = o.EstimateDate,
+                                                    Cost = o.Cost,
+                                                    Discount = o.Discount,
+                                                    CreateDate = (DateTime)o.CreationTime!,
+                                                    CreatorUserId = o.CreatorUserId,
+                                                    Payment = p.Name
+                                                };
+
+            List<OrderForViewDto> orders = await query.ToListAsync();
+
+            await HandleOrders(orders);
+
+            return orders;
+        }
+        #endregion
+
     }
 }

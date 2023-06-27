@@ -5,6 +5,7 @@ using Bussiness.Interface.EmployeeInterface;
 using Bussiness.Repository;
 using Bussiness.Services.Core;
 using Entities;
+using Entities.Enum.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -96,6 +97,35 @@ namespace Bussiness.Services.EmployeeService
                                                    };
 
             return await query.SingleOrDefaultAsync();
+        }
+        #endregion
+
+        #region GetEmployee
+        public async Task<EmployeeForViewDto?> GetOrderEmployeeByShop(int shopId)
+        {
+            IQueryable<EmployeeForViewDto> query = from s in _shopRepo.GetAll().AsNoTracking()
+                                                   join e in _employeeRepo.GetAll().AsNoTracking() on s.Id equals e.ShopId
+                                                   join u in _userManager.Users on e.UserId equals u.Id
+                                                   where e.ShopId == shopId && e.Type == EmployeeType.Orders
+                                                   select new EmployeeForViewDto()
+                                                   {
+                                                       Id = e.Id,
+                                                       ShopName = s.Name,
+                                                       ShopId = s.Id,
+                                                       FirstName = e.FirstName,
+                                                       LastName = e.LastName,
+                                                       Code = e.Code,
+                                                       Gender = e.Gender,
+                                                       Birthday = e.Birthday,
+                                                       Type = e.Type,
+                                                       Email = e.Email,
+                                                       JoinDate = e.JoinDate,
+                                                       Address = e.Address,
+                                                       IsActive = e.IsActive,
+                                                       Username = u.UserName
+                                                   };
+
+            return await query.FirstOrDefaultAsync();
         }
         #endregion
     }

@@ -18,5 +18,6 @@ export interface Order {
   discount: number | null
   promotionId: number | null
   orderDetailInputs: Cart[]
+  shopName: string | null
 }
 
