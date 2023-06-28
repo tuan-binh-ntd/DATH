@@ -4,12 +4,12 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CustomerService {
   baseUrl: string = environment.baseUrl + 'customers';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   get(id: number): Observable<any> {
     return this.http.get(this.baseUrl + '/' + id);
@@ -22,7 +22,11 @@ export class CustomerService {
     return this.http.post(this.baseUrl + '/' + id + '/addresses', payload);
   }
 
-getOrderHistory(id: string): Observable<any>{
+  getOrderHistory(id: string): Observable<any> {
     return this.http.get(this.baseUrl + '/' + id + '/orders');
+  }
+
+  customerReceivedOrder(id: number, orderId: number): Observable<any> {
+    return this.http.patch(this.baseUrl + '/' + id + '/orders' + orderId, null);
   }
 }

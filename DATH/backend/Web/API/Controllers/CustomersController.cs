@@ -69,7 +69,7 @@ namespace API.Controllers
             return CustomResult(res, HttpStatusCode.OK);
         }
 
-        [HttpPost("{id}/orders/{orderId}")]
+        [HttpPatch("{id}/orders/{orderId}")]
         public async Task<IActionResult> UpdateOrder(long id, long orderId)
         {
             OrderForViewDto? res = await _orderAppService.CustomerRecievedOrder(orderId);

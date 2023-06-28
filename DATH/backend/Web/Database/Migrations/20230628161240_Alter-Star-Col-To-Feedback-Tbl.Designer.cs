@@ -4,6 +4,7 @@ using Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Database.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230628161240_Alter-Star-Col-To-Feedback-Tbl")]
+    partial class AlterStarColToFeedbackTbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -350,8 +353,8 @@ namespace Database.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Star")
-                        .HasPrecision(19, 5)
-                        .HasColumnType("decimal(19,5)");
+                        .HasPrecision(5, 5)
+                        .HasColumnType("decimal(5,5)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
