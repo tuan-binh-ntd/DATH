@@ -35,6 +35,14 @@ export class InstallmentListComponent extends ListBaseComponent {
       sortOrder: null,
       sortDirections: ['ascend', 'descend', null],
       class: 'text-left',
+    },
+    {
+      name: 'Interest',
+      width: '15%',
+      sortKey: 'interest',
+      sortOrder: null,
+      sortDirections: ['ascend', 'descend', null],
+      class: 'text-left',
     }
   ];
 

@@ -1,6 +1,7 @@
 ﻿using Bussiness.Dto;
 using Bussiness.Interface.InstallmentInterface;
 using Bussiness.Services.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -17,6 +18,7 @@ namespace API.Controllers
             _installmentAppService = installmentAppService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] PaginationInput input)
         {

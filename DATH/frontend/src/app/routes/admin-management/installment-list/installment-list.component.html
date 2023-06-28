@@ -59,6 +59,7 @@
         <tr (click)="goToDetail(data)">
           <td>{{ data.term == 1 ? data.term + ' month' : data.term + ' months'}}</td>
           <td>{{ data.balance }} %</td>
+          <td>{{ data.interest }} %</td>
         </tr>
       </ng-container>
     </tbody>

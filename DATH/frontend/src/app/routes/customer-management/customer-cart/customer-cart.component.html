@@ -22,6 +22,7 @@
                   <span *ngIf="obj.key.toString() != 'id'" class="d-flex  text-truncate">{{ obj.key.toString() | titlecase }}: &nbsp; <p class="mb-0">{{ obj.value }}</p></span>
                 </div>
               </ng-container>
+              <span>Installment: {{item.installment?.term}} months</span>
               </nz-list-item-meta-description>
           </nz-list-item-meta>
         </div>
