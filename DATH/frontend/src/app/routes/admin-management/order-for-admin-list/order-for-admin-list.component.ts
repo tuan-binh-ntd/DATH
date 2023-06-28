@@ -7,7 +7,7 @@ import { ShopService } from 'src/app/services/shop.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
 import { ListBaseComponent } from '../../components/list-base/list-base.component';
 import { PresenceService } from 'src/app/services/presence.service';
-import { defaultIfEmpty, map } from 'rxjs';
+import { defaultIfEmpty, map, skip } from 'rxjs';
 
 @Component({
   selector: 'app-order-for-admin-list',
@@ -83,33 +83,33 @@ export class OrderForAdminListComponent extends ListBaseComponent {
   }
 
   override fetchData(): void {
-    //this.isLoadingTable = true;
+    this.isLoadingTable = true;
 
-    // const payload = {
-    //   pageNum: this.paginationParam.pageNum,
-    //   pageSize: this.paginationParam.pageSize,
-    // };
+    const payload = {
+      pageNum: this.paginationParam.pageNum,
+      pageSize: this.paginationParam.pageSize,
+    };
 
-    // this.presenceService.getOrderForAdmin(payload).then((res) => {
-    //   if (checkResponseStatus(res)) {
-    //     this.listOfData = [...res.data.content];
-    //     this.transformResponse();
-    //     this.isLoadingTable = false;
-    //     this.paginationParam.totalCount = res.data.totalCount;
-    //   }
-    // });
+    this.presenceService.getOrderForAdmin(payload).then((res) => {
+      if (checkResponseStatus(res)) {
+        this.listOfData = [...res.data.content];
+        this.transformResponse();
+        this.isLoadingTable = false;
+        this.paginationParam.totalCount = res.data.totalCount;
+      }
+    });
 
-    setTimeout(() => {
-      this.presenceService.orders.subscribe((orders) => {
-        if (orders.content.length > 0) {
-          this.isLoadingTable = true;
-          this.listOfData = [...orders.content];
-          this.transformResponse();
-          this.isLoadingTable = false;
-          this.paginationParam.totalCount = orders.totalCount;
-        }
-      });
-    }, 500);
+    // setTimeout(() => {
+    //   this.presenceService.orders.subscribe((orders) => {
+    //     if (orders.content.length > 0) {
+    //       this.isLoadingTable = true;
+    //       this.listOfData = [...orders.content];
+    //       this.transformResponse();
+    //       this.isLoadingTable = false;
+    //       this.paginationParam.totalCount = orders.totalCount;
+    //     }
+    //   });
+    // }, 500);
   }
 
   override onUpdateItem(data: any) {
