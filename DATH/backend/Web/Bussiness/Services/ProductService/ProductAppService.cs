@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Bussiness.Dto;
 using Bussiness.Interface.Core;
+using Bussiness.Interface.InstallmentInterface.Dto;
 using Bussiness.Interface.ProductInterface;
 using Bussiness.Repository;
 using Bussiness.Services.Core;
@@ -21,15 +22,21 @@ namespace Bussiness.Services.ProductService
         private readonly DataContext _dataContext;
         private readonly IDapper _dapper;
         private readonly IRepository<SpecificationCategory> _specificationCategoryRepo;
+        private readonly IRepository<OrderDetail, long> _orderDetailRepo;
+        private readonly IRepository<InstallmentSchedule, long> _installmentScheRepo;
+        private readonly IRepository<Order, long> _orderRepo;
 
         public ProductAppService(
-            IRepository<Product, long> productRepo, 
-            IPhotoService photoService, 
-            IRepository<Specification, long> specificationRepo, 
-            DataContext dataContext, 
-            IDapper dapper, 
+            IRepository<Product, long> productRepo,
+            IPhotoService photoService,
+            IRepository<Specification, long> specificationRepo,
+            DataContext dataContext,
+            IDapper dapper,
             IRepository<SpecificationCategory> specificationCategoryRepo,
-            IMapper mapper
+            IMapper mapper,
+            IRepository<OrderDetail, long> orderDetailRepo,
+            IRepository<InstallmentSchedule, long> installmentScheRepo,
+            IRepository<Order, long> orderRepo
             )
         {
             _productRepo = productRepo;
@@ -38,6 +45,9 @@ namespace Bussiness.Services.ProductService
             _dataContext = dataContext;
             _dapper = dapper;
             _specificationCategoryRepo = specificationCategoryRepo;
+            _orderDetailRepo = orderDetailRepo;
+            _installmentScheRepo = installmentScheRepo;
+            _orderRepo = orderRepo;
             ObjectMapper = mapper;
         }
 
@@ -78,7 +88,7 @@ namespace Bussiness.Services.ProductService
         #region CreateOrUpdate
         public async Task<ProductForViewDto?> CreateOrUpdate(long? id, ProductInput input)
         {
-            if(id == null)
+            if (id == null)
             {
                 Product product = new();
                 input.SpecificationId = $",{input.SpecificationId}";
@@ -149,43 +159,43 @@ namespace Bussiness.Services.ProductService
         public async Task<ProductForViewDto?> GetProductBySpecificationId(long id, long specificationId)
         {
             IQueryable<ProductForViewDto?> query = from p in _productRepo.GetAll().AsNoTracking()
-                                                  where p.Id == id && p.SpecificationId!.Contains(specificationId.ToString())
-                                                  select new ProductForViewDto()
-                                                  {
-                                                      Id = p.Id,
-                                                      Name = p.Name,
-                                                      Price = p.Price,
-                                                      Description = p.Description,
-                                                      ProductCategoryId = p.ProductCategoryId,
-                                                      SpecificationId = p.SpecificationId!.Substring(1),
-                                                  };
+                                                   where p.Id == id && p.SpecificationId!.Contains(specificationId.ToString())
+                                                   select new ProductForViewDto()
+                                                   {
+                                                       Id = p.Id,
+                                                       Name = p.Name,
+                                                       Price = p.Price,
+                                                       Description = p.Description,
+                                                       ProductCategoryId = p.ProductCategoryId,
+                                                       SpecificationId = p.SpecificationId!.Substring(1),
+                                                   };
             ProductForViewDto? data = await query.SingleOrDefaultAsync();
 
             if (data != null)
             {
                 // Get specification list for product
-                data.Specifications = await(from s in _specificationRepo.GetAll().AsNoTracking()
-                                            join sc in _specificationCategoryRepo.GetAll().AsNoTracking() on s.SpecificationCategoryId equals sc.Id
-                                            where s.Id == specificationId
-                                            select new SpecificationDto
-                                            {
-                                                SpecificationCategoryId = sc.Id,
-                                                SpecificationCategoryCode = sc.Code,
-                                                Id = s.Id,
-                                                Code = s.Code,
-                                                Value = s.Value
-                                            }).ToListAsync();
+                data.Specifications = await (from s in _specificationRepo.GetAll().AsNoTracking()
+                                             join sc in _specificationCategoryRepo.GetAll().AsNoTracking() on s.SpecificationCategoryId equals sc.Id
+                                             where s.Id == specificationId
+                                             select new SpecificationDto
+                                             {
+                                                 SpecificationCategoryId = sc.Id,
+                                                 SpecificationCategoryCode = sc.Code,
+                                                 Id = s.Id,
+                                                 Code = s.Code,
+                                                 Value = s.Value
+                                             }).ToListAsync();
 
 
                 // Get photo list for product
-                data.Photos = await(from p in _dataContext.Photo.AsNoTracking()
-                                    where p.ProductId == data.Id
-                                    select new PhotoDto
-                                    {
-                                        Id = p.Id,
-                                        Url = p.Url,
-                                        IsMain = p.IsMain,
-                                    }).ToListAsync();
+                data.Photos = await (from p in _dataContext.Photo.AsNoTracking()
+                                     where p.ProductId == data.Id
+                                     select new PhotoDto
+                                     {
+                                         Id = p.Id,
+                                         Url = p.Url,
+                                         IsMain = p.IsMain,
+                                     }).ToListAsync();
 
                 return data;
             }
@@ -323,6 +333,80 @@ namespace Bussiness.Services.ProductService
                                             IsMain = p.IsMain,
                                         }).ToListAsync();
             }
+        }
+
+        private async Task HandleProductList(ICollection<GetInstallmentProductForCustomerForView> list)
+        {
+            if (list != null)
+            {
+                foreach (GetInstallmentProductForCustomerForView product in list!)
+                {
+                    await HandleProduct(product);
+                }
+            }
+        }
+
+        private async Task HandleProduct(GetInstallmentProductForCustomerForView product)
+        {
+            if (product != null)
+            {
+                // Get specification list for product
+                List<string>? specifications = product.SpecificationId != null ? product.SpecificationId!.Split(",").ToList() : null;
+                if (specifications != null)
+                {
+                    product.Specifications = await (from s in _specificationRepo.GetAll().AsNoTracking()
+                                                    join sc in _specificationCategoryRepo.GetAll().AsNoTracking() on s.SpecificationCategoryId equals sc.Id
+                                                    where specifications.Contains(s.Id.ToString())
+                                                    select new SpecificationDto
+                                                    {
+                                                        SpecificationCategoryId = sc.Id,
+                                                        SpecificationCategoryCode = sc.Code,
+                                                        Id = s.Id,
+                                                        Code = s.Code,
+                                                        Value = s.Value
+                                                    }).ToListAsync();
+                }
+
+                // Get photo list for product
+                product.Photos = await (from p in _dataContext.Photo.AsNoTracking()
+                                        where p.ProductId == product.Id
+                                        select new PhotoDto
+                                        {
+                                            Id = p.Id,
+                                            Url = p.Url,
+                                            IsMain = p.IsMain,
+                                        }).ToListAsync();
+            }
+        }
+        #endregion
+
+        #region GetInstallmentProductForCustomer
+        public async Task<IEnumerable<GetInstallmentProductForCustomerForView>?> GetInstallmentProductForCustomer(long customerId)
+        {
+            IQueryable<GetInstallmentProductForCustomerForView> query = from p in _productRepo.GetAll().AsNoTracking()
+                                                                        join od in _orderDetailRepo.GetAll().AsNoTracking() on p.Id equals od.ProductId
+                                                                        join o in _orderRepo.GetAll().AsNoTracking() on od.OrderId equals o.Id
+                                                                        join ins in _installmentScheRepo.GetAll().AsNoTracking() on od.Id equals ins.OrderDetailId
+                                                                        where o.CreatorUserId == customerId
+                                                                        select new GetInstallmentProductForCustomerForView
+                                                                        {
+                                                                            Id = p.Id,
+                                                                            Name = p.Name,
+                                                                            Price = p.Price,
+                                                                            Description = p.Description,
+                                                                            SpecificationId = p.SpecificationId,
+                                                                            ProductCategoryId = p.ProductCategoryId,
+                                                                            OrderCode = o.Code
+                                                                        };
+
+            List<GetInstallmentProductForCustomerForView> products = await query.ToListAsync();
+
+            if (products != null)
+            {
+                await HandleProductList(products);
+                return products;
+            }
+            return null;
         }
         #endregion
     }

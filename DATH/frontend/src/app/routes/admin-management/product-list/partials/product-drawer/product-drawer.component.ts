@@ -150,7 +150,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
     this.drawerForm.get('specificationId')?.setValue(specificationId);
 
     // set action upload image
-    this.uploadUrl = `https://localhost:7114/api/products/${data.id}/photos/true&${this}`;
+    this.uploadUrl = `https://localhost:7114/api/products/${data.id}/photos/true`;
 
     // set file list
     if (data.photos !== undefined) {
@@ -271,11 +271,11 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
       }
 
       // Check require colorId when upload photo
-      let colorId = this.colorForm?.get('colorId').value;
-      if (colorId === undefined || colorId === null) {
-        this.message.warning('Select a color');
-        observer.complete();
-      }
+      // let colorId = this.colorForm?.get('colorId').value;
+      // if (colorId === undefined || colorId === null) {
+      //   this.message.warning('Select a color');
+      //   observer.complete();
+      // }
 
       observer.next(isJpgOrPng && isLt2M);
       observer.complete();
