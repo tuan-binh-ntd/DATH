@@ -200,7 +200,7 @@ namespace Database
                 .OnDelete(DeleteBehavior.Restrict);
 
             //Set decimal scale for Star col in Feedback tbl
-            modelBuilder.Entity<Feedback>().Property(i => i.Star).HasPrecision(1, 1);
+            modelBuilder.Entity<Feedback>().Property(i => i.Star).HasPrecision(19, 5);
 
             // One to Many Relationship (Product, Feedback)
             modelBuilder.Entity<Product>()

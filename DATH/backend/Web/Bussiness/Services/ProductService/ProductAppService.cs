@@ -25,6 +25,7 @@ namespace Bussiness.Services.ProductService
         private readonly IRepository<OrderDetail, long> _orderDetailRepo;
         private readonly IRepository<InstallmentSchedule, long> _installmentScheRepo;
         private readonly IRepository<Order, long> _orderRepo;
+        private readonly IRepository<Feedback, long> _feedBackRepo;
 
         public ProductAppService(
             IRepository<Product, long> productRepo,
@@ -36,7 +37,8 @@ namespace Bussiness.Services.ProductService
             IMapper mapper,
             IRepository<OrderDetail, long> orderDetailRepo,
             IRepository<InstallmentSchedule, long> installmentScheRepo,
-            IRepository<Order, long> orderRepo
+            IRepository<Order, long> orderRepo,
+            IRepository<Feedback, long> feedBackRepo
             )
         {
             _productRepo = productRepo;
@@ -48,6 +50,7 @@ namespace Bussiness.Services.ProductService
             _orderDetailRepo = orderDetailRepo;
             _installmentScheRepo = installmentScheRepo;
             _orderRepo = orderRepo;
+            _feedBackRepo = feedBackRepo;
             ObjectMapper = mapper;
         }
 
@@ -136,6 +139,7 @@ namespace Bussiness.Services.ProductService
         {
             IQueryable<ProductForViewDto> query = from p in _productRepo.GetAll().AsNoTracking()
                                                   where p.Id == id
+                                                  orderby p.Price descending
                                                   select new ProductForViewDto()
                                                   {
                                                       Id = p.Id,
@@ -160,6 +164,7 @@ namespace Bussiness.Services.ProductService
         {
             IQueryable<ProductForViewDto?> query = from p in _productRepo.GetAll().AsNoTracking()
                                                    where p.Id == id && p.SpecificationId!.Contains(specificationId.ToString())
+                                                   orderby p.Price descending
                                                    select new ProductForViewDto()
                                                    {
                                                        Id = p.Id,
@@ -332,6 +337,9 @@ namespace Bussiness.Services.ProductService
                                             Url = p.Url,
                                             IsMain = p.IsMain,
                                         }).ToListAsync();
+
+                // Calc star
+                product.Star = await _feedBackRepo.GetAll().AsNoTracking().Where(p => p.ProductId == product.Id).GroupBy(g => g.ProductId).Select(f => f.Average(g => g.Star)).FirstOrDefaultAsync();
             }
         }
 
@@ -376,6 +384,8 @@ namespace Bussiness.Services.ProductService
                                             Url = p.Url,
                                             IsMain = p.IsMain,
                                         }).ToListAsync();
+
+                product.Star = await _feedBackRepo.GetAll().AsNoTracking().GroupBy(g => new { g.ProductId, g.Star }).Select(f => f.Average(g => g.Star)).FirstOrDefaultAsync();
             }
         }
         #endregion

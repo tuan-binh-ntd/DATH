@@ -53,7 +53,7 @@ namespace Bussiness.Services.Core
             int totalRecodes = await db.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM (" + sql + ") AS CountTable", param);
 
             // paging with dynamic sql
-            var pagedSql = sql + " ORDER BY Id OFFSET (@PageNum - 1)*@PageSize ROWS FETCH NEXT @PageSize ROWS ONLY";
+            var pagedSql = sql + " ORDER BY Price desc OFFSET (@PageNum - 1)*@PageSize ROWS FETCH NEXT @PageSize ROWS ONLY";
 
             param.Add("PageNum", input.PageNum);
             param.Add("PageSize", input.PageSize);
