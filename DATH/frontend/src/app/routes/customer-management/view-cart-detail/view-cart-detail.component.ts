@@ -42,7 +42,7 @@ import { StoresWarehouseListComponent } from '../../admin-management/stores-ware
 export class ViewCartDetailComponent {
   @ViewChild('quantity') quantity!: ElementRef;
   cartObjects$ = this.cartQuery.selectAll();
-  deliveryCost: number = 0;
+  deliveryCost: number = 50000;
   subTotalCost: number = 0;
   discountPercent: number = 0;
   totalCost: number = 0;
@@ -196,6 +196,7 @@ export class ViewCartDetailComponent {
 
   deleteRecord(id: string) {
     this.cartService.delete(id);
+    this.checkIfHavePaymentMethod();
   }
 
   goToProduct(id: string) {

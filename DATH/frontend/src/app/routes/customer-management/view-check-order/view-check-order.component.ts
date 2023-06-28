@@ -19,7 +19,7 @@ export class ViewCheckOrderComponent {
     private router: Router,
     private cartService: CartService
   ) {}
-  data: Order;
+  data: any;
   orderStatus = OrderStatus;
 
   orderStatusArray: any[] = [
@@ -45,15 +45,12 @@ export class ViewCheckOrderComponent {
     this.orderService.getByCode(this.code).subscribe((res) => {
       if (checkResponseStatus(res)){
         this.data = res.data;
-        switch(this.data.status){
-          case OrderStatus.Pending: this.orderStatusStepIndex = 0; break;
-          case OrderStatus.Rejected: this.orderStatusStepIndex = 1; break;
-          case OrderStatus.Preparing: this.orderStatusStepIndex = 2; break;
-          case OrderStatus.Delivering: this.orderStatusStepIndex = 3; break;
-          case OrderStatus.Received: this.orderStatusStepIndex = 4; break;
-        }
       } 
     });
+  }
+
+  onClickReceived(){
+    
   }
 
   continue() {

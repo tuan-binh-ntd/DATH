@@ -74,7 +74,6 @@ export class ViewProductDetailComponent {
   cartObjects$ = this.cartQuery.selectAll();
   async ngOnInit() {
     await this.fetchInstallment();
-    await this.fetchPayments();
     this.route.paramMap
       .pipe(
         switchMap(async (params) => {
@@ -109,8 +108,9 @@ export class ViewProductDetailComponent {
       .then((res) => {
         if (checkResponseStatus(res)) {
           this.listPayment = res.data;
-          const paymentId = this.listPayment.find((item) => item)?.id;
+          const paymentId = this.listPayment[0]?.id;
           this.selectedPayment = paymentId;
+          this.onChangePayment(paymentId);
         }
       });
   }
@@ -205,6 +205,11 @@ export class ViewProductDetailComponent {
 
   setCurrentImage(url: string) {
     this.mainImgUrl = url;
+  }
+
+  async onOpenInstallmentModal(){
+    await this.fetchPayments();
+    this.isShowInstallmentModal = true;
   }
 
   onSaveInstallment(){

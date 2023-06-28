@@ -2,15 +2,34 @@
   <div nz-row nzGutter="32">
     <div nz-col nzSpan="12">
       <nz-card nzTitle="#{{ data?.code }}" class="card-content">
-        <nz-steps
-          [nzCurrent]="orderStatusStepIndex"
-          nzSize="small"
-          class="mb-3"
-        >
-          <nz-step nzIcon="solution" nzTitle="Pending"> </nz-step>
-          <nz-step nzIcon="close" nzTitle="Rejected" [nzStatus]="data?.status ==  orderStatus.Rejected ? 'error' : 'wait'"> </nz-step>
-          <nz-step nzIcon="shopping" nzTitle="Delivering"> </nz-step>
-          <nz-step nzTitle="Finished" nzIcon="check"></nz-step>
+        <nz-steps nzSize="small" class="mb-3">
+          <nz-step
+            nzIcon="solution"
+            nzTitle="Pending"
+            [nzStatus]="data?.status == orderStatus.Pending ? 'finish' : 'wait'"
+          >
+          </nz-step>
+          <nz-step
+            nzIcon="close"
+            nzTitle="Rejected"
+            [nzStatus]="data?.status == orderStatus.Rejected ? 'error' : 'wait'"
+          >
+          </nz-step>
+          <nz-step
+            nzIcon="shopping"
+            nzTitle="Delivering"
+            [nzStatus]="
+              data?.status == orderStatus.Delivering ? 'finish' : 'wait'
+            "
+          >
+          </nz-step>
+          <nz-step
+            nzTitle="Finished"
+            nzIcon="check"
+            [nzStatus]="
+              data?.status == orderStatus.Received ? 'finish' : 'wait'
+            "
+          ></nz-step>
         </nz-steps>
         <div class="mb-2" nz-row nzGutter="16">
           <label nz-col nzSpan="8">Customer name</label>
@@ -36,6 +55,12 @@
             data?.createDate | date : "dd/MM/yyyy"
           }}</span>
         </div>
+        <div class="mb-2" nz-row nzGutter="16" *ngIf="data?.estimateDate">
+          <label nz-col nzSpan="8">Estimate delivery</label>
+          <span nz-col nzSpan="16" class="font-weight-bold">{{
+            data?.estimateDate | date : "dd/MM/yyyy"
+          }}</span>
+        </div>
         <div class="mb-2" nz-row nzGutter="16">
           <label nz-col nzSpan="8">Status</label>
           <app-order-status
@@ -51,21 +76,79 @@
           }}</span>
         </div>
 
-        <button
-          nz-button
-          nzType="primary"
-          class="w-100 h-50px mt-3"
-          nzSize="large"
-          nzShape="round"
-          (click)="continue()"
-        >
-          Continue shopping
-        </button>
+          <button
+          *ngIf="data?.status !== orderStatus.Delivering"
+            nz-button
+            class="w-100 mt-3"
+            nzSize="large"
+            nzShape="round"
+            (click)="continue()"
+          >
+            Continue shopping
+          </button>
+
+        <div nz-row nzGutter="16" *ngIf="data?.status == orderStatus.Delivering">
+          <div nz-col nzSpan="12">
+            <button
+              nzType="primary"
+              nz-button
+              nzSize="large"
+              class="w-100 mt-3"
+              nzShape="round"
+              (click)="onClickReceived()"
+            >
+              Received order
+            </button>
+          </div>
+          <div nz-col nzSpan="12">
+            <button
+              nz-button
+              class="w-100 mt-3"
+              nzSize="large"
+              nzShape="round"
+              (click)="continue()"
+            >
+              Continue shopping
+            </button>
+          </div>
+        
+        </div>
       </nz-card>
     </div>
     <div nz-col nzSpan="12">
       <nz-card nzTitle="Your cart" class="card-content">
-        <app-customer-cart></app-customer-cart>
+        <nz-list>
+          <ng-container *ngFor="let item of data?.orderDetails">
+            <div nz-row nzGutter="8">
+              <div nz-col nzSpan="4">
+                <img
+                  width="80px"
+                  class="cart-img"
+                  alt="logo"
+                  [src]="item.photos[0]?.url"
+                />
+              </div>
+              <div nz-col nzSpan="20">
+                <nz-list-item-meta>
+                  <nz-list-item-meta-title>
+                    <div nz-row nzGutter="8">
+                      <span nz-col nzSpan="22" class="text-truncate">{{
+                        item.productName
+                      }}</span>
+                      <span nz-col nzSpan="2" class="float-right"
+                        >x{{ item.quantity | number }}</span
+                      >
+                    </div>
+                  </nz-list-item-meta-title>
+                  <nz-list-item-meta-description>
+                    <span>{{ item.price | number }}VNĐ</span>
+                  </nz-list-item-meta-description>
+                </nz-list-item-meta>
+              </div>
+            </div>
+            <nz-divider class="mb-0 mt-2"></nz-divider>
+          </ng-container>
+        </nz-list>
         <div class="align-child-space-between mb-2 mt-3">
           <label>Total</label>
           <h2 class="font-weight-bold">{{ data?.cost | number }}VNĐ</h2>

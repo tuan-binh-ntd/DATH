@@ -6,6 +6,8 @@ import { Observer } from 'rxjs';
 import { AccountService } from 'src/app/services/account.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
+import { Shop } from 'src/app/models/shop.model';
+import { ShopService } from 'src/app/services/shop.service';
 
 @Component({
   selector: 'app-employee-change-info',
@@ -20,6 +22,7 @@ export class EmployeeChangeInfoComponent {
   newPasswordVisible = false;
   confirmNewPasswordVisible = false;
   employee: Employee = JSON.parse(localStorage.getItem('user')!);
+  listShop: Shop[];
 
   infoObserver: Observer<any> = {
     next: (res) => {
@@ -49,13 +52,26 @@ export class EmployeeChangeInfoComponent {
     private fb: FormBuilder,
     private accountService: AccountService,
     private employeeService: EmployeeService,
+    private shopService: ShopService,
     private msg: NzMessageService,
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.initForm();
+    await this.fetchShop();
     this.infoForm.patchValue(this.employee);
     this.infoForm.get('gender')!.setValue(this.employee.gender?.toString());
+  }
+
+  async fetchShop() {
+    await this.shopService
+      .getAll()
+      .toPromise()
+      .then((res) => {
+        if (checkResponseStatus(res)) {
+          this.listShop = res.data;
+        }
+      });
   }
 
   initForm() {
@@ -68,6 +84,7 @@ export class EmployeeChangeInfoComponent {
       gender: [null, Validators.required],
       idNumber: [null, Validators.required],
       address: [null, Validators.required],
+      shopId: [null, Validators.required],
     });
 
     this.changePasswordForm = this.fb.group({

@@ -21,7 +21,7 @@
     </div>
     <div nz-col nzSpan="12">
       <h2 class="mb-0">{{ data?.name }}</h2>
-      <nz-rate [nzTooltips]="tooltips" [(ngModel)]="value"></nz-rate>
+      <nz-rate [nzTooltips]="tooltips" nzAllowHalf [(ngModel)]="value"></nz-rate>
       <nz-divider class="mt-2 mb-0"></nz-divider>
       <h2 class="mt-1">{{ data?.price | number }} VNĐ</h2>
       <ng-container *ngIf="listCapacity.length > 0">
@@ -68,7 +68,9 @@
         </dl>
       </ng-container>
       <a><i class="fa-solid fa-store mr-2 mb-2"></i>See available store</a>
-      <button
+      <div nz-row nzGutter="16">
+      <div nz-col nzSpan="12">
+        <button
         nz-button
         nzType="primary"
         class="w-100 h-50px mb-3"
@@ -78,18 +80,12 @@
       >
         Add to cart
       </button>
-      <br />
-      <div nz-row nzGutter="16">
-        <div nz-col nzSpan="12">
-          <button nz-button class="w-100 h-50px" nzSize="large" nzShape="round" (click)="onClickInstallment()">
-            Installment
-          </button>
-        </div>
-        <div nz-col nzSpan="12">
-          <button nz-button class="w-100 h-50px" nzSize="large" nzShape="round">
-            Trade in
-          </button>
-        </div>
+      </div>
+      <div nz-col nzSpan="12">
+        <button nz-button class="w-100 h-50px" nzSize="large" nzShape="round" (click)="onClickInstallment()">
+          Installment
+        </button>
+      </div>
       </div>
       <nz-card class="mt-3">
         <p>
@@ -115,6 +111,7 @@
   [nzContent]="modalContent"
   nzTitle="Choose your installment term"
   [nzWidth]="465"
+  (nzAfterOpen)="onOpenInstallmentModal()"
   (nzOnCancel)="isShowInstallmentModal = false"
   (nzOnOk)="onSaveInstallment()"
 >

@@ -148,7 +148,33 @@
                   </nz-form-control>
                 </nz-form-item>
               </div>
-              <div nz-col nzSpan="12" class="pr-1">
+
+                <div nz-col nzSpan="12">
+                    <nz-form-item>
+                        <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
+                          <span>Shop</span>
+                        </nz-form-label>
+                        <nz-form-control [nzSpan]="24" >
+                            <nz-select
+                            formControlName="shopId"
+                            class="w-100"
+                            nzPlaceHolder="Shop"
+                          >
+                            <nz-option
+                              *ngFor="let item of listShop"
+                              [nzValue]="item.id"
+                              [nzLabel]="item.name"
+                            ></nz-option>
+                          </nz-select>
+                        </nz-form-control>
+                      </nz-form-item>
+                </div>
+
+          
+            </div>
+
+            <div nz-row nzGutter="16">
+              <div nz-col nzSpan="24" class="pr-1">
                 <nz-form-item>
                   <nz-form-label [nzSpan]="24" nzRequired nzFor="address">
                     <span>Address</span>
