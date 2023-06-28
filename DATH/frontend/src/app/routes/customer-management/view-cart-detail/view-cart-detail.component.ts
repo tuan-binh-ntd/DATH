@@ -262,7 +262,7 @@ export class ViewCartDetailComponent {
             specificationId: item.specifications.map((item) => item.id).join(','),
           };
         });
-       
+
         const payload: Order = {
           ...this.infoForm.value,
           cost: this.totalCost,
@@ -270,7 +270,21 @@ export class ViewCartDetailComponent {
           createDate: Date.now(),
           orderDetailInputs: this.listCart,
         };
-        this.orderService.create(payload).subscribe((res) => {
+
+        // this.orderService.create(payload).subscribe((res) => {
+        //   if (checkResponseStatus(res)) {
+        //     if(this.customer.id && !this.customer.address) this.addAddressIfNotExisted();
+        //     const id = this.msg.loading('Action in progress..', { nzDuration: 0 }).messageId;
+        //     setTimeout(() => {
+        //       this.msg.remove(id);
+        //       this.msg.success("Created order");
+        //       this.router.navigateByUrl(`order/${res.data.code}`);
+        //     }, 2000);
+        //     // this.cartService.removeAll();
+        //   }
+        // });
+
+        this.orderService.createOrder(payload).then((res) => {
           if (checkResponseStatus(res)) {
             if(this.customer.id && !this.customer.address) this.addAddressIfNotExisted();
             const id = this.msg.loading('Action in progress..', { nzDuration: 0 }).messageId;
@@ -281,7 +295,7 @@ export class ViewCartDetailComponent {
             }, 1500);
             // this.cartService.removeAll();
           }
-        });
+        })
       }
       else{
         this.msg.error("Your cart is empty");

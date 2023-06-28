@@ -8,5 +8,6 @@ namespace Bussiness.Interface.EmployeeInterface
         Task<object> GetEmployees(PaginationInput input);
         Task<EmployeeForViewDto?> Update(long id, EmployeeInput input);
         Task Delete(long id);
+        Task<EmployeeForViewDto?> GetOrderEmployeeByShop(int shopId);
     }
 }

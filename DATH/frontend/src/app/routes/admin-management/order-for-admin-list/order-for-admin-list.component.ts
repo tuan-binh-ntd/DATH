@@ -1,25 +1,13 @@
-import {
-  CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem,
-} from '@angular/cdk/drag-drop';
-import { Component, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { Account } from 'src/app/models/account.model';
 import { Employee } from 'src/app/models/employee.model';
-import { Order } from 'src/app/models/order-model';
-import { PaginationInput } from 'src/app/models/pagination-input';
-import { Shipping } from 'src/app/models/shipping.model';
 import { Shop } from 'src/app/models/shop.model';
-import { EmployeeService } from 'src/app/services/employee.service';
-import { OrderService } from 'src/app/services/order.service';
-import { ShippingService } from 'src/app/services/shipping.service';
 import { ShopService } from 'src/app/services/shop.service';
-import { checkResponseStatus, OrderStatus } from 'src/app/shared/helper';
+import { checkResponseStatus } from 'src/app/shared/helper';
 import { ListBaseComponent } from '../../components/list-base/list-base.component';
-import { OrderForShopListComponent } from '../order-for-shop-list/order-for-shop-list.component';
+import { PresenceService } from 'src/app/services/presence.service';
+import { defaultIfEmpty, map } from 'rxjs';
 
 @Component({
   selector: 'app-order-for-admin-list',
@@ -33,7 +21,7 @@ export class OrderForAdminListComponent extends ListBaseComponent {
   constructor(
     protected override msg: NzMessageService,
     private shopService: ShopService,
-    private employeeService: EmployeeService
+    public presenceService: PresenceService
   ) {
     super(msg);
   }
@@ -95,34 +83,49 @@ export class OrderForAdminListComponent extends ListBaseComponent {
   }
 
   override fetchData(): void {
-    this.isLoadingTable = true;
-    this.shopService
-      .getOrderForAdmin(
-        this.paginationParam.pageNum,
-        this.paginationParam.pageSize
-      )
-      .subscribe((res) => {
-        if (checkResponseStatus(res)) {
-          this.listOfData = [...res.data.content];
+    //this.isLoadingTable = true;
+
+    // const payload = {
+    //   pageNum: this.paginationParam.pageNum,
+    //   pageSize: this.paginationParam.pageSize,
+    // };
+
+    // this.presenceService.getOrderForAdmin(payload).then((res) => {
+    //   if (checkResponseStatus(res)) {
+    //     this.listOfData = [...res.data.content];
+    //     this.transformResponse();
+    //     this.isLoadingTable = false;
+    //     this.paginationParam.totalCount = res.data.totalCount;
+    //   }
+    // });
+
+    setTimeout(() => {
+      this.presenceService.orders.subscribe((orders) => {
+        if (orders.content.length > 0) {
+          this.isLoadingTable = true;
+          this.listOfData = [...orders.content];
           this.transformResponse();
           this.isLoadingTable = false;
-          this.paginationParam.totalCount = res.data.totalCount;
+          this.paginationParam.totalCount = orders.totalCount;
         }
       });
+    }, 500);
   }
 
-  override onUpdateItem(data: any){
-    const index = this.listOfData.findIndex(item => item.id === data.id);
-    this.listOfData = [...this.listOfData.slice(0, index), data, ...this.listOfData.slice(index + 1)];
+  override onUpdateItem(data: any) {
+    const index = this.listOfData.findIndex((item) => item.id === data.id);
+    this.listOfData = [
+      ...this.listOfData.slice(0, index),
+      data,
+      ...this.listOfData.slice(index + 1),
+    ];
     this.listOfData = [...this.listOfData];
     this.transformResponse();
-   }
+  }
 
   override transformResponse(): void {
     this.listOfData.map((item) => {
-      item.shopName = this.listShop.find(
-        (ele) => ele.id === item.shopId
-      )?.name;
+      item.shopName = this.listShop.find((ele) => ele.id === item.shopId)?.name;
     });
   }
 }

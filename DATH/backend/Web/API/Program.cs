@@ -264,7 +264,7 @@ app.MapHub<ChatHub>("hubs/chat");
 
 app.MapHub<NotifyHub>("hubs/notify");
 
-app.MapHub<NotifyHub>("hubs/order");
+app.MapHub<OrderHub>("hubs/order");
 
 app.MapHub<PresenceHub>("hubs/presence");
 

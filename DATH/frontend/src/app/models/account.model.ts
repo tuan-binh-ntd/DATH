@@ -1,5 +1,5 @@
 import { Gender } from "../enums/gender.enum";
-import { EmployeeType } from "../shared/helper";
+import { EmployeeType, UserType } from "../shared/helper";
 
 export interface Account {
   username: string | null,
@@ -17,6 +17,6 @@ export interface Account {
   code: string | null,
   joinDate: Date | null,
   employeeType: EmployeeType | null,
-  type: number | null,
+  type: UserType | null,
   shopId: number | null,
 }

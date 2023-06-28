@@ -10,7 +10,7 @@ import { UserType } from 'src/app/shared/helper';
 export class AdminLayoutComponent implements OnInit {
   isCollapsed = false;
   person: Account = JSON.parse(localStorage.getItem('user')!);
-  isAdmin: boolean = this.person?.type === UserType.Admin ? true : false;
+  isAdmin: boolean = this.person?.type === UserType.Admin || this.person?.type === UserType.OrderTransfer ? true : false;
 
   constructor() { }
 
@@ -21,4 +21,8 @@ export class AdminLayoutComponent implements OnInit {
     this.isCollapsed = ev;
   }
 
+  // get EventType for template
+  public get UserType() {
+    return this.UserType;
+  }
 }

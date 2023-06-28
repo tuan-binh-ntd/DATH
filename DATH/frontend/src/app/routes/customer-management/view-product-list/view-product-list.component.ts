@@ -34,7 +34,7 @@ export class ViewProductListComponent {
   @ViewChild("search") search!: ElementRef;
   paginationParam: PaginationInput = {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 12,
     totalPage: 0,
     totalCount: 0,
   };
@@ -80,7 +80,7 @@ export class ViewProductListComponent {
       )
       .subscribe();
 
-  
+
   }
 
   resetList(){
@@ -106,7 +106,7 @@ export class ViewProductListComponent {
             this.listTextSearch,
           )
         }
-          
+
         )
       )
       .subscribe((res) => {

@@ -1,10 +1,16 @@
-﻿using Bussiness.Interface.OrderInterface;
+﻿using Bussiness.Dto;
+using Bussiness.Interface.EmployeeInterface;
+using Bussiness.Interface.NotificationInterface;
+using Bussiness.Interface.NotificationInterface.Dto;
+using Bussiness.Interface.OrderInterface;
 using Bussiness.Interface.OrderInterface.Dto;
 using Bussiness.Services.Core;
+using Database;
 using Entities;
-using Entities.Enum.Order;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using Org.BouncyCastle.Cms;
+using System.Net;
 
 namespace API.SignalRHub
 {
@@ -12,62 +18,80 @@ namespace API.SignalRHub
     {
         private readonly IOrderAppService _orderAppService;
         private readonly UserManager<AppUser> _userManager;
+        private readonly INotificationAppService _notificationAppService;
+        private readonly IHubContext<NotifyHub> _notifyHub;
+        private readonly IEmployeeAppService _employeeAppService;
+        private readonly IHubContext<PresenceHub> _presenceHub;
 
         public OrderHub(
             IOrderAppService orderAppService,
-            UserManager<AppUser> userManager
+            UserManager<AppUser> userManager,
+            INotificationAppService notificationAppService,
+            IHubContext<NotifyHub> notifyHub,
+            IEmployeeAppService employeeAppService,
+            IHubContext<PresenceHub> presenceHub
+
             )
         {
             _orderAppService = orderAppService;
             _userManager = userManager;
+            _notificationAppService = notificationAppService;
+            _notifyHub = notifyHub;
+            _employeeAppService = employeeAppService;
+            _presenceHub = presenceHub;
         }
 
-        public async Task CreateOrder(OrderInput input)
+        public async Task<object> CreateOrder(OrderInput input)
         {
             OrderForViewDto? res = await _orderAppService.CreateOrder(input);
 
             AppUser? admin = await _userManager.FindByNameAsync("admin");
 
-            await Clients.User(admin!.Id.ToString()).SendAsync("NewOrder", res);
-        }
+            await _presenceHub.Clients.User(admin!.Id.ToString()).SendAsync("NewOrder", res);
 
-        public async Task GetOrderForAdmin()
-        {
-            HttpContext httpContext = Context.GetHttpContext()!;
-            var pageNum = httpContext.Request.Query["PageNum"].ToString();
-            var pageSize = httpContext.Request.Query["PageSize"].ToString();
-            PaginationInput input = new()
+            NotificationInput notificationInput = new()
             {
-                PageNum = int.Parse(pageNum),
-                PageSize = int.Parse(pageSize)
+                Content = $"New Order: {res.Code}",
+                IsRead = false,
+                UserId = admin!.Id,
             };
 
-            object res = await _orderAppService.GetOrdersForAdmin(input);
+            await CreateNotification(notificationInput);
 
-            await Clients.Caller.SendAsync("GetOrderForAdmin", res);
-        }
-
-        public async Task GetOrderForShop()
-        {
-            HttpContext httpContext = Context.GetHttpContext()!;
-            var pageNum = httpContext.Request.Query["PageNum"].ToString();
-            var pageSize = httpContext.Request.Query["PageSize"].ToString();
-            var shopId = httpContext.Request.Query["ShopId"].ToString();
-            var status = httpContext.Request.Query["Status"].ToString();
-            PaginationInput input = new()
-            {
-                PageNum = int.Parse(pageNum),
-                PageSize = int.Parse(pageSize)
-            };
-
-            object res = await _orderAppService.GetOrdersForShop(int.Parse(shopId), input);
-
-            await Clients.Caller.SendAsync("GetOrderForShop", res);
+            return new { StatusCode = HttpStatusCode.OK, Data = res };
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await base.OnDisconnectedAsync(exception);
+        }
+
+        public async Task CreateNotification(NotificationInput input)
+        {
+            NotificationForViewDto res = await _notificationAppService.CreateOrUpdate(null, input);
+
+            await _notifyHub.Clients.User(input.UserId.ToString()).SendAsync("NewNotification", res);
+        }
+
+        public async Task ForwardOrderForStores(long id, UpdateOrderInput input)
+        {
+            OrderForViewDto? res = await _orderAppService.ForwardToTheStore(id, input);
+
+            EmployeeForViewDto? orderEmployee = await _employeeAppService.GetOrderEmployeeByShop((int)input.ShopId!);
+
+            if (orderEmployee is null)
+            {
+                throw new HubException($"{orderEmployee!.ShopName} not have order employee. Please add order employee for the shop");
+            }
+
+            NotificationInput notificationInput = new()
+            {
+                Content = $"New Order: {res.Code} for shop",
+                IsRead = false,
+                UserId = orderEmployee.Id,
+            };
+
+            await CreateNotification(notificationInput);
         }
     }
 }

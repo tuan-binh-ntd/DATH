@@ -1,7 +1,9 @@
+import { NotificationService } from './services/notification.service';
 import { Component, HostListener, ViewEncapsulation } from '@angular/core';
 import { ThemeService, ThemeType } from './services/theme.service';
 import { Account } from './models/account.model';
 import { PresenceService } from './services/presence.service';
+import { OrderService } from './services/order.service';
 
 @Component({
   selector: 'app-root',
@@ -14,8 +16,9 @@ export class AppComponent {
 
   constructor(
     private themeService: ThemeService,
-    private presenceService: PresenceService
-
+    private presenceService: PresenceService,
+    private orderService: OrderService,
+    private notificationService: NotificationService,
     ){}
   title = 'frontend';
   ngOnInit(){
@@ -37,8 +40,11 @@ export class AppComponent {
   setCurrentUser() {
     const user: Account = JSON.parse(localStorage.getItem('user'));
     if(user) {
+      // connect signalr
       this.presenceService.createHubConnection(user);
+      this.notificationService.createHubConnection(user);
     }
+    this.orderService.createHubConnection(user);
   }
 }
 

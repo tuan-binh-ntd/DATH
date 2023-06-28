@@ -1,4 +1,9 @@
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { PresenceService } from './../../../services/presence.service';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -19,7 +24,7 @@ import { OrderForAdminListComponent } from '../order-for-admin-list/order-for-ad
   templateUrl: './order-for-shop-list.component.html',
   styleUrls: ['./order-for-shop-list.component.less'],
 })
-export class OrderForShopListComponent{
+export class OrderForShopListComponent {
   @ViewChild('modalContent') modalContent: any;
   deliveryForm!: FormGroup;
   disabledDate = (value: Date): boolean => {
@@ -49,56 +54,56 @@ export class OrderForShopListComponent{
     protected msg: NzMessageService,
     protected modalService: NzModalService,
     protected fb: FormBuilder,
-    protected shippingService: ShippingService
+    protected shippingService: ShippingService,
+    private presenceService: PresenceService
   ) {}
   ngOnInit(): void {
     this.fetchShipping();
     this.fetchData();
     this.initForm();
   }
-  initForm(){
+  initForm() {
     this.deliveryForm = this.fb.group({
       shippingId: [null, Validators.required],
       estimateDate: [null, Validators.required],
-    })
-
+    });
   }
 
   fetchShipping(): void {
-    this.shippingService.getAll().subscribe(res => {
-      if(checkResponseStatus(res)){
+    this.shippingService.getAll().subscribe((res) => {
+      if (checkResponseStatus(res)) {
         this.listShipping = res.data;
       }
-    })
+    });
   }
   fetchData(): void {
-    this.shopService
-      .getOrderForStores(
-        this.person.shopId ?? null,
-        this.paginationParam.pageNum,
-        this.paginationParam.pageSize
-      )
-      .subscribe((res) => {
-        if (checkResponseStatus(res)) {
-          this.orders = [...res.data.content];
-          this.listOrderPending = this.orders.filter(
-            (item) => item.status === OrderStatus.Pending
-          );
-          this.listOrderRejected = this.orders.filter(
-            (item) => item.status === OrderStatus.Rejected
-          );
-          this.listOrderPreparing = this.orders.filter(
-            (item) => item.status === OrderStatus.Preparing
-          );
-          this.listOrderDelivering = this.orders.filter(
-            (item) => item.status === OrderStatus.Delivering
-          );
-          this.listOrderReceived = this.orders.filter(
-            (item) => item.status === OrderStatus.Received
-          );
-          this.paginationParam.totalCount = res.data.totalCount;
-        }
-      });
+    const payload = {
+      shopId: this.person.shopId ?? null,
+      pageNum: this.paginationParam.pageNum,
+      pageSize: this.paginationParam.pageSize,
+    };
+
+    this.presenceService.getOrderForShop(payload).then((res) => {
+      if (checkResponseStatus(res)) {
+        this.orders = [...res.data.content];
+        this.listOrderPending = this.orders.filter(
+          (item) => item.status === OrderStatus.Pending
+        );
+        this.listOrderRejected = this.orders.filter(
+          (item) => item.status === OrderStatus.Rejected
+        );
+        this.listOrderPreparing = this.orders.filter(
+          (item) => item.status === OrderStatus.Preparing
+        );
+        this.listOrderDelivering = this.orders.filter(
+          (item) => item.status === OrderStatus.Delivering
+        );
+        this.listOrderReceived = this.orders.filter(
+          (item) => item.status === OrderStatus.Received
+        );
+        this.paginationParam.totalCount = res.data.totalCount;
+      }
+    });
   }
 
   pageNumChanged(event: any): void {
@@ -113,61 +118,59 @@ export class OrderForShopListComponent{
 
   drop(event: CdkDragDrop<Order[]>, status: OrderStatus) {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    }
-    else{
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else {
       let payload;
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
-        event.currentIndex  
+        event.currentIndex
       );
-      if(event.container.id === 'delivering'){
+      if (event.container.id === 'delivering') {
         this.modalService.create({
-          nzTitle:'Update',
+          nzTitle: 'Update',
           nzCentered: true,
           nzOkText: 'Save',
           nzCancelText: 'Cancel',
           nzContent: this.modalContent,
-          nzOnOk:  () => {
+          nzOnOk: () => {
             for (const i in this.deliveryForm.controls) {
               this.deliveryForm.controls[i].markAsDirty();
               this.deliveryForm.controls[i].updateValueAndValidity();
             }
-            if(this.deliveryForm.valid){
-              payload = {...this.deliveryForm.getRawValue(), status: status};
+            if (this.deliveryForm.valid) {
+              payload = { ...this.deliveryForm.getRawValue(), status: status };
               this.patchOrder(event, payload);
             }
-           
           },
           nzOnCancel: () => {
             transferArrayItem(
               event.container.data,
               event.previousContainer.data,
               event.currentIndex,
-              event.previousIndex  
+              event.previousIndex
             );
             this.deliveryForm.reset();
-          }
-        })
+          },
+        });
+      } else {
+        this.patchOrder(event, { status: status });
       }
-      else{
-        this.patchOrder(event, {status: status});
-       
-      }
-     
     }
   }
 
-  patchOrder(event: CdkDragDrop<Order[]>, payload: any){
+  patchOrder(event: CdkDragDrop<Order[]>, payload: any) {
     this.orderService
-    .patch(event.container.data[event.currentIndex].id, payload)
-    .subscribe((res) => {
-      if (checkResponseStatus(res)) {
-        this.msg.success('Change status successfully');
-      }
-    });
+      .patch(event.container.data[event.currentIndex].id, payload)
+      .subscribe((res) => {
+        if (checkResponseStatus(res)) {
+          this.msg.success('Change status successfully');
+        }
+      });
   }
- 
 }

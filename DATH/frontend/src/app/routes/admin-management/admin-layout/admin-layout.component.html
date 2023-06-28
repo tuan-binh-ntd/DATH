@@ -220,3 +220,33 @@
 </ng-template>
 
 <!-- End Employee View -->
+
+<!-- Start Employee View -->
+<ng-template #orderTransferView>
+  <nz-sider
+    nzWidth="256px"
+    id="sider"
+    nzCollapsible
+    [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null"
+  >
+    <ul nz-menu nzMode="inline">
+
+
+      <li nz-submenu [nzTitle]="order">
+        <ng-template #order>
+          <i class="fa-solid fa-file-invoice mr-2 text-muted"></i>
+          <span>Order Management</span>
+        </ng-template>
+        <ul>
+          <li nz-menu-item [routerLink]="'order'" [nzMatchRouter]="true">
+            <span><i class="fa-solid fa-shop mr-2 text-muted"></i></span>
+            <span>Order</span>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nz-sider>
+</ng-template>
+
+<!-- End Employee View -->

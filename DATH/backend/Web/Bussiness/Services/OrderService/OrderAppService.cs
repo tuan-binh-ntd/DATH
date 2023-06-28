@@ -76,9 +76,12 @@ namespace Bussiness.Services.OrderService
 
             await _orderDetailRepo.AddRangeAsync(orderDetails);
 
-
-            OrderForViewDto res = new();
+            OrderForViewDto res = new()
+            { 
+                CreateDate = (DateTime)order.CreationTime!,
+            };
             ObjectMapper!.Map(order, res);
+            res.Payment = await _paymentRepo.GetAll().AsNoTracking().Where(p => p.Id == order.PaymentId).Select(p => p.Name).FirstOrDefaultAsync();
             res.OrderDetails = new List<OrderDetailForViewDto>();
 
             foreach (OrderDetail item in orderDetails)
@@ -266,7 +269,7 @@ namespace Bussiness.Services.OrderService
             {
                 IQueryable<OrderForViewDto> orders = from o in _orderRepo.GetAll().AsNoTracking()
                                                      join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
-                                                     //where o.ShopId == null
+                                                     where o.ShopId == null
                                                      orderby o.CreationTime descending
                                                      select new OrderForViewDto
                                                      {
@@ -429,6 +432,42 @@ namespace Bussiness.Services.OrderService
         }
         #endregion
 
+        #region CreateInstallment
+        private async Task CreateInstallment(ICollection<OrderDetail> orderDetail, ICollection<OrderDetailInput> orderDetailInputs)
+        {
+            foreach (OrderDetail item in orderDetail)
+            {
+                if (item.InstallmentId is not null)
+                {
+                    ICollection<InstallmentSchedule> installmentSchedules = new List<InstallmentSchedule>();
+
+                    Installment? installment = await _installmentRepo.GetAsync((int)item.InstallmentId);
+
+                    decimal moneyPerTerm = ((item.Cost * installment!.Balance * installment!.Interest) / 100) / installment!.Term;
+
+                    for (int i = 1; i <= installment!.Term; i++)
+                    {
+
+                        InstallmentSchedule installmentSchedule = new()
+                        {
+                            Term = i,
+                            StartDate = DateTime.Now.AddMonths(i),
+                            EndDate = DateTime.Now.AddMonths(i + 1),
+                            Status = InstallmentStatus.Unpaid,
+                            Money = moneyPerTerm,
+                            OrderDetailId = item.Id,
+                            PaymentId = item.PaymentId
+                        };
+
+                        installmentSchedules.Add(installmentSchedule);
+                    }
+
+                    await _installmentSchRepo.AddRangeAsync(installmentSchedules);
+                }
+            }
+        }
+        #endregion
+
         #endregion
 
         #region GetOrdersForCustomer
@@ -463,40 +502,5 @@ namespace Bussiness.Services.OrderService
         }
         #endregion
 
-        #region CreateInstallment
-        public async Task CreateInstallment(ICollection<OrderDetail> orderDetail, ICollection<OrderDetailInput> orderDetailInputs)
-        {
-            foreach (OrderDetail item in orderDetail)
-            {
-                if (item.InstallmentId is not null)
-                {
-                    ICollection<InstallmentSchedule> installmentSchedules = new List<InstallmentSchedule>();
-
-                    Installment? installment = await _installmentRepo.GetAsync((int)item.InstallmentId);
-
-                    decimal moneyPerTerm = ((item.Cost * installment!.Balance) / 100) / installment!.Term;
-
-                    for (int i = 1; i <= installment!.Term; i++)
-                    {
-
-                        InstallmentSchedule installmentSchedule = new()
-                        {
-                            Term = i,
-                            StartDate = DateTime.Now.AddMonths(i),
-                            EndDate = DateTime.Now.AddMonths(i + 1),
-                            Status = InstallmentStatus.Unpaid,
-                            Money = moneyPerTerm,
-                            OrderDetailId = item.Id,
-                            PaymentId = item.PaymentId
-                        };
-
-                        installmentSchedules.Add(installmentSchedule);
-                    }
-
-                    await _installmentSchRepo.AddRangeAsync(installmentSchedules);
-                }
-            }
-        }
-        #endregion
     }
 }

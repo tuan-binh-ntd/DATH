@@ -18,5 +18,11 @@ export interface Order {
   discount: number | null
   promotionId: number | null
   orderDetailInputs: Cart[]
+  shopName: string | null
 }
 
+export interface OrderForView {
+  content: Order[],
+  totalCount: number,
+  totalPages: number
+}
