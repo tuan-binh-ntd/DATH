@@ -76,12 +76,12 @@ namespace Bussiness.Services.OrderService
 
             await _orderDetailRepo.AddRangeAsync(orderDetails);
 
-
             OrderForViewDto res = new()
             { 
-                CreateDate = (DateTime)order.CreationTime!
+                CreateDate = (DateTime)order.CreationTime!,
             };
             ObjectMapper!.Map(order, res);
+            res.Payment = await _paymentRepo.GetAll().AsNoTracking().Where(p => p.Id == order.PaymentId).Select(p => p.Name).FirstOrDefaultAsync();
             res.OrderDetails = new List<OrderDetailForViewDto>();
 
             foreach (OrderDetail item in orderDetails)
