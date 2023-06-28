@@ -46,6 +46,11 @@
                       >
                     </div>
                   </nz-list-item-meta-description>
+                  <nz-list-item-meta-description>
+                    <span *ngIf="item.installment"
+                      >Installment: {{ item.installment?.term }} months</span
+                    >
+                  </nz-list-item-meta-description>
                 </span>
                 <a (click)="goToProduct(item.id)">Edit</a>
               </td>
@@ -86,7 +91,6 @@
 
       <nz-card nzTitle="Information" class="mt-4">
         <form nz-form [formGroup]="infoForm">
-
           <div nz-row nzGutter="24">
             <div nz-col nzSpan="24" class="pr-1">
               <nz-form-item>
@@ -145,7 +149,7 @@
                 formControlName="formal"
                 (ngModelChange)="onChangeFormal($event)"
               >
-              <label nz-radio nzValue="delivery">Delivery</label>
+                <label nz-radio nzValue="delivery">Delivery</label>
                 <label nz-radio nzValue="store">At store</label>
               </nz-radio-group>
             </div>
@@ -180,7 +184,10 @@
                     nzErrorTip="Please input your id address!"
                   >
                     <input
-                      *ngIf="!customer?.address || customer?.address?.length == 0; else addressPick"
+                      *ngIf="
+                        !customer?.address || customer?.address?.length == 0;
+                        else addressPick
+                      "
                       nz-input
                       id="address"
                       formControlName="address"
@@ -189,19 +196,18 @@
                   </nz-form-control>
                   <ng-template #addressPick>
                     <nz-select
-                    formControlName="address"
-                    class="w-100"
-                    nzPlaceHolder="Address"
-                  >
-                    <nz-option
-                      *ngFor="let item of listAddress"
-                      [nzValue]="item"
-                      [nzLabel]="item"
-                    ></nz-option>
-                  </nz-select>
+                      formControlName="address"
+                      class="w-100"
+                      nzPlaceHolder="Address"
+                    >
+                      <nz-option
+                        *ngFor="let item of listAddress"
+                        [nzValue]="item"
+                        [nzLabel]="item"
+                      ></nz-option>
+                    </nz-select>
                   </ng-template>
                 </nz-form-item>
-
               </div>
             </div>
           </ng-template>
@@ -210,10 +216,8 @@
     </div>
     <div nz-col nzSpan="7">
       <nz-card nzTitle="Sumary" class="mb-4">
-          <nz-form-item>
-            <nz-form-control
-              [nzSpan]="24"
-            >
+        <nz-form-item>
+          <nz-form-control [nzSpan]="24">
             <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
               <input
                 nz-input
@@ -222,11 +226,19 @@
                 placeholder="Enter promotion code"
               />
               <ng-template #suffixButton>
-                <button nz-button [nzLoading]="isLoading" nzType="primary" nzSearch (click)="onApplyPromotion()">Apply</button>
+                <button
+                  nz-button
+                  [nzLoading]="isLoading"
+                  nzType="primary"
+                  nzSearch
+                  (click)="onApplyPromotion()"
+                >
+                  Apply
+                </button>
               </ng-template>
             </nz-input-group>
           </nz-form-control>
-          </nz-form-item>
+        </nz-form-item>
 
         <div class="align-child-space-between">
           <span
@@ -253,8 +265,8 @@
           <p>{{ totalCost | number }} VNĐ</p>
         </div>
       </nz-card>
-      <nz-card nzTitle="Payment" class="text-center">
-        <div  nz-row nzGutter="16" class="mb-2">
+      <nz-card nzTitle="Payment" class="text-center" *ngIf="!isShowPaymentMethod">
+        <div nz-row nzGutter="16" class="mb-2">
           <img
             [src]="item.url"
             *ngFor="let item of listPayment"
@@ -263,9 +275,10 @@
             height="50"
             [ngClass]="{ 'selected-payment': selectedPayment === item.id }"
             class="cursor-pointer"
-            nz-tooltip [nzTooltipTitle]="item.name"
+            nz-tooltip
+            [nzTooltipTitle]="item.name"
             (click)="onChangePayment(item.id)"
-          >
+          />
         </div>
         <!-- <br />
         <img

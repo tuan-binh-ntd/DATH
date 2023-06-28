@@ -13,6 +13,7 @@ import {
 } from 'rxjs';
 import { OrderStatus } from 'src/app/enums/order-status.enum';
 import { Customer } from 'src/app/models/customer.model';
+import { Installment } from 'src/app/models/installment.model';
 import { Order } from 'src/app/models/order-model';
 import { Payment } from 'src/app/models/payment.model';
 import { Product } from 'src/app/models/product.model';
@@ -90,7 +91,7 @@ export class ViewCartDetailComponent {
   listShop: Shop[] = [];
   listPayment: Payment[] = [];
   listAddress: string[] = [];
-
+  isShowPaymentMethod: boolean = false;
   constructor(
     private cartQuery: CartQuery,
     private cartService: CartService,
@@ -117,8 +118,19 @@ export class ViewCartDetailComponent {
       });
     });
     this.totalCost = this.deliveryCost + this.subTotalCost;
-    this.listAddress = this.customer.address ? this.customer.address!.split("|") : [];
+    this.isShowPaymentMethod = this.listCart.every(item => item.paymentId);
+    this.patchValueInfoForm();
+    this.checkIfHavePaymentMethod();
+  }
 
+  checkIfHavePaymentMethod(){
+    this.isShowPaymentMethod = this.listCart.every(item => item.paymentId);
+    if(this.isShowPaymentMethod)
+    this.onChangePayment(this.listCart.find(item => item.paymentId)?.paymentId);
+  }
+
+  patchValueInfoForm(){
+    this.listAddress = this.customer.address ? this.customer.address!.split("|") : [];
     if(this.customer) this.infoForm.patchValue({
       customerName: this.customer.firstName + ' ' + this.customer.lastName,
       address: this.listAddress ?.length > 0 ? this.listAddress [0] :  null,
@@ -211,6 +223,7 @@ export class ViewCartDetailComponent {
   onChangePayment(id: number) {
     if (id) {
       this.selectedPayment = id;
+      this.infoForm.get('paymentId')?.setValue(this.selectedPayment);
     }
   }
 
@@ -279,7 +292,7 @@ export class ViewCartDetailComponent {
               this.msg.remove(id);
               this.msg.success("Created order");
               this.router.navigateByUrl(`order/${res.data.code}`);
-            }, 2000);
+            }, 1500);
             // this.cartService.removeAll();
           }
         })

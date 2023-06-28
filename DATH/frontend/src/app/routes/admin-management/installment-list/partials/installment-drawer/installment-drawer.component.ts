@@ -44,6 +44,7 @@ export class InstallmentDrawerComponent extends DrawerFormBaseComponent{
       id: [null],
       term: [null, Validators.required],
       balance: [null, Validators.required],
+      interest: [null, Validators.required],
     });
   }
 

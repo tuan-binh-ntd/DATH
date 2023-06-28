@@ -47,6 +47,26 @@
         ></nz-input-number>
       </nz-form-control>
     </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="24" nzFor="interest" nzRequired>
+        <span>Interest</span>
+      </nz-form-label>
+      <nz-form-control [nzSpan]="24" nzErrorTip="Interest is required">
+        <nz-input-number
+          class="w-100"
+          name="interest"
+          id="interest"
+          formControlName="interest"
+          placeholder="Input interest"
+          [nzMin]="1"
+          [nzMax]="100"
+          [nzStep]="1"
+          [nzFormatter]="formatterPercent"
+          [nzParser]="parserPercent"
+        ></nz-input-number>
+      </nz-form-control>
+    </nz-form-item>
   </form>
 </app-drawer-form-base>
 
