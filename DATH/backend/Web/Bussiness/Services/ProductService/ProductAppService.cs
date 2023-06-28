@@ -400,7 +400,7 @@ namespace Bussiness.Services.ProductService
                                                                         join o in _orderRepo.GetAll().AsNoTracking() on od.OrderId equals o.Id
                                                                         join ins in _installmentScheRepo.GetAll().AsNoTracking() on od.Id equals ins.OrderDetailId
                                                                         where o.CreatorUserId == customerId && ins.Status == InstallmentStatus.Unpaid
-                                                                        group p by new { p.Id, p.Name, p.Price, od.SpecificationId, p.ProductCategoryId, o.Code, ins.Money } into gp
+                                                                        group ins by new { p.Id, p.Name, p.Price, od.SpecificationId, p.ProductCategoryId, o.Code } into gp
                                                                         select new GetInstallmentProductForCustomerForView
                                                                         {
                                                                             Id = gp.Key.Id,
@@ -409,19 +409,8 @@ namespace Bussiness.Services.ProductService
                                                                             SpecificationId = gp.Key.SpecificationId,
                                                                             OrderCode = gp.Key.Code,
                                                                             Term = gp.Count(),
-                                                                            Money = gp.Key.Money
+                                                                            Money = gp.Sum(p => p.Money),
                                                                         };
-
-            query.GroupBy(p => new { p.Id, p.Name, p.Price, p.SpecificationId, p.ProductCategoryId, p.OrderCode }).Select(gp => new GetInstallmentProductForCustomerForView
-            {
-                Id = gp.Key.Id,
-                Name = gp.Key.Name,
-                Price = gp.Key.Price,
-                SpecificationId = gp.Key.SpecificationId,
-                OrderCode = gp.Key.OrderCode,
-                Term = gp.Count(),
-                Money = gp.Sum(p => p.Money)
-            });
 
             List<GetInstallmentProductForCustomerForView> products = await query.ToListAsync();
 
