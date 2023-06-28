@@ -400,7 +400,7 @@ namespace Bussiness.Services.ProductService
                                                                         join o in _orderRepo.GetAll().AsNoTracking() on od.OrderId equals o.Id
                                                                         join ins in _installmentScheRepo.GetAll().AsNoTracking() on od.Id equals ins.OrderDetailId
                                                                         where o.CreatorUserId == customerId && ins.Status == InstallmentStatus.Unpaid
-                                                                        group p by new { p.Id, p.Name, p.Price, p.SpecificationId, p.ProductCategoryId, o.Code, ins.Money } into gp
+                                                                        group p by new { p.Id, p.Name, p.Price, od.SpecificationId, p.ProductCategoryId, o.Code, ins.Money } into gp
                                                                         select new GetInstallmentProductForCustomerForView
                                                                         {
                                                                             Id = gp.Key.Id,
