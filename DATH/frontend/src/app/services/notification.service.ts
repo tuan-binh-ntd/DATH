@@ -4,6 +4,8 @@ import { environment } from 'src/environments/environment';
 import { Account } from '../models/account.model';
 import { Notification } from '../models/notification.model';
 import { BehaviorSubject, take } from 'rxjs';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { UserType } from '../shared/helper';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +19,9 @@ export class NotificationService {
   // contain number of unread notifications
   public unreadNotificationNum = new BehaviorSubject<Number>(0);
   unreadNotifyNum = this.unreadNotificationNum.asObservable();
-  constructor() {}
+  constructor(
+    private msg: NzMessageService
+  ) {}
 
   createHubConnection(user: Account) {
     this.hubConnection = new HubConnectionBuilder()
@@ -39,16 +43,18 @@ export class NotificationService {
       });
     });
 
-    this.hubConnection.on(
-      'NewNotification',
-      (newNotification: Notification) => {
-        this.notifications.pipe(take(1)).subscribe((notifications) => {
-          this.notificationsSource.next([...notifications, newNotification]);
-          console.log(notifications);
-        });
-        console.log(newNotification);
-      }
-    );
+    if (user.type === UserType.Admin || user.type === UserType.OrderTransfer) {
+      // add order when customer create order
+      this.hubConnection.on(
+        'NewNotification',
+        (newNotification: Notification) => {
+          this.notifications.pipe(take(1)).subscribe((notifications) => {
+            this.notificationsSource.next([...notifications, newNotification]);
+            this.msg.info(newNotification.content);
+          });
+        }
+      );
+    }
 
     this.hubConnection.on('ReadNotification', (readNotify: Notification) => {
       this.notifications.pipe(take(1)).subscribe((notifications) => {

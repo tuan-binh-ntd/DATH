@@ -77,7 +77,10 @@ namespace Bussiness.Services.OrderService
             await _orderDetailRepo.AddRangeAsync(orderDetails);
 
 
-            OrderForViewDto res = new();
+            OrderForViewDto res = new()
+            { 
+                CreateDate = (DateTime)order.CreationTime!
+            };
             ObjectMapper!.Map(order, res);
             res.OrderDetails = new List<OrderDetailForViewDto>();
 

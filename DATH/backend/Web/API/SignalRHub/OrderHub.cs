@@ -4,9 +4,12 @@ using Bussiness.Interface.NotificationInterface;
 using Bussiness.Interface.NotificationInterface.Dto;
 using Bussiness.Interface.OrderInterface;
 using Bussiness.Interface.OrderInterface.Dto;
+using Bussiness.Services.Core;
+using Database;
 using Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using Org.BouncyCastle.Cms;
 using System.Net;
 
 namespace API.SignalRHub
@@ -18,13 +21,16 @@ namespace API.SignalRHub
         private readonly INotificationAppService _notificationAppService;
         private readonly IHubContext<NotifyHub> _notifyHub;
         private readonly IEmployeeAppService _employeeAppService;
+        private readonly IHubContext<PresenceHub> _presenceHub;
 
         public OrderHub(
             IOrderAppService orderAppService,
             UserManager<AppUser> userManager,
             INotificationAppService notificationAppService,
             IHubContext<NotifyHub> notifyHub,
-            IEmployeeAppService employeeAppService
+            IEmployeeAppService employeeAppService,
+            IHubContext<PresenceHub> presenceHub
+
             )
         {
             _orderAppService = orderAppService;
@@ -32,6 +38,7 @@ namespace API.SignalRHub
             _notificationAppService = notificationAppService;
             _notifyHub = notifyHub;
             _employeeAppService = employeeAppService;
+            _presenceHub = presenceHub;
         }
 
         public async Task<object> CreateOrder(OrderInput input)
@@ -40,13 +47,13 @@ namespace API.SignalRHub
 
             AppUser? admin = await _userManager.FindByNameAsync("admin");
 
-            await Clients.User(admin!.Id.ToString()).SendAsync("NewOrder", res);
+            await _presenceHub.Clients.User(admin!.Id.ToString()).SendAsync("NewOrder", res);
 
             NotificationInput notificationInput = new()
             {
                 Content = $"New Order: {res.Code}",
                 IsRead = false,
-                UserId = admin.Id,
+                UserId = admin!.Id,
             };
 
             await CreateNotification(notificationInput);

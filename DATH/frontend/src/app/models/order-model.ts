@@ -21,3 +21,8 @@ export interface Order {
   shopName: string | null
 }
 
+export interface OrderForView {
+  content: Order[],
+  totalCount: number,
+  totalPages: number
+}

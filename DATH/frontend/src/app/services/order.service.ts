@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Order } from '../models/order-model';
+import { Order, OrderForView } from '../models/order-model';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Account } from '../models/account.model';
@@ -46,15 +46,6 @@ export class OrderService {
       .build();
 
     this.hubConnection.start().catch((error) => console.log(error));
-
-    if (user.type === UserType.Admin || user.type === UserType.OrderTransfer) {
-      // add order when customer create order
-      this.hubConnection.on('NewOrder', (order) => {
-        this.presenceService.orders.subscribe((orders) => {
-          this.presenceService.ordersSource.next([ order,...orders ]);
-        });
-      });
-    }
   }
 
   stopHubConnection() {

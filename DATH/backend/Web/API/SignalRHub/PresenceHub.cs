@@ -1,8 +1,9 @@
 ﻿using Bussiness.Dto;
 using Bussiness.Interface.OrderInterface;
 using Bussiness.Services.Core;
+using Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System.Net;
 
@@ -13,20 +14,23 @@ namespace API.SignalRHub
     {
         private readonly PresenceTracker _tracker;
         private readonly IOrderAppService _orderAppService;
+        private readonly UserManager<AppUser> _userManager;
 
         public PresenceHub(
             PresenceTracker tracker,
-            IOrderAppService orderAppService
+            IOrderAppService orderAppService,
+            UserManager<AppUser> userManager
             )
         {
             _tracker = tracker;
             _orderAppService = orderAppService;
+            _userManager = userManager;
         }
 
         public override async Task OnConnectedAsync()
         {
             var httpContext = Context.GetHttpContext();
-            var userId = httpContext!.Request.Query["userId"].ToString();
+            var shopId = httpContext!.Request.Query["shopId"].ToString();
 
             var isOnline = await _tracker.UserConnected(Context!.User!.Identity!.Name!, Context.ConnectionId);
 
@@ -37,6 +41,23 @@ namespace API.SignalRHub
 
             var currentUsers = await _tracker.GetOnlineUsers();
             await Clients.Caller.SendAsync("GetOnlineUsers", currentUsers);
+
+            PaginationInput input = new()
+            { 
+                PageNum = 1,
+                PageSize = 10
+            };
+
+            object res = await _orderAppService.GetOrdersForAdmin(input);
+
+            await Clients.Caller.SendAsync("GetOrderForAdmin", res);
+
+            if (shopId != "0") 
+            { 
+                res = await _orderAppService.GetOrdersForShop(int.Parse(shopId), input);
+
+                await Clients.Caller.SendAsync("GetOrderForShop", res);
+            }
         }
 
         public override async Task OnDisconnectedAsync(Exception? exception)
@@ -61,7 +82,7 @@ namespace API.SignalRHub
         {
             object res = await _orderAppService.GetOrdersForAdmin(input);
 
-            await Clients.Caller.SendAsync("GetOrderForAdmin", res);
+            //await Clients.Caller.SendAsync("GetOrderForAdmin", res);
 
             return new { StatusCode = HttpStatusCode.OK, Data = res };
         }
@@ -70,7 +91,7 @@ namespace API.SignalRHub
         {
             object res = await _orderAppService.GetOrdersForShop(input.ShopId, input);
 
-            await Clients.Caller.SendAsync("GetOrderForShop", res);
+            //await Clients.Caller.SendAsync("GetOrderForShop", res);
 
             return new { StatusCode = HttpStatusCode.OK, Data = res };
         }

@@ -23,10 +23,8 @@ namespace Bussiness.Interface.OrderInterface.Dto
         public int? PromotionId { get; set; }
         public DateTime CreateDate { get; set; }
         public string? Payment { get; set; }
-        public virtual long? CreatorUserId { get; set; }
+        public long? CreatorUserId { get; set; }
         public int? ShopId { get; set; }
-
-
         public ICollection<OrderDetailForViewDto>? OrderDetails { get; set; }
     }
 }
