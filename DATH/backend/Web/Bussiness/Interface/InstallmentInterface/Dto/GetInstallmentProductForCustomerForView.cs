@@ -14,5 +14,7 @@ namespace Bussiness.Interface.InstallmentInterface.Dto
         public ICollection<PhotoDto>? Photos { get; set; }
         public ICollection<SpecificationDto>? Specifications { get; set; }
         public string? OrderCode { get; set; }
+        public int Term { get; set; }
+        public decimal Money { get; set; }
     }
 }

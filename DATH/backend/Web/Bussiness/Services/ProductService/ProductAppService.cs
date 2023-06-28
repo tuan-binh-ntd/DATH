@@ -8,9 +8,11 @@ using Bussiness.Services.Core;
 using Dapper;
 using Database;
 using Entities;
+using Entities.Enum.Order;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Net;
 
 namespace Bussiness.Services.ProductService
 {
@@ -397,17 +399,29 @@ namespace Bussiness.Services.ProductService
                                                                         join od in _orderDetailRepo.GetAll().AsNoTracking() on p.Id equals od.ProductId
                                                                         join o in _orderRepo.GetAll().AsNoTracking() on od.OrderId equals o.Id
                                                                         join ins in _installmentScheRepo.GetAll().AsNoTracking() on od.Id equals ins.OrderDetailId
-                                                                        where o.CreatorUserId == customerId
+                                                                        where o.CreatorUserId == customerId && ins.Status == InstallmentStatus.Unpaid
+                                                                        group p by new { p.Id, p.Name, p.Price, p.SpecificationId, p.ProductCategoryId, o.Code, ins.Money } into gp
                                                                         select new GetInstallmentProductForCustomerForView
                                                                         {
-                                                                            Id = p.Id,
-                                                                            Name = p.Name,
-                                                                            Price = p.Price,
-                                                                            Description = p.Description,
-                                                                            SpecificationId = p.SpecificationId,
-                                                                            ProductCategoryId = p.ProductCategoryId,
-                                                                            OrderCode = o.Code
+                                                                            Id = gp.Key.Id,
+                                                                            Name = gp.Key.Name,
+                                                                            Price = gp.Key.Price,
+                                                                            SpecificationId = gp.Key.SpecificationId,
+                                                                            OrderCode = gp.Key.Code,
+                                                                            Term = gp.Count(),
+                                                                            Money = gp.Key.Money
                                                                         };
+
+            query.GroupBy(p => new { p.Id, p.Name, p.Price, p.SpecificationId, p.ProductCategoryId, p.OrderCode }).Select(gp => new GetInstallmentProductForCustomerForView
+            {
+                Id = gp.Key.Id,
+                Name = gp.Key.Name,
+                Price = gp.Key.Price,
+                SpecificationId = gp.Key.SpecificationId,
+                OrderCode = gp.Key.OrderCode,
+                Term = gp.Count(),
+                Money = gp.Sum(p => p.Money)
+            });
 
             List<GetInstallmentProductForCustomerForView> products = await query.ToListAsync();
 

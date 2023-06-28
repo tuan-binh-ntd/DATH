@@ -58,7 +58,7 @@ namespace Bussiness.Services.OrderService
         {
             Order order = ObjectMapper!.Map<Order>(input);
             order.Code = await GenerateOrderCode();
-            order.Status = OrderStatus.Pending;
+            order.Status = input.ShopId is null ? OrderStatus.Pending : OrderStatus.Received;
             order.IsExport = false;
             long orderId = await _orderRepo.InsertAndGetIdAsync(order);
 
@@ -246,6 +246,7 @@ namespace Bussiness.Services.OrderService
 
             await HandleOrderDetails(input.OrderDetails);
         }
+
         private async Task HandleOrderDetails(ICollection<OrderDetailForViewDto> input)
         {
             foreach (OrderDetailForViewDto item in input)
