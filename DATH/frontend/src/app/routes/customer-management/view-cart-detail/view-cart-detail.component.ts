@@ -112,13 +112,12 @@ export class ViewCartDetailComponent {
     this.fetchShops();
     this.cartObjects$.subscribe((res) => {
       this.subTotalCost = 0;
-      this.listCart = res;
+      this.listCart = [...res];
       res.forEach((item) => {
         this.subTotalCost += item.cost;
       });
+      this.totalCost = this.deliveryCost + this.subTotalCost;
     });
-    this.totalCost = this.deliveryCost + this.subTotalCost;
-    this.isShowPaymentMethod = this.listCart.every(item => item.paymentId);
     this.patchValueInfoForm();
     this.checkIfHavePaymentMethod();
   }
