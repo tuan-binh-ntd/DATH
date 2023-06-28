@@ -42,6 +42,7 @@ export class ViewProductDetailComponent {
   listPayment: Payment[] = [];
   data!: Product | null;
   selectedPayment: number | null = null;
+  costPercent: number = 0;
   costInstallment: number = 0;
   costPermonth: number = 0;
   costInterest: number = 0;
@@ -196,6 +197,7 @@ export class ViewProductDetailComponent {
     let installment: Installment = null;
     if (item) {
       installment = this.listInstallment.find((ele) => ele.id === item);
+      this.costPercent = 100 - installment?.balance;
       this.costInstallment = this.cartObject.cost - this.cartObject.cost * (installment?.balance * 0.01);
       this.costInterest = this.cartObject.cost * (installment?.interest * 0.01);
       this.costPermonth = (this.cartObject.cost +  this.costInterest) / installment?.term;

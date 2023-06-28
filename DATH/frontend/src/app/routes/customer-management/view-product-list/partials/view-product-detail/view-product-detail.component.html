@@ -67,7 +67,7 @@
           </dd>
         </dl>
       </ng-container>
-      <a><i class="fa-solid fa-store mr-2 mb-2"></i>See available store</a>
+      <!-- <a><i class="fa-solid fa-store mr-2 mb-2"></i>See available store</a> -->
       <div nz-row nzGutter="16">
       <div nz-col nzSpan="12">
         <button
@@ -130,6 +130,10 @@
             >
           </nz-radio-group>
           <div class="align-child-space-between">
+            <span class="text-muted">Balance</span>
+            <p>{{ costPercent | number}}%</p>
+          </div>
+          <div class="align-child-space-between">
             <span class="text-muted">Pay first</span>
             <p>{{costInstallment | number}}VNĐ</p>
           </div>
@@ -141,7 +145,7 @@
             <span class="text-muted">Interest</span>
             <p>{{costInterest | number}}VNĐ</p>
           </div>
-          <span class="text-muted">Payment method</span>
+          <span class="text-muted mb-3">Payment method</span>
           <div nz-row nzGutter="16" class="mb-2">
             <img
               [src]="item.url"

@@ -22,6 +22,7 @@ export class CustomerChangeInfoComponent {
   newPasswordVisible = false;
   confirmNewPasswordVisible = false;
   listOrder: any[] = [];
+  listInstallmentProduct: any[] = [];
   customer: Customer = JSON.parse(localStorage.getItem('user')!);
 
   infoObserver: Observer<any> = {
@@ -72,6 +73,15 @@ export class CustomerChangeInfoComponent {
     this.infoForm.patchValue(this.customer);
     this.infoForm.get('gender')!.setValue(this.customer.gender?.toString());
     this.getOrderHistory();
+    this.getInstallmentProduct();
+  }
+
+  getInstallmentProduct(){
+    this.customerService.getInstallmentProduct(this.infoForm.value.userId).subscribe(res => {
+      if(checkResponseStatus(res)){
+        this.listInstallmentProduct = res.data;
+      }
+    })
   }
 
   getOrderHistory(){
