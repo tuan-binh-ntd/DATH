@@ -77,7 +77,7 @@ namespace Bussiness.Services.OrderService
             await _orderDetailRepo.AddRangeAsync(orderDetails);
 
             OrderForViewDto res = new()
-            { 
+            {
                 CreateDate = (DateTime)order.CreationTime!,
             };
             ObjectMapper!.Map(order, res);
@@ -104,6 +104,7 @@ namespace Bussiness.Services.OrderService
 
             await _orderRepo.UpdateAsync(order);
             OrderForViewDto? res = ObjectMapper!.Map<OrderForViewDto>(order);
+            res.CreateDate = (DateTime)order.CreationTime!;
             await HandleOrder(res);
             return res;
         }
@@ -178,6 +179,7 @@ namespace Bussiness.Services.OrderService
                                                     CreateDate = (DateTime)o.CreationTime!,
                                                     Payment = p.Name
                                                 };
+
             OrderForViewDto? res = await query.SingleOrDefaultAsync();
 
             await HandleOrder(res!);
@@ -239,7 +241,7 @@ namespace Bussiness.Services.OrderService
                                             ProductId = od.ProductId,
                                             InstallmentId = od.InstallmentId,
                                             ProductName = p.Name,
-                                            Price = p.Price
+                                            Price = p.Price,
                                         }).ToListAsync();
 
             await HandleOrderDetails(input.OrderDetails);
@@ -265,7 +267,7 @@ namespace Bussiness.Services.OrderService
         #region GetOrders
         private async Task<object> GetOrders(int? shopId, PaginationInput input)
         {
-                if (shopId is null)
+            if (shopId is null)
             {
                 IQueryable<OrderForViewDto> orders = from o in _orderRepo.GetAll().AsNoTracking()
                                                      join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
@@ -502,5 +504,43 @@ namespace Bussiness.Services.OrderService
         }
         #endregion
 
+        #region CustomerRecievedOrder
+
+        #endregion
+        public async Task<OrderForViewDto> CustomerRecievedOrder(long orderId)
+        {
+            Order? order = await _orderRepo.GetAll().AsNoTracking().Where(o => o.Id == orderId).SingleOrDefaultAsync();
+
+            order!.Status = OrderStatus.Received;
+
+            await _orderRepo.UpdateAsync(order);
+
+            IQueryable<OrderForViewDto> query = from o in _orderRepo.GetAll().AsNoTracking()
+                                                join p in _paymentRepo.GetAll().AsNoTracking() on o.PaymentId equals p.Id
+                                                where o.Id == orderId
+                                                select new OrderForViewDto
+                                                {
+                                                    Id = o.Id,
+                                                    CustomerName = o.CustomerName,
+                                                    Address = o.Address,
+                                                    Phone = o.Phone,
+                                                    Code = o.Code,
+                                                    Status = o.Status,
+                                                    ActualDate = o.ActualDate,
+                                                    EstimateDate = o.EstimateDate,
+                                                    Cost = o.Cost,
+                                                    Discount = o.Discount,
+                                                    CreateDate = (DateTime)o.CreationTime!,
+                                                    Payment = p.Name
+                                                };
+
+            OrderForViewDto? res = await query.SingleOrDefaultAsync();
+
+
+
+            await HandleOrder(res!);
+
+            return res!;
+        }
     }
 }

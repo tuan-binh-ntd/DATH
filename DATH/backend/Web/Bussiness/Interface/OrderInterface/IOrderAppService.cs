@@ -13,5 +13,6 @@ namespace Bussiness.Interface.OrderInterface
         Task<OrderForViewDto?> GetOrder(long id);
         Task<OrderForViewDto?> GetOrder(string code);
         Task<IEnumerable<OrderForViewDto>> GetOrdersForCustomer(long userId);
+        Task<OrderForViewDto> CustomerRecievedOrder(long orderId);
     }
 }

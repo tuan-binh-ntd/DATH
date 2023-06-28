@@ -70,16 +70,18 @@ export class AccountService {
   }
 
   register(payload: Register): Observable<any> {
-    return this.http.post<Account>(this.baseUrl + 'employees', payload).pipe(
-      map((response: any) => {
-        const user = response;
-        if (user) {
-          this.setCurrentUser(user.data);
-          this.presenceService.createHubConnection(user);
-        }
-        return user;
-      })
-    );
+    return this.http.post<Account>(this.baseUrl + 'employees', payload)
+    // .pipe(
+    //   map((response: any) => {
+    //     const user = response;
+    //     if (user) {
+    //       this.setCurrentUser(user.data);
+    //       this.presenceService.createHubConnection(user);
+    //     }
+    //     return user;
+    //   })
+    // )
+    ;
   }
 
   checkUsername(username: string): Observable<any> {
