@@ -27,6 +27,8 @@ namespace Bussiness.Services.OrderService
         private readonly IRepository<InstallmentSchedule, long> _installmentSchRepo;
         private readonly IRepository<Installment, int> _installmentRepo;
         private readonly IEmailSender _emailSender;
+        private readonly IRepository<Specification, long> _specificationRepo;
+        private readonly IRepository<SpecificationCategory> _specificationCategoryRepo;
 
         public OrderAppService(
             IMapper mapper,
@@ -38,7 +40,9 @@ namespace Bussiness.Services.OrderService
             DataContext dataContext,
             IRepository<InstallmentSchedule, long> installmentSchRepo,
             IRepository<Installment, int> installmentRepo,
-            IEmailSender emailSender
+            IEmailSender emailSender,
+            IRepository<Specification, long> specificationRepo,
+            IRepository<SpecificationCategory> specificationCategoryRepo
             )
         {
             ObjectMapper = mapper;
@@ -51,6 +55,8 @@ namespace Bussiness.Services.OrderService
             _installmentSchRepo = installmentSchRepo;
             _installmentRepo = installmentRepo;
             _emailSender = emailSender;
+            _specificationRepo = specificationRepo;
+            _specificationCategoryRepo = specificationCategoryRepo;
         }
 
         #region CreateOrder
@@ -259,7 +265,24 @@ namespace Bussiness.Services.OrderService
                                                  IsMain = p.IsMain,
                                              };
 
+
                 item.Photos = await query.ToListAsync();
+
+                List<string>? specifications = item.SpecificationId != null ? item.SpecificationId!.Split(",").ToList() : null;
+                if (specifications != null)
+                {
+                    item.Specifications = await (from s in _specificationRepo.GetAll().AsNoTracking()
+                                                 join sc in _specificationCategoryRepo.GetAll().AsNoTracking() on s.SpecificationCategoryId equals sc.Id
+                                                 where specifications.Contains(s.Id.ToString())
+                                                 select new SpecificationDto
+                                                 {
+                                                     SpecificationCategoryId = sc.Id,
+                                                     SpecificationCategoryCode = sc.Code,
+                                                     Id = s.Id,
+                                                     Code = s.Code,
+                                                     Value = s.Value
+                                                 }).ToListAsync();
+                }
             }
 
         }

@@ -21,5 +21,6 @@ namespace Bussiness.Interface.OrderInterface.Dto
         [Column(TypeName = "decimal(19, 5)")]
         public decimal Price { get; set; }
         public ICollection<PhotoDto>? Photos { get; set; }
+        public ICollection<SpecificationDto>? Specifications { get; set; }
     }
 }
