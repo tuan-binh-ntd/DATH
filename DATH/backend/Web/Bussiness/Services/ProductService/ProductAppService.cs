@@ -5,6 +5,7 @@ using Bussiness.Interface.InstallmentInterface.Dto;
 using Bussiness.Interface.ProductInterface;
 using Bussiness.Repository;
 using Bussiness.Services.Core;
+using Bussiness.Services.ProductService.Dto;
 using Dapper;
 using Database;
 using Entities;
@@ -342,6 +343,15 @@ namespace Bussiness.Services.ProductService
 
                 // Calc star
                 product.Star = await _feedBackRepo.GetAll().AsNoTracking().Where(p => p.ProductId == product.Id).GroupBy(g => g.ProductId).Select(f => f.Average(g => g.Star)).FirstOrDefaultAsync();
+
+                product.Feedbacks = await (from f in _feedBackRepo.GetAll().AsNoTracking()
+                                           where f.ProductId == product.Id
+                                           select new FeedbackDto
+                                           {
+                                               UserName = f.UserName,
+                                               Star = f.Star,
+                                               Comment = f.Comment
+                                           }).ToListAsync();
             }
         }
 
@@ -388,6 +398,15 @@ namespace Bussiness.Services.ProductService
                                         }).ToListAsync();
 
                 product.Star = await _feedBackRepo.GetAll().AsNoTracking().GroupBy(g => new { g.ProductId, g.Star }).Select(f => f.Average(g => g.Star)).FirstOrDefaultAsync();
+
+                product.Feedbacks = await (from f in _feedBackRepo.GetAll().AsNoTracking()
+                                           where f.ProductId == product.Id
+                                           select new FeedbackDto
+                                           {
+                                               UserName = f.UserName,
+                                               Star = f.Star,
+                                               Comment = f.Comment
+                                           }).ToListAsync();
             }
         }
         #endregion

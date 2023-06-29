@@ -5,6 +5,8 @@ using Bussiness.Helper;
 using Bussiness.Interface.Core;
 using Bussiness.Interface.OrderInterface;
 using Bussiness.Interface.OrderInterface.Dto;
+using Bussiness.Interface.WarehouseInterface;
+using Bussiness.Interface.WarehouseInterface.Dto;
 using Bussiness.Repository;
 using Bussiness.Services.Core;
 using Database;
@@ -12,6 +14,7 @@ using Entities;
 using Entities.Enum.Order;
 using Microsoft.EntityFrameworkCore;
 using MimeKit.Text;
+using System.Drawing;
 using System.Globalization;
 
 namespace Bussiness.Services.OrderService
@@ -29,6 +32,7 @@ namespace Bussiness.Services.OrderService
         private readonly IEmailSender _emailSender;
         private readonly IRepository<Specification, long> _specificationRepo;
         private readonly IRepository<SpecificationCategory> _specificationCategoryRepo;
+        private readonly IWarehouseAppService _warehouseAppService;
 
         public OrderAppService(
             IMapper mapper,
@@ -42,7 +46,8 @@ namespace Bussiness.Services.OrderService
             IRepository<Installment, int> installmentRepo,
             IEmailSender emailSender,
             IRepository<Specification, long> specificationRepo,
-            IRepository<SpecificationCategory> specificationCategoryRepo
+            IRepository<SpecificationCategory> specificationCategoryRepo,
+            IWarehouseAppService warehouseAppService
             )
         {
             ObjectMapper = mapper;
@@ -57,6 +62,7 @@ namespace Bussiness.Services.OrderService
             _emailSender = emailSender;
             _specificationRepo = specificationRepo;
             _specificationCategoryRepo = specificationCategoryRepo;
+            _warehouseAppService = warehouseAppService;
         }
 
         #region CreateOrder
@@ -136,7 +142,7 @@ namespace Bussiness.Services.OrderService
         #region UpdateOrder
         public async Task<OrderForViewDto> UpdateOrder(long id, UpdateOrderInput input)
         {
-            Order? order = await _orderRepo.GetAsync(id);
+            Order? order = await _orderRepo.GetAll().AsNoTracking().Where(o => o.Id == id).Include(o => o.OrderDetails).SingleOrDefaultAsync();
 
             if (input.ShippingId is not null)
             {
@@ -156,6 +162,37 @@ namespace Bussiness.Services.OrderService
                 OrderStatus.Received => OrderStatus.Received,
                 _ => order.Status
             };
+
+            
+            //if(input.Status == OrderStatus.Preparing)
+            //{
+            //    int? specificationCategoryId = await _specificationCategoryRepo.GetAll().AsNoTracking().Where(o => o.Code == "color").Select(o => o.Id).FirstOrDefaultAsync();
+
+            //    ExportToOrderInput exportToOrderInput = new()
+            //    { 
+            //        OrderCode = order.Code,
+            //    };
+
+            //    foreach (OrderDetail item in order.OrderDetails!)
+            //    {
+            //        List<string> specIds = item.SpecificationId!.Split(",").ToList();
+
+            //        string? color = await _specificationRepo.GetAll().AsNoTracking().Where(s => s.SpecificationCategoryId == specificationCategoryId && specIds.Contains(s.Id.ToString())).Select(s => s.Code).FirstOrDefaultAsync();
+
+            //        exportToOrderInput.ExportToOrderDetailInputs = new List<ExportToOrderDetailInput>();
+
+            //        ExportToOrderDetailInput exportToOrderDetailInput = new()
+            //        {
+            //            Quantity = item.Quantity,
+            //            ProductId = item.ProductId,
+            //            Color = color,
+            //        };
+
+            //        exportToOrderInput.ExportToOrderDetailInputs!.Add(exportToOrderDetailInput);
+            //    }
+
+            //    await _warehouseAppService.ExportToOrder(exportToOrderInput);
+            //}
 
             await _orderRepo.UpdateAsync(order);
             OrderForViewDto res = ObjectMapper!.Map<OrderForViewDto>(order);
@@ -531,8 +568,6 @@ namespace Bussiness.Services.OrderService
         #endregion
 
         #region CustomerRecievedOrder
-
-        #endregion
         public async Task<OrderForViewDto> CustomerRecievedOrder(long orderId)
         {
             Order? order = await _orderRepo.GetAll().AsNoTracking().Where(o => o.Id == orderId).SingleOrDefaultAsync();
@@ -568,5 +603,7 @@ namespace Bussiness.Services.OrderService
 
             return res!;
         }
+        #endregion
+
     }
 }
