@@ -10,7 +10,7 @@ namespace Entities
         public int Quantity { get; set; }
         public DateTime ActualDate { get; set; }
         public EventType Type { get; set; }
-        [Required, StringLength(100)]
+        [StringLength(100)]
         public string? Color { get; set; }
         // Relationship
         public int WarehouseId { get; set; }

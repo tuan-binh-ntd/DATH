@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using Bussiness.Services.ProductService.Dto;
+using Entities;
 
 namespace Bussiness.Dto
 {
@@ -12,5 +13,6 @@ namespace Bussiness.Dto
         public decimal Star { get; set; }
         public ICollection<PhotoDto>? Photos { get; set; }
         public ICollection<SpecificationDto>? Specifications { get; set; }
+        public ICollection<FeedbackDto>? Feedbacks { get; set; }
     }
 }
