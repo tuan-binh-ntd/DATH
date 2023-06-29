@@ -10,4 +10,6 @@ export interface Product {
   specifications: Specification[] | null,
   specificationId: string | null
   photos: Photo[] | null,
+  star: number | null,
+
 }

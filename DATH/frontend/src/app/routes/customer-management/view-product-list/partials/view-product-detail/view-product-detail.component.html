@@ -9,7 +9,7 @@
       >
         <div ngxSlickItem *ngFor="let slide of data?.photos" class="slide">
           <img
-          *ngIf="slide?.isMain"
+            *ngIf="slide?.isMain"
             src="{{ slide.url }}"
             alt=""
             width="90%"
@@ -21,7 +21,12 @@
     </div>
     <div nz-col nzSpan="12">
       <h2 class="mb-0">{{ data?.name }}</h2>
-      <nz-rate [nzTooltips]="tooltips" nzAllowHalf [(ngModel)]="value"></nz-rate>
+      <nz-rate
+        [nzTooltips]="tooltips"
+        nzAllowHalf
+        [ngModel]="data?.star"
+        nzDisabled
+      ></nz-rate>
       <nz-divider class="mt-2 mb-0"></nz-divider>
       <h2 class="mt-1">{{ data?.price | number }} VNĐ</h2>
       <ng-container *ngIf="listCapacity.length > 0">
@@ -30,9 +35,10 @@
             <label>Capacity</label>
           </dt>
           <dd>
-            <nz-radio-group     
-            [ngModel]="selectedCapacity"
-            (ngModelChange)="onChangeCapacity($event)">
+            <nz-radio-group
+              [ngModel]="selectedCapacity"
+              (ngModelChange)="onChangeCapacity($event)"
+            >
               <label
                 *ngFor="let item of listCapacity"
                 class="mr-2 cursor-pointer"
@@ -69,23 +75,29 @@
       </ng-container>
       <!-- <a><i class="fa-solid fa-store mr-2 mb-2"></i>See available store</a> -->
       <div nz-row nzGutter="16">
-      <div nz-col nzSpan="12">
-        <button
-        nz-button
-        nzType="primary"
-        class="w-100 h-50px mb-3"
-        nzSize="large"
-        nzShape="round"
-        (click)="addToCart()"
-      >
-        Add to cart
-      </button>
-      </div>
-      <div nz-col nzSpan="12">
-        <button nz-button class="w-100 h-50px" nzSize="large" nzShape="round" (click)="onClickInstallment()">
-          Installment
-        </button>
-      </div>
+        <div nz-col nzSpan="12">
+          <button
+            nz-button
+            nzType="primary"
+            class="w-100 h-50px mb-3"
+            nzSize="large"
+            nzShape="round"
+            (click)="addToCart()"
+          >
+            Add to cart
+          </button>
+        </div>
+        <div nz-col nzSpan="12">
+          <button
+            nz-button
+            class="w-100 h-50px"
+            nzSize="large"
+            nzShape="round"
+            (click)="onClickInstallment()"
+          >
+            Installment
+          </button>
+        </div>
       </div>
       <nz-card class="mt-3">
         <p>
@@ -107,62 +119,137 @@
   <nz-divider></nz-divider>
 
   <nz-modal
-  [nzVisible]="isShowInstallmentModal"
-  [nzContent]="modalContent"
-  nzTitle="Choose your installment term"
-  [nzWidth]="465"
-  (nzAfterOpen)="onOpenInstallmentModal()"
-  (nzOnCancel)="onCloseInstallmentModal()"
-  (nzOnOk)="onSaveInstallment()"
->
-  <ng-template #modalContent>
-    <ng-container *ngIf="listInstallment.length > 0">
-          <nz-radio-group    
-          class="mb-4" 
+    [nzVisible]="isShowInstallmentModal"
+    [nzContent]="modalContent"
+    nzTitle="Choose your installment term"
+    [nzWidth]="465"
+    (nzAfterOpen)="onOpenInstallmentModal()"
+    (nzOnCancel)="onCloseInstallmentModal()"
+    (nzOnOk)="onSaveInstallment()"
+  >
+    <ng-template #modalContent>
+      <ng-container *ngIf="listInstallment.length > 0">
+        <nz-radio-group
+          class="mb-4"
           [ngModel]="selectedInstallment"
-          (ngModelChange)="onChangeInstallment($event)">
-            <label
-              *ngFor="let item of listInstallment"
-              class="mr-2 cursor-pointer"
-              nz-radio-button
-              [nzValue]="item.id"
-              >{{ item.term }} months</label
+          (ngModelChange)="onChangeInstallment($event)"
+        >
+          <label
+            *ngFor="let item of listInstallment"
+            class="mr-2 cursor-pointer"
+            nz-radio-button
+            [nzValue]="item.id"
+            >{{ item.term }} months</label
+          >
+        </nz-radio-group>
+        <div class="align-child-space-between">
+          <span class="text-muted">Balance</span>
+          <p>{{ costPercent | number }}%</p>
+        </div>
+        <div class="align-child-space-between">
+          <span class="text-muted">Pay first</span>
+          <p>{{ costInstallment | number }}VNĐ</p>
+        </div>
+        <div class="align-child-space-between">
+          <span class="text-muted">Permonth</span>
+          <p>{{ costPermonth | number }}VNĐ</p>
+        </div>
+        <div class="align-child-space-between">
+          <span class="text-muted">Interest</span>
+          <p>{{ costInterest | number }}VNĐ</p>
+        </div>
+        <span class="text-muted mb-3">Payment method</span>
+        <div nz-row nzGutter="16" class="mb-2">
+          <img
+            [src]="item.url"
+            *ngFor="let item of listPayment"
+            nz-col
+            nzSpan="8"
+            height="50"
+            [ngClass]="{ 'selected-payment': selectedPayment === item.id }"
+            class="cursor-pointer"
+            nz-tooltip
+            [nzTooltipTitle]="item.name"
+            (click)="onChangePayment(item.id)"
+          />
+        </div>
+      </ng-container>
+    </ng-template>
+  </nz-modal>
+
+  <nz-card nzTitle="Feedback">
+    <div nz-row nzGutter="16">
+      <div nz-col nzSpan="8">
+          <form nz-form [formGroup]="ratingForm">
+          <h1 class="text-center">{{ data?.star }}</h1>
+          <nz-divider></nz-divider>
+          <h3>Write your rate</h3>
+          <div class="align-child-space-between">
+            <nz-form-label class="p-0" nzFor="name" nzRequired>
+              Quality
+            </nz-form-label>
+            <nz-rate
+              class="mb-2"
+              [nzTooltips]="tooltips"
+              nzAllowHalf
+              formControlName="star"
+            ></nz-rate>
+          </div>
+
+            <nz-form-item>
+              <nz-form-label [nzSpan]="24" nzFor="name" nzRequired>
+                Name
+              </nz-form-label>
+              <nz-form-control [nzSpan]="24" nzErrorTip="Name is required">
+                <input
+                  nz-input
+                  name="name"
+                  type="text"
+                  id="name"
+                  formControlName="userName"
+                  placeholder="Your name"
+                />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzSpan]="24" nzFor="comment" nzRequired>
+                Comment
+              </nz-form-label>
+              <nz-form-control [nzSpan]="24" nzErrorTip="Comment is required">
+                <quill-editor formControlName="comment" ></quill-editor>
+              </nz-form-control>
+            </nz-form-item>
+        </form>
+        <div nz-row nzGutter="16">
+          <div nz-col nzSpan="12">
+            <button
+              nzType="primary"
+              nz-button
+              nzSize="large"
+              class="w-100 mt-3"
+              nzShape="round"
+              (click)="onClickSendFeedback()"
             >
-          </nz-radio-group>
-          <div class="align-child-space-between">
-            <span class="text-muted">Balance</span>
-            <p>{{ costPercent | number}}%</p>
+              Send
+            </button>
           </div>
-          <div class="align-child-space-between">
-            <span class="text-muted">Pay first</span>
-            <p>{{costInstallment | number}}VNĐ</p>
           </div>
-          <div class="align-child-space-between">
-            <span class="text-muted">Permonth</span>
-            <p>{{costPermonth | number}}VNĐ</p>
-          </div>
-          <div class="align-child-space-between">
-            <span class="text-muted">Interest</span>
-            <p>{{costInterest | number}}VNĐ</p>
-          </div>
-          <span class="text-muted mb-3">Payment method</span>
-          <div nz-row nzGutter="16" class="mb-2">
-            <img
-              [src]="item.url"
-              *ngFor="let item of listPayment"
-              nz-col
-              nzSpan="8"
-              height="50"
-              [ngClass]="{ 'selected-payment': selectedPayment === item.id }"
-              class="cursor-pointer"
-              nz-tooltip
-              [nzTooltipTitle]="item.name"
-              (click)="onChangePayment(item.id)"
-            />
-          </div>
-    </ng-container>
-  </ng-template>
-</nz-modal>
+        </div>
+        <nz-divider nzType="vertical"></nz-divider>
+        <div nz-col nzSpan="16">
+          <!-- <nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
+            <ng-template #item let-item>
+              <nz-comment [nzAuthor]="item.author" [nzDatetime]="item.datetime">
+                <nz-comment-content>
+                  <p>{{ item.content }}</p>
+                </nz-comment-content>
+                <nz-comment-action>Reply to</nz-comment-action>
+              </nz-comment>
+            </ng-template>
+          </nz-list> -->
+        </div>
+      </div>
+  </nz-card>
 
   <nz-card [nzTitle]="descriptionTitle">
     <ng-template #descriptionTitle>

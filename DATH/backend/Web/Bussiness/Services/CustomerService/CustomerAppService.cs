@@ -30,6 +30,7 @@ namespace Bussiness.Services.CustomerService
             await _customerRepo.UpdateAsync(customer!);
             CustomerForViewDto? res = new();
             ObjectMapper!.Map(customer, res);
+            res.UserId = customer.UserId;
             return res;
         }
         #endregion

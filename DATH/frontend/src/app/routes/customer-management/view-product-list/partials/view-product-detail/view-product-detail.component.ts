@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Subscription, switchMap, take } from 'rxjs';
@@ -20,6 +20,8 @@ import { InstallmentService } from 'src/app/services/installment.service';
 import { Installment } from 'src/app/models/installment.model';
 import { Payment } from 'src/app/models/payment.model';
 import { PaymentService } from 'src/app/services/payment.service';
+import { Feedback } from '../../../../../models/feedback.model';
+import { FeedbackService } from '../../../../../services/feedback.service';
 
 @Component({
   selector: 'app-view-product-detail',
@@ -56,9 +58,12 @@ export class ViewProductDetailComponent {
     private cartService: CartService,
     private installmentService: InstallmentService,
     private paymentService: PaymentService,
+    private feedbackService: FeedbackService,
     private cartQuery: CartQuery,
     private msg: NzMessageService,
     private router: Router,
+    private fb: FormBuilder,
+
   ) {}
   cartObject: Cart = {
     name: '',
@@ -73,18 +78,30 @@ export class ViewProductDetailComponent {
   };
   cartObject$!: Subscription;
   cartObjects$ = this.cartQuery.selectAll();
+  ratingForm!: FormGroup;
   async ngOnInit() {
+    this.initForm();
     await this.fetchInstallment();
     this.route.paramMap
       .pipe(
         switchMap(async (params) => {
           this.resetList();
           this.id = params.get('id')!;
+          this.ratingForm.get('productId')?.setValue(this.id);
           await this.fetchData();
           await this.fetchProductCategoriesSpecification();
         })
       )
       .subscribe();
+  }
+
+  initForm() {
+    this.ratingForm = this.fb.group({
+      userName: [null, Validators.required],
+      star: [0, Validators.required],
+      comment: [null, Validators.required],
+      productId: [null, Validators.required],
+    });
   }
 
   resetList() {}
@@ -198,9 +215,12 @@ export class ViewProductDetailComponent {
     if (item) {
       installment = this.listInstallment.find((ele) => ele.id === item);
       this.costPercent = 100 - installment?.balance;
-      this.costInstallment = this.cartObject.cost - this.cartObject.cost * (installment?.balance * 0.01);
+      this.costInstallment =
+        this.cartObject.cost -
+        this.cartObject.cost * (installment?.balance * 0.01);
       this.costInterest = this.cartObject.cost * (installment?.interest * 0.01);
-      this.costPermonth = (this.cartObject.cost +  this.costInterest) / installment?.term;
+      this.costPermonth =
+        (this.cartObject.cost + this.costInterest) / installment?.term;
     }
     this.selectedInstallment = installment?.id;
   }
@@ -209,17 +229,17 @@ export class ViewProductDetailComponent {
     this.mainImgUrl = url;
   }
 
-  async onOpenInstallmentModal(){
+  async onOpenInstallmentModal() {
     await this.fetchPayments();
     this.isShowInstallmentModal = true;
   }
 
-  onCloseInstallmentModal(){
+  onCloseInstallmentModal() {
     this.isShowInstallmentModal = false;
-      this.cartObject.paymentId = null;
+    this.cartObject.paymentId = null;
   }
 
-  onSaveInstallment(){
+  onSaveInstallment() {
     // if (
     //   !this.cartObject.specifications.some((item) => {
     //     return Object.keys(item).includes('installment');
@@ -243,17 +263,27 @@ export class ViewProductDetailComponent {
     //   arr.splice(index, 1, obj);
     //   this.cartObject.specifications = [...arr];
     // }
-    const installment = this.listInstallment.find((ele) => ele.id === this.selectedInstallment);
+    const installment = this.listInstallment.find(
+      (ele) => ele.id === this.selectedInstallment
+    );
     this.cartObject.installment = installment;
     this.cartObject.installmentId = installment?.id;
     this.isShowInstallmentModal = false;
     this.addToCart();
   }
 
+  onClickSendFeedback(){
+    this.feedbackService.create(this.ratingForm.getRawValue()).subscribe(res => {
+      if(checkResponseStatus(res)){
+
+      }
+    })
+  }
+
   addToCart() {
     this.msg.success('Added to cart');
     let cost = this.cartObject.cost;
-    if(this.selectedInstallment) cost = this.costInstallment;
+    if (this.selectedInstallment) cost = this.costInstallment;
     this.cartObject$ = this.cartQuery
       .selectEntity((item) => {
         const cart = { ...item };
@@ -270,7 +300,11 @@ export class ViewProductDetailComponent {
           cart.cost = cart.quantity * cost;
           this.cartService.update(res.id, cart);
         } else {
-          const obj = { id: Guid.create().toString(), ...this.cartObject, cost: cost };
+          const obj = {
+            id: Guid.create().toString(),
+            ...this.cartObject,
+            cost: cost,
+          };
           this.cartService.insert(obj);
         }
       });
