@@ -469,7 +469,9 @@ namespace Bussiness.Services.OrderService
 
                     Installment? installment = await _installmentRepo.GetAsync((int)item.InstallmentId);
 
-                    decimal moneyPerTerm = ((item.Cost * installment!.Balance * installment!.Interest) / 100) / installment!.Term;
+                    decimal productPrice = await _productRepo.GetAll().AsNoTracking().Where(e => e.Id == item.ProductId).Select(e => e.Price).SingleOrDefaultAsync();
+
+                    decimal moneyPerTerm = ((productPrice * installment!.Balance + productPrice * installment!.Interest)  / 100) / installment!.Term;
 
                     for (int i = 1; i <= installment!.Term; i++)
                     {
