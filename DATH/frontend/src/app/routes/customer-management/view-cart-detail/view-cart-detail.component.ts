@@ -118,7 +118,9 @@ export class ViewCartDetailComponent {
       });
       this.totalCost = this.deliveryCost + this.subTotalCost;
     });
-    this.patchValueInfoForm();
+    if(this.customer){
+      this.patchValueInfoForm();
+    }
     this.checkIfHavePaymentMethod();
   }
 
@@ -129,7 +131,7 @@ export class ViewCartDetailComponent {
   }
 
   patchValueInfoForm(){
-    this.listAddress = this.customer.address ? this.customer.address!.split("|") : [];
+    this.listAddress = this.customer?.address ? this.customer?.address!.split("|") : [];
     if(this.customer) this.infoForm.patchValue({
       customerName: this.customer.firstName + ' ' + this.customer.lastName,
       address: this.listAddress ?.length > 0 ? this.listAddress [0] :  null,
@@ -274,7 +276,7 @@ export class ViewCartDetailComponent {
         
         this.orderService.create(payload).subscribe((res) => {
           if (checkResponseStatus(res)) {
-            if(this.customer.id && !this.customer.address) this.addAddressIfNotExisted();
+            if(this.customer?.id && !this.customer?.address) this.addAddressIfNotExisted();
             this.msg.remove(id);
             this.msg.success("Created order");
             this.router.navigateByUrl(`order/${res.data.code}`);

@@ -16,6 +16,8 @@ import { checkResponseStatus } from 'src/app/shared/helper';
 })
 export class WarehouseDetailDrawerComponent extends DrawerFormBaseComponent {
   products: Product[] = [];
+  listWarehouse: Warehouse[] = []
+
   @Input() parentWarehouse: Warehouse = {
     id: null,
     name: null,
@@ -33,9 +35,18 @@ export class WarehouseDetailDrawerComponent extends DrawerFormBaseComponent {
     super(fb, cdr, message);
   }
 
+  fetchWarehouse(){
+    this.warehouseService.getAll().subscribe(res => {
+        if (checkResponseStatus(res)) {
+          this.listWarehouse = [...res.data];
+        }
+      })
+  }
+
   override ngOnInit(): void {
     this.initForm();
     this.fetchProducts();
+    this.fetchWarehouse();
   }
 
   fetchProducts() {
@@ -58,6 +69,7 @@ export class WarehouseDetailDrawerComponent extends DrawerFormBaseComponent {
       this.markAsUntouched();
     }
   }
+
 
   override initForm(): void {
     this.drawerForm = this.fb.group({

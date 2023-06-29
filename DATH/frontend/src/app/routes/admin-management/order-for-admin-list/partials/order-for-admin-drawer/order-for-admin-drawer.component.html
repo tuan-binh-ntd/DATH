@@ -132,6 +132,23 @@
               </nz-form-item>
         </div>
     </div>
+    
+    <div nz-row nzGutter="16">
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+            <nz-form-label [nzSpan]="24" nzFor="code" nzRequired>
+              <span>Address</span>
+            </nz-form-label>
+            <nz-form-control [nzSpan]="24" nzErrorTip="Address is required">
+              <input
+                nz-input
+                formControlName="address"
+                placeholder="Input code"
+              />
+            </nz-form-control>
+          </nz-form-item>
+    </div>
+    </div>
    
   </form>
 </app-drawer-form-base>

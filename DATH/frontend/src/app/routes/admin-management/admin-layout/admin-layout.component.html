@@ -26,10 +26,10 @@
       </nz-header> -->
   </div>
   <ul nz-menu nzMode="inline">
-    <li nz-menu-item [routerLink]="'dashboard'" [nzMatchRouter]="true">
+    <!-- <li nz-menu-item [routerLink]="'dashboard'" [nzMatchRouter]="true">
       <span><i class="fa-solid fa-chart-line mr-2 text-muted"></i></span>
       <span>Dashboard</span>
-    </li>
+    </li> -->
 
     <li nz-submenu [nzTitle]="product">
       <ng-template #product>
@@ -141,22 +141,22 @@
       </ul>
     </li>
 
-    <li nz-menu-item [nzMatchRouter]="true">
+    <!-- <li nz-menu-item [nzMatchRouter]="true">
       <i class="fa-solid fa-users mr-2 text-muted"></i>
       <span>Account Management</span>
-    </li>
+    </li> -->
 
     <li nz-menu-item [routerLink]="'register-employee'" [nzMatchRouter]="true">
       <i class="fa-solid fa-users mr-2 text-muted"></i>
       <span>Employee Management</span>
     </li>
 
-    <li nz-menu-item [nzMatchRouter]="true">
+    <!-- <li nz-menu-item [nzMatchRouter]="true">
       <span
         ><i class="fa-regular fa-star-half-stroke mr-2 text-muted"></i
       ></span>
       <span>Rating</span>
-    </li>
+    </li> -->
 
     <li nz-menu-item [routerLink]="'installment'" [nzMatchRouter]="true">
       <span
@@ -165,12 +165,12 @@
       <span>Installment</span>
     </li>
 
-    <li nz-menu-item [nzMatchRouter]="true">
+    <!-- <li nz-menu-item [nzMatchRouter]="true">
       <span
         ><i class="fa-regular fa-star-half-stroke mr-2 text-muted"></i
       ></span>
       <span>Statistic</span>
-    </li>
+    </li> -->
   </ul>
 </ng-template>
 

@@ -35,7 +35,7 @@ export class LoginComponent {
       if(checkResponseStatus(res)){
         //localStorage.setItem('user', JSON.stringify(res.data));
         this.msg.success("Login successfully")
-        this.router.navigateByUrl('admin-management/dashboard');
+        this.router.navigateByUrl('admin-management/product');
       }
       else{
         this.msg.error("Incorrect username or password")

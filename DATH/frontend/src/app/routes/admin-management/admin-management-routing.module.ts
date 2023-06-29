@@ -20,7 +20,7 @@ import { OrderForShopListComponent } from './order-for-shop-list/order-for-shop-
 import { OrderListComponent } from './order-list/order-list.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'product', pathMatch: 'full' },
   {
     path: 'dashboard',
     component: DashboardAdminComponent,
