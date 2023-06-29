@@ -1,4 +1,5 @@
 ﻿using Bussiness.Dto;
+using Bussiness.Services.ProductService.Dto;
 using Entities;
 
 namespace Bussiness.Interface.InstallmentInterface.Dto
@@ -16,5 +17,6 @@ namespace Bussiness.Interface.InstallmentInterface.Dto
         public string? OrderCode { get; set; }
         public int Term { get; set; }
         public decimal Money { get; set; }
+        public ICollection<FeedbackDto>? Feedbacks { get; set; }
     }
 }
