@@ -17,6 +17,7 @@ import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { CustomerCartComponent } from './customer-cart/customer-cart.component';
 import { ViewCartDetailComponent } from './view-cart-detail/view-cart-detail.component';
 import { ViewCheckOrderComponent } from './view-check-order/view-check-order.component';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { ViewCheckOrderComponent } from './view-check-order/view-check-order.com
     ViewCheckOrderComponent,
   ],
   imports: [
+    QuillModule.forRoot(),
     CommonModule,
     CustomerManagementRoutingModule,
     ComponentsModule,
