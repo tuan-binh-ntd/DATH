@@ -57,7 +57,7 @@
         [cdkDropListData]="listOrderPreparing"
         class="example-list p-1"
         cdkDropListSortingDisabled
-        [cdkDropListConnectedTo]="[listDelivering, listRejected]"
+        [cdkDropListConnectedTo]="[listDelivering]"
         (cdkDropListDropped)="drop($event, 2)"
       >
       <div class="text-center mb-1">

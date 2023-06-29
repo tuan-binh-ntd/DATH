@@ -42,7 +42,7 @@ import { StoresWarehouseListComponent } from '../../admin-management/stores-ware
 export class ViewCartDetailComponent {
   @ViewChild('quantity') quantity!: ElementRef;
   cartObjects$ = this.cartQuery.selectAll();
-  deliveryCost: number = 0;
+  deliveryCost: number = 50000;
   subTotalCost: number = 0;
   discountPercent: number = 0;
   totalCost: number = 0;
@@ -112,13 +112,12 @@ export class ViewCartDetailComponent {
     this.fetchShops();
     this.cartObjects$.subscribe((res) => {
       this.subTotalCost = 0;
-      this.listCart = res;
+      this.listCart = [...res];
       res.forEach((item) => {
         this.subTotalCost += item.cost;
       });
+      this.totalCost = this.deliveryCost + this.subTotalCost;
     });
-    this.totalCost = this.deliveryCost + this.subTotalCost;
-    this.isShowPaymentMethod = this.listCart.every(item => item.paymentId);
     this.patchValueInfoForm();
     this.checkIfHavePaymentMethod();
   }
@@ -197,6 +196,7 @@ export class ViewCartDetailComponent {
 
   deleteRecord(id: string) {
     this.cartService.delete(id);
+    this.checkIfHavePaymentMethod();
   }
 
   goToProduct(id: string) {

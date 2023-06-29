@@ -30,11 +30,9 @@ export class PresenceService {
     this.hubConnection.start().catch((error) => console.log(error));
 
     this.hubConnection.on('UserIsOnline', (username) => {
-      this.msg.success(username + 'has connected');
     });
 
     this.hubConnection.on('UserIsOffline', (username) => {
-      this.msg.success(username + 'has disconnected');
     });
 
     if (user.type === UserType.Admin || user.type === UserType.OrderTransfer) {

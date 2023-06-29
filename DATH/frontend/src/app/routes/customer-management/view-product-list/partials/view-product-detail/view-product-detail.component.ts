@@ -42,6 +42,7 @@ export class ViewProductDetailComponent {
   listPayment: Payment[] = [];
   data!: Product | null;
   selectedPayment: number | null = null;
+  costPercent: number = 0;
   costInstallment: number = 0;
   costPermonth: number = 0;
   costInterest: number = 0;
@@ -74,7 +75,6 @@ export class ViewProductDetailComponent {
   cartObjects$ = this.cartQuery.selectAll();
   async ngOnInit() {
     await this.fetchInstallment();
-    await this.fetchPayments();
     this.route.paramMap
       .pipe(
         switchMap(async (params) => {
@@ -109,8 +109,9 @@ export class ViewProductDetailComponent {
       .then((res) => {
         if (checkResponseStatus(res)) {
           this.listPayment = res.data;
-          const paymentId = this.listPayment.find((item) => item)?.id;
+          const paymentId = this.listPayment[0]?.id;
           this.selectedPayment = paymentId;
+          this.onChangePayment(paymentId);
         }
       });
   }
@@ -196,6 +197,7 @@ export class ViewProductDetailComponent {
     let installment: Installment = null;
     if (item) {
       installment = this.listInstallment.find((ele) => ele.id === item);
+      this.costPercent = 100 - installment?.balance;
       this.costInstallment = this.cartObject.cost - this.cartObject.cost * (installment?.balance * 0.01);
       this.costInterest = this.cartObject.cost * (installment?.interest * 0.01);
       this.costPermonth = (this.cartObject.cost +  this.costInterest) / installment?.term;
@@ -205,6 +207,11 @@ export class ViewProductDetailComponent {
 
   setCurrentImage(url: string) {
     this.mainImgUrl = url;
+  }
+
+  async onOpenInstallmentModal(){
+    await this.fetchPayments();
+    this.isShowInstallmentModal = true;
   }
 
   onSaveInstallment(){

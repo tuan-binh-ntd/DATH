@@ -350,7 +350,7 @@
                   class="mb-4"
                 >
                   <ng-template #header>
-                    <div nz-row nzGutter="16">
+                    <div nz-row nzGutter="16" class="w-100">
                       <div nz-col nzSpan="8">
                         <span class="text-muted">#{{ item.code }}</span>
                         <br />
@@ -406,6 +406,42 @@
                 </nz-collapse-panel>
               </nz-collapse>
             </ng-container>
+        </nz-tab>
+        <nz-tab nzTitle="Installment product">
+          <ng-container *ngIf="listInstallmentProduct.length > 0; else empty">
+            <nz-list>
+              <nz-list-item *ngFor="let item of listInstallmentProduct">
+             <nz-list-header class="w-100">
+                <div nz-row nzGutter="16" class="w-100">
+                  <div nz-col nzSpan="4">
+                    <img
+                    nz-image
+                    width="50px"
+                    height="50px"
+                    [nzSrc]="item?.photos ? item?.photos[0].url : ''"
+                    class="mr-2"
+                  />
+                  </div>
+                  <div nz-col nzSpan="9">
+                    <span class="text-muted">Name</span>
+                    <br />
+                    <span>{{ item.name }}</span>
+                  </div>
+                  <div nz-col nzSpan="7">
+                    <span class="text-muted">Cost left</span>
+                    <br />
+                    <span class="text-center">{{ item.money | number }}Đ</span>
+                  </div>
+                  <div nz-col nzSpan="4">
+                    <span class="text-muted">Month left</span>
+                    <br />
+                    <span class="text-center">{{ item.term }}</span>
+                  </div>
+                </div>
+             </nz-list-header>
+              </nz-list-item>
+            </nz-list>
+          </ng-container>
         </nz-tab>
         <!-- End Add Photo View -->
       </nz-tabset>

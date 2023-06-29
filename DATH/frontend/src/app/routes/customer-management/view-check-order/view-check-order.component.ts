@@ -6,6 +6,9 @@ import { Order } from 'src/app/models/order-model';
 import { OrderService } from 'src/app/services/order.service';
 import { checkResponseStatus } from 'src/app/shared/helper';
 import { CartService } from 'src/app/stores/cart/cart.service';
+import { CustomerService } from 'src/app/services/customer.service';
+import { Customer } from 'src/app/models/customer.model';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-view-check-order',
@@ -17,11 +20,14 @@ export class ViewCheckOrderComponent {
     private orderService: OrderService,
     private route: ActivatedRoute,
     private router: Router,
-    private cartService: CartService
+    private cartService: CartService,
+    private customerService: CustomerService,
+    private msg: NzMessageService,
   ) {}
-  data: Order;
+  data: any;
   orderStatus = OrderStatus;
-
+  person: Customer = JSON.parse(localStorage.getItem('user')!);
+  
   orderStatusArray: any[] = [
     { label: 'Pending', value: OrderStatus.Pending, icon:  "fa-solid fa-spinner"  },
     { label: 'Rejected', value: OrderStatus.Rejected, icon: "fa-regular fa-circle-xmark" },
@@ -45,15 +51,17 @@ export class ViewCheckOrderComponent {
     this.orderService.getByCode(this.code).subscribe((res) => {
       if (checkResponseStatus(res)){
         this.data = res.data;
-        switch(this.data.status){
-          case OrderStatus.Pending: this.orderStatusStepIndex = 0; break;
-          case OrderStatus.Rejected: this.orderStatusStepIndex = 1; break;
-          case OrderStatus.Preparing: this.orderStatusStepIndex = 2; break;
-          case OrderStatus.Delivering: this.orderStatusStepIndex = 3; break;
-          case OrderStatus.Received: this.orderStatusStepIndex = 4; break;
-        }
       } 
     });
+  }
+
+  onClickReceived(){
+    this.customerService.customerReceivedOrder(this.person.userId, this.data.id).subscribe(res => {
+      if(checkResponseStatus(res)){
+        this.msg.success("Successfully");
+        this.continue();
+      }
+    })
   }
 
   continue() {

@@ -27,6 +27,10 @@ export class CustomerService {
   }
 
   customerReceivedOrder(id: number, orderId: number): Observable<any> {
-    return this.http.patch(this.baseUrl + '/' + id + '/orders' + orderId, null);
+    return this.http.patch(this.baseUrl + '/' + id + '/orders/' + orderId, null);
+  }
+
+  getInstallmentProduct(id: number): Observable<any> {
+    return this.http.get(this.baseUrl + '/' + id + '/installment/');
   }
 }
