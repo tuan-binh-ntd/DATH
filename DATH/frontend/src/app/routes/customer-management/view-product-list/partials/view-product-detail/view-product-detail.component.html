@@ -112,7 +112,7 @@
   nzTitle="Choose your installment term"
   [nzWidth]="465"
   (nzAfterOpen)="onOpenInstallmentModal()"
-  (nzOnCancel)="isShowInstallmentModal = false"
+  (nzOnCancel)="onCloseInstallmentModal()"
   (nzOnOk)="onSaveInstallment()"
 >
   <ng-template #modalContent>
