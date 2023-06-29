@@ -43,7 +43,7 @@ export class ViewCheckOrderComponent {
         switchMap(async (params) => {
           this.code = params.get('code')!;
           await this.fetchData();
-        })
+      })
       )
       .subscribe();
   }

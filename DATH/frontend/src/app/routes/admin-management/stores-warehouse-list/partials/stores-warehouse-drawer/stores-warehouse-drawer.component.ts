@@ -22,7 +22,6 @@ export class StoresWarehouseDrawerComponent extends DrawerFormBaseComponent {
     shopId: null,
   };
   products: Product[] = [];
-
   constructor(
     protected override fb: FormBuilder,
     protected override cdr: ChangeDetectorRef,
@@ -37,6 +36,8 @@ export class StoresWarehouseDrawerComponent extends DrawerFormBaseComponent {
     this.initForm();
     this.fetchProducts();
   }
+
+
 
   fetchProducts() {
     this.productService.getAll().subscribe((res) => {

@@ -40,6 +40,7 @@ export class OrderForAdminDrawerComponent extends DrawerFormBaseComponent {
       discount: [null, Validators.required],
       email: [null, Validators.required],
       shopId: [null, Validators.required],
+      address: [null]
     });
   }
 

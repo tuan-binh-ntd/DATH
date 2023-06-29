@@ -8,22 +8,43 @@
   (onSubmit)="submitForm()"
 >
   <form nz-form [formGroup]="drawerForm" [nzLayout]="'vertical'">
-    <nz-form-item>
-      <nz-form-label [nzSpan]="24" nzFor="objectName" nzRequired>
-        <span>Object Name</span>
+    <nz-form-item *ngIf="drawerForm?.value.type === 2; else import">
+      <nz-form-label [nzSpan]="24" nzFor="shop" nzRequired>
+        <span>Warehouse</span>
       </nz-form-label>
-      <nz-form-control [nzSpan]="24" nzErrorTip="Object name is required">
-        <input
-          nz-input
-          name="objectName"
-          type="text"
-          id="objectName"
+      <nz-form-control [nzSpan]="24">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Select a warehouse"
           formControlName="objectName"
-          placeholder="Input object name"
-        />
+        >
+          <nz-option
+            *ngFor="let warehouse of listWarehouse"
+            [nzLabel]="warehouse.name"
+            [nzValue]="warehouse.name"
+          ></nz-option>
+        </nz-select>
       </nz-form-control>
     </nz-form-item>
 
+    <ng-template #import>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="24" nzFor="objectName" nzRequired>
+          <span>Object Name</span>
+        </nz-form-label>
+        <nz-form-control [nzSpan]="24" nzErrorTip="Object name is required">
+          <input
+            nz-input
+            name="objectName"
+            type="text"
+            id="objectName"
+            formControlName="objectName"
+            placeholder="Input object name"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </ng-template>
     <nz-form-item>
       <nz-form-label [nzSpan]="24" nzFor="shop" nzRequired>
         <span>Product</span>
@@ -32,7 +53,7 @@
         <nz-select
           nzShowSearch
           nzAllowClear
-          nzPlaceHolder="Select a shop"
+          nzPlaceHolder="Select a product"
           formControlName="productId"
         >
           <nz-option
