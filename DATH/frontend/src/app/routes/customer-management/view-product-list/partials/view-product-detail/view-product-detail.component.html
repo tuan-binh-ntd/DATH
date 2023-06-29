@@ -216,7 +216,7 @@
                 Comment
               </nz-form-label>
               <nz-form-control [nzSpan]="24" nzErrorTip="Comment is required">
-                <quill-editor formControlName="comment" ></quill-editor>
+                <textarea nz-input formControlName="comment" ></textarea>
               </nz-form-control>
             </nz-form-item>
         </form>
@@ -234,19 +234,32 @@
             </button>
           </div>
           </div>
+          <nz-divider nzLayout="vertical"></nz-divider>
+
         </div>
-        <nz-divider nzType="vertical"></nz-divider>
         <div nz-col nzSpan="16">
-          <!-- <nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
+          <nz-list class="content" [nzDataSource]="data?.feedbacks" [nzRenderItem]="item" [nzItemLayout]="'horizontal'">
             <ng-template #item let-item>
-              <nz-comment [nzAuthor]="item.author" [nzDatetime]="item.datetime">
-                <nz-comment-content>
-                  <p>{{ item.content }}</p>
-                </nz-comment-content>
-                <nz-comment-action>Reply to</nz-comment-action>
-              </nz-comment>
-            </ng-template>
-          </nz-list> -->
+                <nz-comment [nzAuthor]="item.userName" [nzDatetime]="item.creationTime | date: 'dd/MM/yyyy HH:mm'">
+                  <nz-avatar
+                  nz-comment-avatar
+                  nzIcon="user"
+                ></nz-avatar>
+                  <nz-comment-content>
+                    <nz-rate
+                    class="mb-2"
+                    [nzTooltips]="tooltips"
+                    nzDisabled
+                    [ngModel]="item.star"
+                  ></nz-rate>
+                    <p>
+                      {{item.comment}}
+                    </p>
+                  </nz-comment-content>
+                </nz-comment>
+                <nz-divider></nz-divider>
+              </ng-template>
+          </nz-list>
         </div>
       </div>
   </nz-card>

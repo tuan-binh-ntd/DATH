@@ -204,7 +204,7 @@ export class ProductDrawerComponent extends DrawerFormBaseComponent {
             ...this.drawerForm.getRawValue(),
             specificationId: this.drawerForm
               .get('specificationId')
-              ?.value.join(','),
+              ?.value?.join(','),
           })
           .pipe(finalize(() => (this.isLoading = false)))
           .subscribe((res) => {

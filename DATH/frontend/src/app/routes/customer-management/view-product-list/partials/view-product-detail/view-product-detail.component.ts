@@ -76,6 +76,12 @@ export class ViewProductDetailComponent {
     installmentId: null,
     paymentId: null,
   };
+  config = {
+    "theme": "snow",
+    "modules": {
+        "toolbar": false
+    }
+  };
   cartObject$!: Subscription;
   cartObjects$ = this.cartQuery.selectAll();
   ratingForm!: FormGroup;
@@ -275,7 +281,8 @@ export class ViewProductDetailComponent {
   onClickSendFeedback(){
     this.feedbackService.create(this.ratingForm.getRawValue()).subscribe(res => {
       if(checkResponseStatus(res)){
-
+        this.msg.success("Successfully created feedback");
+        window.location.reload();
       }
     })
   }

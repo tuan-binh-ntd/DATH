@@ -3,6 +3,6 @@ export interface Feedback {
     userName: string | null,
     star: number | null,
     comment: string | null,
-    productId: number | null
-  }
-  
+    productId: number | null,
+    creationTime: string | null,
+}

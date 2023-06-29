@@ -350,7 +350,8 @@ namespace Bussiness.Services.ProductService
                                            {
                                                UserName = f.UserName,
                                                Star = f.Star,
-                                               Comment = f.Comment
+                                               Comment = f.Comment,
+                                               CreationTime = (DateTime)f.CreationTime!
                                            }).ToListAsync();
             }
         }
@@ -405,7 +406,8 @@ namespace Bussiness.Services.ProductService
                                            {
                                                UserName = f.UserName,
                                                Star = f.Star,
-                                               Comment = f.Comment
+                                               Comment = f.Comment,
+                                               CreationTime = (DateTime)f.CreationTime!
                                            }).ToListAsync();
             }
         }
