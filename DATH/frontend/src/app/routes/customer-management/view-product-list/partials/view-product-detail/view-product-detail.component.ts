@@ -214,6 +214,11 @@ export class ViewProductDetailComponent {
     this.isShowInstallmentModal = true;
   }
 
+  onCloseInstallmentModal(){
+    this.isShowInstallmentModal = false;
+      this.cartObject.paymentId = null;
+  }
+
   onSaveInstallment(){
     // if (
     //   !this.cartObject.specifications.some((item) => {

@@ -255,6 +255,7 @@ export class ViewCartDetailComponent {
   onCheckOut() {
     this.validateForm();
     if (this.infoForm.valid) {
+      const id = this.msg.loading('Action in progress..', { nzDuration: 0 }).messageId;
       if(this.listCart?.length > 0){
         this.listCart = this.listCart.map((item) => {
           return {
@@ -270,16 +271,13 @@ export class ViewCartDetailComponent {
           createDate: Date.now(),
           orderDetailInputs: this.listCart,
         };
-
+        
         this.orderService.create(payload).subscribe((res) => {
           if (checkResponseStatus(res)) {
             if(this.customer.id && !this.customer.address) this.addAddressIfNotExisted();
-            const id = this.msg.loading('Action in progress..', { nzDuration: 0 }).messageId;
-            setTimeout(() => {
-              this.msg.remove(id);
-              this.msg.success("Created order");
-              this.router.navigateByUrl(`order/${res.data.code}`);
-            }, 2000);
+            this.msg.remove(id);
+            this.msg.success("Created order");
+            this.router.navigateByUrl(`order/${res.data.code}`);
             // this.cartService.removeAll();
           }
         });

@@ -14,5 +14,7 @@ namespace Bussiness.Dto
         public string? Email { get; set; }
         public bool IsActive { get; set; }
         public string? Address { get; set; }
+        public long UserId { get; set; }
+
     }
 }
