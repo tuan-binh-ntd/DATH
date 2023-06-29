@@ -52,7 +52,7 @@ export class CustomerChangeInfoComponent {
   addressObserver: Observer<any> = {
     next: (res) => {
       if (checkResponseStatus(res)) {
-        localStorage.setItem('user', JSON.stringify({...this.customer, address: res.data.address}));
+        this.accountService.setCurrentUser(res.data);
         this.msg.success('Successfully');
       }
     },
