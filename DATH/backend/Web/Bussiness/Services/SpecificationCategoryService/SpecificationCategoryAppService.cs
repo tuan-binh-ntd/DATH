@@ -69,7 +69,8 @@ namespace Bussiness.Services.SpecificationCategoryService
                                                              {
                                                                  Id = s.Id,
                                                                  Code = s.Code,
-                                                                 Value = s.Value
+                                                                 Value = s.Value,
+                                                                 Description = s.Description,
                                                              };
                 List<GetColorByCodeForViewDto>? res = await query.ToListAsync();
                 if (res == null) return null;

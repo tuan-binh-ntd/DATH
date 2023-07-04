@@ -77,33 +77,33 @@ export class OrderForShopListComponent {
     });
   }
   fetchData(): void {
-    const payload = {
-      shopId: this.person.shopId ?? null,
-      pageNum: this.paginationParam.pageNum,
-      pageSize: this.paginationParam.pageSize,
-    };
-
-    this.presenceService.getOrderForShop(payload).then((res) => {
-      if (checkResponseStatus(res)) {
-        this.orders = [...res.data.content];
-        this.listOrderPending = this.orders.filter(
-          (item) => item.status === OrderStatus.Pending
-        );
-        this.listOrderRejected = this.orders.filter(
-          (item) => item.status === OrderStatus.Rejected
-        );
-        this.listOrderPreparing = this.orders.filter(
-          (item) => item.status === OrderStatus.Preparing
-        );
-        this.listOrderDelivering = this.orders.filter(
-          (item) => item.status === OrderStatus.Delivering
-        );
-        this.listOrderReceived = this.orders.filter(
-          (item) => item.status === OrderStatus.Received
-        );
-        this.paginationParam.totalCount = res.data.totalCount;
-      }
-    });
+    this.shopService
+      .getOrderForStores(
+        this.person.shopId ?? null,
+        this.paginationParam.pageNum,
+        this.paginationParam.pageSize
+      )
+      .subscribe((res) => {
+        if (checkResponseStatus(res)) {
+          this.orders = [...res.data.content];
+          this.listOrderPending = this.orders.filter(
+            (item) => item.status === OrderStatus.Pending
+          );
+          this.listOrderRejected = this.orders.filter(
+            (item) => item.status === OrderStatus.Rejected
+          );
+          this.listOrderPreparing = this.orders.filter(
+            (item) => item.status === OrderStatus.Preparing
+          );
+          this.listOrderDelivering = this.orders.filter(
+            (item) => item.status === OrderStatus.Delivering
+          );
+          this.listOrderReceived = this.orders.filter(
+            (item) => item.status === OrderStatus.Received
+          );
+          this.paginationParam.totalCount = res.data.totalCount;
+        }
+      });
   }
 
   pageNumChanged(event: any): void {

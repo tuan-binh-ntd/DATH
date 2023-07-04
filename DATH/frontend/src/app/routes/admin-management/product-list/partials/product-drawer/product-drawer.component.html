@@ -27,7 +27,7 @@
               >
                 <nz-option
                   *ngFor="let color of colors"
-                  [nzLabel]="color.code"
+                  [nzLabel]="color.description != null ? color.code + ' ' + '(' + color.description + ')' : color.code"
                   [nzValue]="color.id"
                 ></nz-option>
               </nz-select>
@@ -73,7 +73,7 @@
       <!-- End upload image -->
 
       <!-- Start select color -->
-   
+
       <!-- End select color -->
     </ng-container>
   </form>
@@ -107,7 +107,7 @@
         >
           <nz-option
             *ngFor="let option of specifications"
-            [nzLabel]="option.code"
+            [nzLabel]="option.description != null ? option.code + ' ' + '(' + option.description + ')' : option.code"
             [nzValue]="option.id"
           ></nz-option>
         </nz-select>

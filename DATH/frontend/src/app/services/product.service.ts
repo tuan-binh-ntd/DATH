@@ -54,7 +54,7 @@ export class ProductService {
     );
   }
 
-  getProductBySpecificationId(id: number, specificationId: number): Observable<Product> {
-    return this.http.get<Product>(this.baseUrl + '/' + id + '&' + specificationId);
+  getProductBySpecificationId(id: string, specificationId: string): Observable<any> {
+    return this.http.get<any>(this.baseUrl + '/' + id + '&' + specificationId);
   }
 }

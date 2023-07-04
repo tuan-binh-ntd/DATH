@@ -197,7 +197,7 @@ namespace Bussiness.Services.ProductService
 
                 // Get photo list for product
                 data.Photos = await (from p in _dataContext.Photo.AsNoTracking()
-                                     where p.ProductId == data.Id
+                                     where p.ProductId == data.Id && p.SpecificationId == specificationId
                                      select new PhotoDto
                                      {
                                          Id = p.Id,

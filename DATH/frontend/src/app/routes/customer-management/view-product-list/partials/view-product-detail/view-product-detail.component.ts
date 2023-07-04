@@ -174,12 +174,12 @@ export class ViewProductDetailComponent {
         (item: any) => item.specificationCategoryCode === 'capacity'
       );
       //Initialize selection
-      this.onChangeColor(this.listColor[0]?.value);
+      this.onChangeColor(this.listColor[0]?.value, this.listColor[0]?.id);
       this.onChangeCapacity(this.listCapacity[0]);
     }
   }
 
-  onChangeColor(value: string) {
+  onChangeColor(value: string, id: string) {
     if (
       !this.cartObject.specifications.some((item) => {
         return Object.keys(item).includes('color');
@@ -204,6 +204,17 @@ export class ViewProductDetailComponent {
       this.cartObject.specifications = [...arr];
     }
     this.selectedColor = value;
+    this.productService.getProductBySpecificationId(this.id, id).subscribe(res => {
+      if (checkResponseStatus(res)) {
+        this.data = res?.data;
+        this.mainImgUrl = res?.data.photos![0]?.url;
+        this.cartObject.name = res?.data.name;
+        this.cartObject.photo = this.mainImgUrl;
+        this.cartObject.quantity = 1;
+        this.cartObject.cost = res?.data.price;
+        this.cartObject.productId = res?.data.id;
+      }
+    })
   }
 
   onChangeCapacity(item: Specification) {
