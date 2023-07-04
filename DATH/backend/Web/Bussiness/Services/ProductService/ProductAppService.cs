@@ -205,6 +205,19 @@ namespace Bussiness.Services.ProductService
                                          IsMain = p.IsMain,
                                      }).ToListAsync();
 
+                // Calc star
+                data.Star = await _feedBackRepo.GetAll().AsNoTracking().Where(p => p.ProductId == data.Id).GroupBy(g => g.ProductId).Select(f => f.Average(g => g.Star)).FirstOrDefaultAsync();
+
+                data.Feedbacks = await (from f in _feedBackRepo.GetAll().AsNoTracking()
+                                           where f.ProductId == data.Id
+                                           select new FeedbackDto
+                                           {
+                                               UserName = f.UserName,
+                                               Star = f.Star,
+                                               Comment = f.Comment,
+                                               CreationTime = (DateTime)f.CreationTime!
+                                           }).ToListAsync();
+
                 return data;
             }
             return null;
